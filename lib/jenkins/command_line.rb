@@ -47,6 +47,16 @@ module Jenkins
 				opts.separator 'For command specific options run: jenkins --help <command>'
 				opts.separator ''
 				opts.command 'version', 'Outputs the current version of Jenkins'
+				opts.command 'prepare-for-shutdown', 'Stop executing new builds, so that the system can '\
+					'be eventually shut down safely.'
+				opts.command 'cancel-shutdown', 'Cancel the effect of "prepare-for-shutshow" command.'
+				opts.command 'wait-nodes-idle', 'Wait for all nodes to become idle. Is expected to be '\
+					'called after "prepare_for_shutdown", otherwise new builds will still be run.' do |cmd|
+					cmd.on '-m', '--max-wait-minutes INT', Integer, 'Wait for INT minutes at most. '\
+						'Default 60' do |opt|
+						@command_options[:max_wait_minutes] = opt
+					end
+				end
 				opts.command 'offline-node', 'Stop using a node for performing builds temporarily, until '\
 					'the next "online-node" command.' do |cmd|
 					cmd.on '-n', '--node NAME', 'Name of the node or empty for master' do |opt|
@@ -59,36 +69,62 @@ module Jenkins
 				end
 				opts.command 'online-node', 'Resume using a node for performing builds, to cancel out '\
 					'the earlier "offline-node" command.' do |cmd|
-					cmd.on '-n', '--node NAME', 'Name of the node or empty for master' do |opt|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
+						@command_options[:node] = opt
+					end
+				end
+				opts.command 'connect-node', 'Connects a node, i.e. starts Jenkins slave on a node.' do |cmd|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
+						@command_options[:node] = opt
+					end
+				end
+				opts.command 'disconnect-node', 'Disconnects a node.' do |cmd|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
+						@command_options[:node] = opt
+					end
+					cmd.on '-m', '--message MESSAGE', 'Reason, why the node is being disconnected.' do |opt|
+						@command_options[:message] = opt
+					end
+				end
+				opts.command 'wait-node-idle', 'Wait for the node to become idle. Make sure you run '\
+					'"offline-node" first.' do |cmd|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
+						@command_options[:node] = opt
+					end
+					cmd.on '-m', '--max-wait-minutes INT', Integer, 'Wait for INT minutes at most. '\
+						'Default 60' do |opt|
+						@command_options[:max_wait_minutes] = opt
+					end
+				end
+				opts.command 'get-node', 'Returns the node definition XML.' do |cmd|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
 						@command_options[:node] = opt
 					end
 				end
 				opts.command 'update-node', 'Updates the node definition XML from stdin or file.' do |cmd|
-					cmd.on '-n', '--node NAME', 'Name of the node or empty for master' do |opt|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
 						@command_options[:node] = opt
 					end
 					cmd.on '-x', '--xml-config FILE', 'File to read definition from. Omit this to read from stdin' do |opt|
 						@command_options[:xml_config] = IO.read( opt )
 					end
 				end
-				opts.command 'wait-node-idle', 'Wait for the node to become idle. Make sure you run '\
-					'"offline-node" first.' do |cmd|
-					cmd.on '-n', '--node NAME', 'Name of the node or empty for master' do |opt|
-						@command_options[:node] = opt
+				opts.command 'build', 'Starts a build.' do |cmd|
+					cmd.on '-j', '--job NAME', 'Name of the job' do |opt|
+						@command_options[:job] = opt
 					end
-					cmd.on '-m', '--max-wait-minutes INT', Integer, 'Wait for INT minutes at most. '\
-						'Default 60' do |opt|
-						@command_options[:max_wait_minutes] = opt
+					cmd.on '-p', '--params KEY=VALUE[,KEY=VALUE...]', Array, 'Build parameters, where keys are'\
+						' names of variables' do |opt|
+						@command_options[:params] = opt.collect{|i| i.split( '=', 2 ) }.to_h
 					end
 				end
-				opts.command 'prepare-for-shutdown', 'Stop executing new builds, so that the system can '\
-					'be eventually shut down safely.'
-				opts.command 'cancel-shutdown', 'Cancel the effect of "prepare-for-shutshow" command.'
-				opts.command 'wait-nodes-idle', 'Wait for all nodes to become idle. Is expected to be '\
-					'called after "prepare_for_shutdown", otherwise new builds will still be run.' do |cmd|
-					cmd.on '-m', '--max-wait-minutes INT', Integer, 'Wait for INT minutes at most. '\
-						'Default 60' do |opt|
-						@command_options[:max_wait_minutes] = opt
+				opts.command 'install-plugin', 'Installs a plugin from url or by short name. '\
+					'Provide either --url or --name.' do |cmd|
+					cmd.on '-u', '--uri URI', URI, 'Uri to install plugin from.' do |opt|
+						@command_options[:uri] = opt
+					end
+					cmd.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |opt|
+						@command_options[:name] = opt
 					end
 				end
 			end
