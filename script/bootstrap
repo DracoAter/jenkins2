@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+# script/bootstrap: Resolve all dependencies that application requires to run.
+rake package
+sudo gem install --dev jenkins-0.0.0.gem

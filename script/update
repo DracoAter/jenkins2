@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+# script/update: Update application to run for its current environment
+
+script/bootstrap

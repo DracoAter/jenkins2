@@ -11,14 +11,16 @@ either from command line or from your code.
 
 Either run it from command line:
 
-    jenkins -s http://jenkins.example.com offline-node mynode
+    jenkins -s http://jenkins.example.com offline-node -n mynode
     jenkins --help #for help and list of available commands
     jenkins --help <command> #for help on particular command
 
 Or use it in your gem:
 
     require 'jenkins'
-    Jenkins::Client.new( :server => 'http://jenkins.example.com', :node => 'mynode' ).offline_node
+    jc = Jenkins::Client.new( server: 'http://jenkins.example.com' )
+    jc.version
+    jc.offline_node( node: 'mynode' )
 
 # License
 
@@ -27,7 +29,7 @@ MIT - see the accompanying [LICENSE](LICENSE) file for details.
 # Changelog
 
 To see what has changed in recent versions see the [CHANGELOG](CHANGELOG.md).
-Jenkins Tips gem follows the [Semantic Versioning Policy](http://guides.rubygems.org/patterns).
+Jenkins gem follows the [Semantic Versioning Policy](http://guides.rubygems.org/patterns).
 
 # Contributing
 

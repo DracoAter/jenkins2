@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
 	s.name = 'jenkins'
 	s.version = Jenkins::VERSION
 	s.date = '2015-07-20'
-	s.summary = 'Ruby integrations for Jenkins (client, API, CLI etc.)'
-	s.description = 'Ruby integrations for Jenkins (client, API, CLI etc.)'
+	s.summary = 'Ruby and command line integrations for Jenkins (client, API, CLI etc.)'
+	s.description = 'Ruby and command line integrations for Jenkins (client, API, CLI etc.)'
 	s.authors = ['Juri Timošin']
 	s.email = 'draco.ater@gmail.com'
 	s.homepage = 'http://rubygems.org/gems/jenkins'

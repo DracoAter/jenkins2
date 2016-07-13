@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+# script/test: Run test suite for application. Optionally pass in a path to an
+#              individual test file to run a single test.
+
+# update the application to ensure all dependencies are met as well as any other things
+# that need to be up to date, like db migrations.
+script/update
+
+echo "==== Running tests ===="
+if [ -f $1 ]; then
+	rake test TEST=$1
+else
+	rake test
+fi
