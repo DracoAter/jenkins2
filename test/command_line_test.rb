@@ -28,6 +28,30 @@ module Jenkins
 			assert_equal( { :node => 'nodename' }, @subj.command_options )
 		end
 
+		def test_read_config_file_if_provided
+			IO.expects( :read ).with( 'myfile_jenkins.json' ).once.returns '{"user":"admin"}'
+			args = %w{online-node -s http://jenkins.com -n nodename -c myfile_jenkins.json}
+			@subj = CommandLine.new( args )
+			assert_equal( { server: URI.parse( 'http://jenkins.com' ), command: 'online-node',
+				user: 'admin', config_file: 'myfile_jenkins.json' }, @subj.global_options )
+		end
+
+		def test_read_default_config_file_if_no_path
+			IO.expects( :read ).with( '~/.jenkins.json' ).once.returns '{"user":"admin"}'
+			args = %w{online-node -s http://jenkins.com -n nodename -c}
+			@subj = CommandLine.new( args )
+			assert_equal( { server: URI.parse( 'http://jenkins.com' ), command: 'online-node',
+				user: 'admin', config_file: '~/.jenkins.json' }, @subj.global_options )
+		end
+
+		def test_do_not_read_config_file_by_default
+			IO.expects( :read ).with( '~/.jenkins.json' ).times( 0 ).returns '{"user":"admin"}'
+			args = %w{online-node -s http://jenkins.com -n nodename}
+			@subj = CommandLine.new( args )
+			assert_equal( { server: URI.parse( 'http://jenkins.com' ), command: 'online-node' },
+				@subj.global_options )
+		end
+
 		def test_no_command
 			args = %w{-s http://jenkins.com -n nodename}
 			Log.expects( :fatal ).twice

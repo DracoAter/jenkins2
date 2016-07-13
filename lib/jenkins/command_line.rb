@@ -24,10 +24,12 @@ module Jenkins
 				opts.on '-k', '--key KEY', 'Jenkins API key' do |opt|
 					@global_options[:key] = opt
 				end
-				opts.on '-c', '--config-file PATH', 'Configuration file path. Instead of providing all '\
-					'parameters through command line, you can do that with configuration file. Options '\
-					'provided in command line will overwrite ones from configuration file' do |opt|
-					@global_options[:config_file] = opt
+				opts.on '-c', '--config-file [PATH]', 'Configuration file path. Instead of providing server, '\
+					'user and key through command line, you can do that with configuration file. File format '\
+					'is json: { "server": "http://jenkins.example.com", "user": "admin", "key": "123456" }. '\
+					'Options provided in command line will overwrite ones from configuration file. '\
+					'Program looks for ~/.jenkins.json if no PATH is provided.' do |opt|
+					@global_options[:config_file] = opt || '~/.jenkins.json'
 				end
 				opts.on '-l', '--log-file FILE', 'Log file. Prints to standard out, if not provided' do |opt|
 					@log_options[:log_file] = opt
@@ -131,6 +133,10 @@ module Jenkins
 			begin
 				global.parse!( args )
 				@global_options[:command] = global.command_name
+				if @global_options[:config_file]
+					from_file = JSON.parse( IO.read( @global_options[:config_file] ), symbolize_names: true )
+					@global_options = from_file.merge( @global_options )
+				end
 				Log.init @log_options
 				if @global_options[:help]
 					Log.unknown { global.help }
