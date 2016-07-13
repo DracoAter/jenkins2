@@ -10,6 +10,11 @@ end
 
 Gem::PackageTask.new( Gem::Specification.load( 'jenkins.gemspec' ) ) do end
 
+task :install => :gem do |t|
+	raise 'Must run as root' unless Process.uid == 0
+	sh 'gem install pkg/jenkins-0.0.0.gem -N'
+end
+
 task :bootstrap do |t|
 	raise 'Must run as root' unless Process.uid == 0
 	Gem::Specification.load( 'jenkins.gemspec' ).development_dependencies.each do |dp|
