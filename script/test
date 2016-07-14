@@ -10,6 +10,8 @@ if [ "$RUBY_ENV" = "test" ]; then
 	# clean from scratch application. This almost always means a ci environment,
 	# since we set the environment to `test` directly in `script/cibuild`.
 	script/bootstrap
+	#should be after bootstrap, because otherwise required gem is not installed
+	export GENERATE_REPORTS='true'
 else
 	# if the environment isn't set to `test`, set it to `test` and update the
 	# application to ensure all dependencies are met as well as any other things
