@@ -29,7 +29,7 @@ module Jenkins
 					'is json: { "server": "http://jenkins.example.com", "user": "admin", "key": "123456" }. '\
 					'Options provided in command line will overwrite ones from configuration file. '\
 					'Program looks for ~/.jenkins.json if no PATH is provided.' do |opt|
-					@global_options[:config_file] = opt || '~/.jenkins.json'
+					@global_options[:config_file] = opt || ::File.join( ENV['HOME'], '.jenkins.json' )
 				end
 				opts.on '-l', '--log-file FILE', 'Log file. Prints to standard out, if not provided' do |opt|
 					@log_options[:log_file] = opt
