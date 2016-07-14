@@ -6,5 +6,6 @@
 # update the application to ensure all dependencies are met as well as any other things
 # that need to be up to date, like db migrations.
 export RUBY_ENV='test'
+export GENERATE_REPORTS='true'
 
 script/test

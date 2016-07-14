@@ -1,7 +1,6 @@
 require 'rake/testtask'
 require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
-require 'ci/reporter/rake/minitest'
 
 task :default => :test
 
@@ -10,7 +9,11 @@ Rake::TestTask.new do |t|
 	t.warning = true
 	t.test_files = FileList['test/*_test.rb']
 end
-task :test => 'ci:setup:minitest'
+
+if ENV['GENERATE_REPORTS'] == 'true'
+	require 'ci/reporter/rake/minitest'
+	task :test => 'ci:setup:minitest'
+end
 
 Gem::PackageTask.new( Gem::Specification.load( 'jenkins.gemspec' ) ) do end
 
