@@ -2,3 +2,5 @@ coverage
 doc
 pkg
 rake.tasks~
+test/reports
+.gemspec.lock

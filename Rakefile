@@ -1,12 +1,16 @@
 require 'rake/testtask'
 require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
+require 'ci/reporter/rake/minitest'
 
 task :default => :test
 
 Rake::TestTask.new do |t|
-	t.pattern = "test/*_test.rb"
+	t.verbose = true
+	t.warning = true
+	t.test_files = FileList['test/*_test.rb']
 end
+task :test => 'ci:setup:minitest'
 
 Gem::PackageTask.new( Gem::Specification.load( 'jenkins.gemspec' ) ) do end
 
@@ -25,7 +29,7 @@ task :bootstrap do |t|
 			Gem::DependencyInstaller.new.install( dp )
 		end
 	else
-		puts 'Running as non-root. Installing into user space.'
+		puts 'Running as non-root. Installing dependencies into user space.'
 		Gem::Specification.load( 'jenkins.gemspec' ).development_dependencies.each do |dp|
 			Gem::DependencyInstaller.new( user_install: true ).install( dp )
 		end
