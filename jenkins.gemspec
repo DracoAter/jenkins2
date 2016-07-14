@@ -16,11 +16,12 @@ Gem::Specification.new do |s|
 	#lol - required for validation
 	s.rubyforge_project = 'jenkins'
 	
-	s.add_development_dependency "minitest", "~> 5.5"
-	s.add_development_dependency "mocha", "~> 1.1"
-	s.add_development_dependency "simplecov", "~> 0.10"
+	s.required_ruby_version = '~> 2.3'
+	s.add_development_dependency 'minitest', '~> 5.5'
+	s.add_development_dependency 'mocha', '~> 1.1'
+	s.add_development_dependency 'simplecov', '~> 0.10'
 	
-	s.files = `hg files`.split( "\n" ).collect(&:strip)
+	s.files = Dir['LICENSE', 'README.md', 'bin/*', 'lib/**/*']
 	s.require_path = 'lib'
 	
 	s.executables = ['jenkins']
