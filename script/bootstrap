@@ -1,4 +1,8 @@
 #!/bin/sh -e
 
 # script/bootstrap: Resolve all dependencies that application requires to run.
-sudo rake bootstrap
+if [ "$(id -u)" == "0" ]; then
+	rake bootstrap
+else
+	sudo rake bootstrap
+fi

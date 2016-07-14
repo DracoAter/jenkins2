@@ -29,7 +29,7 @@ module Jenkins
 			api_request( :post, '/quietDown' )
 		end
 
-		# Cancels the effect of +prepare-for-shutshow+ command.
+		# Cancels the effect of +prepare-for-shutdown+ command.
 		# Parameters are ignored
 		def cancel_shutdown( **args )
 			api_request( :post, '/cancelQuietDown' )

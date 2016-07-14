@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require 'jenkins/version'
+require_relative 'lib/jenkins/version'
 
 Gem::Specification.new do |s|
 	s.name = 'jenkins'
