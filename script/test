@@ -8,7 +8,7 @@
 script/update
 
 echo "==== Running tests ===="
-if [ -f $1 ]; then
+if [ -f "$1" ]; then
 	rake test TEST=$1
 else
 	rake test
