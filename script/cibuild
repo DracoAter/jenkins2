@@ -8,3 +8,5 @@
 export RUBY_ENV='test'
 
 script/test
+echo "==== Building Gem ===="
+rake gem
