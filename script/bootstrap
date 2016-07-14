@@ -1,10 +1,4 @@
 #!/bin/sh -e
 
 # script/bootstrap: Resolve all dependencies that application requires to run.
-if [ "$(whoami)" = "root" ]; then
-	echo "==== Bootstrapping application ===="
-	rake bootstrap
-else
-	echo "==== Bootstrapping application with sudo ===="
-	sudo rake bootstrap
-fi
+rake bootstrap
