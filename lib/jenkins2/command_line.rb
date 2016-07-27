@@ -3,7 +3,7 @@ require_relative 'cmdparse'
 require_relative 'client'
 require_relative 'log'
 
-module Jenkins
+module Jenkins2
 	class CommandLine
 		attr_accessor :global_options
 		attr_accessor :command_options
@@ -152,7 +152,7 @@ module Jenkins
 		end
 
 		def run
-			jc = Jenkins::Client.new( @global_options )
+			jc = Client.new( @global_options )
 			jc.send( @global_options[:command].gsub( '-', '_' ), @command_options )
 		end
 	end

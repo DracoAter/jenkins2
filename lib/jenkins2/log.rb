@@ -1,7 +1,7 @@
 require 'forwardable'
 require 'logger'
 
-module Jenkins
+module Jenkins2
 	class Log
 		extend SingleForwardable
 

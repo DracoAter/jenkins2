@@ -1,6 +1,6 @@
 require 'optparse'
 
-module Jenkins
+module Jenkins2
 	class CommandParser < OptionParser
 		attr_reader :command_name
 

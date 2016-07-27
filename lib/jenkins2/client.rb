@@ -4,7 +4,7 @@ require 'json'
 
 require_relative 'log'
 
-module Jenkins
+module Jenkins2
 	# The entrance point for your Jenkins remote management.
 	class Client
 		# Creates a "connection" to Jenkins.

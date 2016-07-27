@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/jenkins2'
+Jenkins2::CommandLine.new( ARGV ).run

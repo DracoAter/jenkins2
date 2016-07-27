@@ -2,7 +2,7 @@ require 'uri'
 require 'mocha'
 require_relative 'test_helper'
 
-module Jenkins
+module Jenkins2
 	class CommandLineTest < Minitest::Test
 		def test_options_in_right_order
 			args = %w{-s http://jenkins.com online-node -n nodename}

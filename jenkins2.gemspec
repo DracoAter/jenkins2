@@ -1,20 +1,20 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require_relative 'lib/jenkins/version'
+require_relative 'lib/jenkins2/version'
 
 Gem::Specification.new do |s|
-	s.name = 'jenkins'
-	s.version = Jenkins::VERSION
-	s.date = '2015-07-20'
-	s.summary = 'Ruby and command line integrations for Jenkins (client, API, CLI etc.)'
-	s.description = 'Ruby and command line integrations for Jenkins (client, API, CLI etc.)'
+	s.name = 'jenkins2'
+	s.version = Jenkins2::VERSION
+	s.date = '2016-07-27'
+	s.summary = 'Ruby and command line integrations for Jenkins 2 (client, API, CLI etc.)'
+	s.description = 'Ruby and command line integrations for Jenkins 2 (client, API, CLI etc.)'
 	s.authors = ['Juri Timošin']
 	s.email = 'draco.ater@gmail.com'
 	s.homepage = 'http://rubygems.org/gems/jenkins'
 	s.license = 'MIT'
 	
 	#lol - required for validation
-	s.rubyforge_project = 'jenkins'
+	s.rubyforge_project = 'jenkins2'
 	
 	s.required_ruby_version = '~> 2.3'
 	s.add_development_dependency 'minitest', '~> 5.5'
@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
 	s.files = Dir['LICENSE', 'README.md', 'bin/*', 'lib/**/*']
 	s.require_path = 'lib'
 	
-	s.executables = ['jenkins']
+	s.executables = ['jenkins2']
 end
