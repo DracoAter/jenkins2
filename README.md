@@ -1,24 +1,24 @@
-# Jenkins
+# Jenkins2
 
-Jenkins gem is a command line interface and API client for Jenkins CI Server, that can be used
+Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server, that can be used
 either from command line or from your code.
 
 # Installation
 
-    gem install jenkins
+    gem install jenkins2
 
 # Usage
 
 Either run it from command line:
 
-    jenkins -s http://jenkins.example.com offline-node -n mynode
-    jenkins --help #for help and list of available commands
-    jenkins --help <command> #for help on particular command
+    jenkins2 -s http://jenkins.example.com offline-node -n mynode
+    jenkins2 --help #for help and list of available commands
+    jenkins2 --help <command> #for help on particular command
 
 Or use it in your gem:
 
-    require 'jenkins'
-    jc = Jenkins::Client.new( server: 'http://jenkins.example.com' )
+    require 'jenkins2'
+    jc = Jenkins2::Client.new( server: 'http://jenkins.example.com' )
     jc.version
     jc.offline_node( node: 'mynode' )
 
@@ -29,7 +29,7 @@ MIT - see the accompanying [LICENSE](LICENSE) file for details.
 # Changelog
 
 To see what has changed in recent versions see the [CHANGELOG](CHANGELOG.md).
-Jenkins gem follows the [Semantic Versioning Policy](http://guides.rubygems.org/patterns).
+Jenkins2 gem follows the [Semantic Versioning Policy](http://guides.rubygems.org/patterns).
 
 # Contributing
 

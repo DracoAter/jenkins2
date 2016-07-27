@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
 	s.description = 'Ruby and command line integrations for Jenkins 2 (client, API, CLI etc.)'
 	s.authors = ['Juri Timošin']
 	s.email = 'draco.ater@gmail.com'
-	s.homepage = 'http://rubygems.org/gems/jenkins'
+	s.homepage = 'https://bitbucket.org/DracoAter/jenkins2'
 	s.license = 'MIT'
 	
 	#lol - required for validation

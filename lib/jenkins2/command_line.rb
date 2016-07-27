@@ -29,7 +29,7 @@ module Jenkins2
 					'File format is json: { "server": "http://jenkins.example.com", "user": "admin", '\
 					'"key": "123456" }. Options provided in command line will overwrite ones from '\
 					'configuration file. Program looks for ~/.jenkins.json if no PATH is provided.' do |opt|
-					@global_options[:config_file] = opt || ::File.join( ENV['HOME'], '.jenkins.json' )
+					@global_options[:config_file] = opt || ::File.join( ENV['HOME'], '.jenkins2.json' )
 				end
 				opts.on '-l', '--log-file FILE', 'Log file. Prints to standard out, if not provided' do |opt|
 					@log_options[:log_file] = opt
@@ -46,7 +46,7 @@ module Jenkins2
 				end
 
 				opts.separator ''
-				opts.separator 'For command specific options run: jenkins --help <command>'
+				opts.separator 'For command specific options run: jenkins2 --help <command>'
 				opts.separator ''
 				opts.command 'version', 'Outputs the current version of Jenkins'
 				opts.command 'prepare-for-shutdown', 'Stop executing new builds, so that the system can '\
