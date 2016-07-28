@@ -28,25 +28,25 @@ module Jenkins2
 			assert_equal( { :node => 'nodename' }, @subj.command_options )
 		end
 
-		def test_read_config_file_if_provided
+		def test_read_config_if_provided
 			IO.expects( :read ).with( 'myfile_jenkins.json' ).once.returns '{"user":"admin"}'
 			args = %w{online-node -s http://jenkins.com -n nodename -c myfile_jenkins.json}
 			@subj = CommandLine.new( args )
 			assert_equal( { server: URI.parse( 'http://jenkins.com' ), command: 'online-node',
-				user: 'admin', config_file: 'myfile_jenkins.json' }, @subj.global_options )
+				user: 'admin', config: 'myfile_jenkins.json' }, @subj.global_options )
 		end
 
-		def test_read_default_config_file_if_no_path
+		def test_read_default_config_if_no_path
 			IO.expects( :read ).with( ::File.join( ENV['HOME'], '.jenkins2.json' ) ).
 				once.returns '{"user":"admin"}'
 			args = %w{online-node -s http://jenkins.com -n nodename -c}
 			@subj = CommandLine.new( args )
 			assert_equal( { server: URI.parse( 'http://jenkins.com' ), command: 'online-node',
-				user: 'admin', config_file: ::File.join( ENV['HOME'], '.jenkins2.json' ) },
+				user: 'admin', config: ::File.join( ENV['HOME'], '.jenkins2.json' ) },
 				@subj.global_options )
 		end
 
-		def test_do_not_read_config_file_by_default
+		def test_do_not_read_config_by_default
 			IO.expects( :read ).with( '~/.jenkins2.json' ).times( 0 ).returns '{"user":"admin"}'
 			args = %w{online-node -s http://jenkins.com -n nodename}
 			@subj = CommandLine.new( args )
@@ -92,11 +92,11 @@ module Jenkins2
 
 		def test_verbose
 			args = %w{-v online-node}
-			Log.expects( :init ).with( verbose: 1, log_file: STDOUT ).once
+			Log.expects( :init ).with( verbose: 1, log: STDOUT ).once
 			CommandLine.new( args )
 
 			args = %w{-vv online-node}
-			Log.expects( :init ).with( verbose: 2, log_file: STDOUT ).once
+			Log.expects( :init ).with( verbose: 2, log: STDOUT ).once
 			CommandLine.new( args )
 		end
 	end

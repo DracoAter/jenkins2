@@ -6,15 +6,13 @@ Gem::Specification.new do |s|
 	s.name = 'jenkins2'
 	s.version = Jenkins2::VERSION
 	s.date = '2016-07-27'
-	s.summary = 'Ruby and command line integrations for Jenkins 2 (client, API, CLI etc.)'
-	s.description = 'Ruby and command line integrations for Jenkins 2 (client, API, CLI etc.)'
+	s.summary = 'Command line interface and API client for Jenkins 2.'
+	s.description = 'Command line interface and API client for Jenkins 2. Allows manipulating nodes,'\
+		' jobs, plugins, credentials. See README.md for details.'
 	s.authors = ['Juri Timošin']
 	s.email = 'draco.ater@gmail.com'
 	s.homepage = 'https://bitbucket.org/DracoAter/jenkins2'
 	s.license = 'MIT'
-	
-	#lol - required for validation
-	s.rubyforge_project = 'jenkins2'
 	
 	s.required_ruby_version = '~> 2.3'
 	s.add_development_dependency 'minitest', '~> 5.5'

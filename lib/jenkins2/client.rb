@@ -1,12 +1,14 @@
 require 'uri'
 require 'net/http'
 require 'json'
+require 'mime/types'
 
 require_relative 'log'
 
 module Jenkins2
 	# The entrance point for your Jenkins remote management.
 	class Client
+		BOUNDARY = '----Jenkins2RubyMultipartClient' + rand(1000000).to_s
 		# Creates a "connection" to Jenkins.
 		# Keyword parameters:
 		# +server+:: Jenkins Server URL.
@@ -161,7 +163,7 @@ module Jenkins2
 					req.form_data = { "plugin.#{name}.default" => 'on' }
 				end
 			elsif uri
-				Log.info "Not Implemented"
+				raise NotImplementedError
 			end
 		end
 
@@ -181,12 +183,78 @@ module Jenkins2
 			JSON.parse( response.body )['plugins'].any?{|p| p['shortName'] == short_name }
 		end
 
-		# Adds credentials to Jenkins
-		def add_credentials
+		# Creates credentials from hash
+		# When username with password credentials:
+		# +args+:: Hash with following keys: +scope+, +id+, +description+, +username+, +password+
+		# When ssh username with private key
+		# +args+:: Hash with following keys: +scope+, +id+, +description+, +username+, +private_key+, +passphrase+
+		# When secret text
+		# +args+:: Hash with following keys: +scope+, +id+, +description+, +secret+
+		# When secret file
+		# +args+:: Hash with following keys: +scope+, +id+, +description+, +file+, where +file+
+		# is a path to secret file.
+		def create_credentials( **args )
+			return create_credentials_secret_file args if args.include? :file
+			json = if args.include? :password
+				{ "" => "0",
+					credentials: args.merge(
+						'$class' => 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl'
+					)
+				}
+			elsif args.include? :private_key
+				{ "" => "1",
+					credentials: {
+						scope: args[:scope],
+						username: args[:username],
+						privateKeySource: {
+							value: "0",
+							privateKey: args[:private_key]
+						},
+						passphrase: args[:passphrase],
+						id: args[:id],
+						description: args[:description],
+						'$class' => 'com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey'
+					}
+				}
+			elsif args.include? :secret
+				{ "" => "3",
+					credentials: args.merge(
+						'$class' => 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl'
+					)
+				}
+			end.to_json
+			response = api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
+				req.body = "json=#{json}"
+			end
+		end
+
+		# Deletes credentials
+		# +id+:: Credentials' id
+		def delete_credentials( id )
+			api_request :post, "/credentials/store/system/domain/_/credential/#{id}/doDelete"
+		end
+
+		# Returns credentials as json, or nil, if not found
+		# +id+:: Credentials' id
+		def get_credentials( id )
+			response = api_request( :get, "/credentials/store/system/domain/_/credential/#{id}/api/json" )
+			if response.code == '200'
+				return JSON.parse( response.body )
+			else
+				Log.fatal "Failed to get credentials (#{id}) from jenkins. Error code: #{response.code}. "\
+					"Response: #{response.body}"
+			end
+			nil
+		end
+
+		# Lists all credentials
+		def list_credentials( store: 'system', domain: '_' )
+			response = api_request :get, "/credentials/store/#{store}/domain/#{domain}/api/json?depth=1"
+			JSON.parse( response.body )['credentials']
 		end
 
 		private
-		def api_request( method, path )
+		def api_request( method, path, multipart: false )
 			uri = URI.join( @server, path )
 			Log.debug { "Request: #{method} #{uri}" }
 			req = case method
@@ -198,6 +266,28 @@ module Jenkins2
 			response = Net::HTTP.start( uri.hostname, uri.port ){|http| http.request req }
 			Log.debug { "Response: #{response.code}, #{response.body}" }
 			response
+		end
+
+		def create_credentials_secret_file( **args )
+			file = args.delete( :file )
+			body = "--#{BOUNDARY}\r\n"
+			body << "Content-Disposition: form-data; name=\"file0\"; filename=\"#{File.basename file}\"\r\n"
+			body << "Content-Type: #{MIME::Types.type_for( File.basename file ).first.content_type}\r\n\r\n"
+			body << File.read( file )
+			body << "\r\n"
+			body << "--#{BOUNDARY}\r\n"
+			body << "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			body << { "" => "2",
+				credentials: args.merge(
+					'$class' => 'org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl',
+					'file' => 'file0'
+				)
+			}.to_json
+			body << "\r\n\r\n--#{BOUNDARY}--\r\n"
+			response = api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
+				req.add_field 'Content-Type', "multipart/form-data, boundary=#{BOUNDARY}"
+				req.body = body
+			end
 		end
 	end
 end

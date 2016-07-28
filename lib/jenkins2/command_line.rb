@@ -10,7 +10,7 @@ module Jenkins2
 		
 		def initialize( args )
 			@global_options = OptionParser::OptionMap.new
-			@log_options = { verbose: 0, log_file: STDOUT }
+			@log_options = { verbose: 0, log: STDOUT }
 			@command_options = OptionParser::OptionMap.new
 			global = CommandParser.new 'Usage: jenkins [global-options] <command> [options]' do |opts|
 				opts.separator ''
@@ -24,15 +24,15 @@ module Jenkins2
 				opts.on '-k', '--key KEY', 'Jenkins API key' do |opt|
 					@global_options[:key] = opt
 				end
-				opts.on '-c', '--config-file [PATH]', 'Use configuration file. Instead of providing '\
+				opts.on '-c', '--config [PATH]', 'Use configuration file. Instead of providing '\
 					'server, user and key through command line, you can do that with configuration file. '\
 					'File format is json: { "server": "http://jenkins.example.com", "user": "admin", '\
 					'"key": "123456" }. Options provided in command line will overwrite ones from '\
-					'configuration file. Program looks for ~/.jenkins.json if no PATH is provided.' do |opt|
-					@global_options[:config_file] = opt || ::File.join( ENV['HOME'], '.jenkins2.json' )
+					'configuration file. Program looks for ~/.jenkins2.json if no PATH is provided.' do |opt|
+					@global_options[:config] = opt || ::File.join( ENV['HOME'], '.jenkins2.json' )
 				end
-				opts.on '-l', '--log-file FILE', 'Log file. Prints to standard out, if not provided' do |opt|
-					@log_options[:log_file] = opt
+				opts.on '-l', '--log FILE', 'Log file. Prints to standard out, if not provided' do |opt|
+					@log_options[:log] = opt
 				end
 				opts.on '-v', '--verbose', 'Print more info. Up to -vvv. Prints only errors by default.' do
 					@log_options[:verbose] += 1
@@ -133,8 +133,8 @@ module Jenkins2
 			begin
 				global.parse!( args )
 				@global_options[:command] = global.command_name
-				if @global_options[:config_file]
-					from_file = JSON.parse( IO.read( @global_options[:config_file] ), symbolize_names: true )
+				if @global_options[:config]
+					from_file = JSON.parse( IO.read( @global_options[:config] ), symbolize_names: true )
 					@global_options = from_file.merge( @global_options )
 				end
 				Log.init @log_options
