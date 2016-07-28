@@ -1,4 +1,4 @@
 #!/bin/sh -e
 
 # script/bootstrap: Resolve all dependencies that application requires to run.
-sudo rake bootstrap
+rake bootstrap

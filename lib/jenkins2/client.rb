@@ -1,7 +1,6 @@
 require 'uri'
 require 'net/http'
 require 'json'
-require 'mime/types'
 
 require_relative 'log'
 
@@ -155,15 +154,11 @@ module Jenkins2
 
 		# Plugin Commands
 
-		# Installs a plugin from url or by short name (like +thinBackup+).
-		def install_plugin( uri: nil, name: nil )
-			if name
-				Log.debug { "Installing plugin: #{name}" }
-				api_request( :post, '/pluginManager/install' ) do |req|
-					req.form_data = { "plugin.#{name}.default" => 'on' }
-				end
-			elsif uri
-				raise NotImplementedError
+		# Installs a plugin by short name (like +thinBackup+).
+		def install_plugin( name )
+			Log.debug { "Installing plugin: #{name}" }
+			api_request( :post, '/pluginManager/install' ) do |req|
+				req.form_data = { "plugin.#{name}.default" => 'on' }
 			end
 		end
 
@@ -191,24 +186,24 @@ module Jenkins2
 		# When secret text
 		# +args+:: Hash with following keys: +scope+, +id+, +description+, +secret+
 		# When secret file
-		# +args+:: Hash with following keys: +scope+, +id+, +description+, +file+, where +file+
-		# is a path to secret file.
+		# +args+:: Hash with following keys: +scope+, +id+, +description+, +content+, +filename+
 		def create_credentials( **args )
-			return create_credentials_secret_file args if args.include? :file
-			json = if args.include? :password
+			return create_credentials_secret_file args unless args[:filename].nil?
+			json = if !args[:password].nil?
 				{ "" => "0",
 					credentials: args.merge(
 						'$class' => 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl'
 					)
 				}
-			elsif args.include? :private_key
+			elsif !args[:private_key].nil?
 				{ "" => "1",
 					credentials: {
 						scope: args[:scope],
 						username: args[:username],
 						privateKeySource: {
 							value: "0",
-							privateKey: args[:private_key]
+							privateKey: args[:private_key],
+							'stapler-class' => 'com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey$DirectEntryPrivateKeySource'
 						},
 						passphrase: args[:passphrase],
 						id: args[:id],
@@ -216,7 +211,7 @@ module Jenkins2
 						'$class' => 'com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey'
 					}
 				}
-			elsif args.include? :secret
+			elsif !args[:secret].nil?
 				{ "" => "3",
 					credentials: args.merge(
 						'$class' => 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl'
@@ -263,17 +258,19 @@ module Jenkins2
 			end.new uri
 			req.basic_auth @user, @key
 			yield req if block_given?
+			Log.debug { "Request body: #{req.body}" }
 			response = Net::HTTP.start( uri.hostname, uri.port ){|http| http.request req }
 			Log.debug { "Response: #{response.code}, #{response.body}" }
 			response
 		end
 
 		def create_credentials_secret_file( **args )
-			file = args.delete( :file )
+			filename = args.delete :filename
+			content = args.delete :content
 			body = "--#{BOUNDARY}\r\n"
-			body << "Content-Disposition: form-data; name=\"file0\"; filename=\"#{File.basename file}\"\r\n"
-			body << "Content-Type: #{MIME::Types.type_for( File.basename file ).first.content_type}\r\n\r\n"
-			body << File.read( file )
+			body << "Content-Disposition: form-data; name=\"file0\"; filename=\"#{filename}\"\r\n"
+			body << "Content-Type: application/octet-stream\r\n\r\n"
+			body << content
 			body << "\r\n"
 			body << "--#{BOUNDARY}\r\n"
 			body << "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
