@@ -1,3 +1,4 @@
+require 'cgi'
 require 'uri'
 require 'net/http'
 require 'json'
@@ -55,7 +56,7 @@ module Jenkins2
 		def offline_node( node: '(master)', message: nil )
 			if node_online?( node )
 				api_request( :post, "/computer/#{node}/toggleOffline" ) do |req|
-					req.body = URI.escape "offlineMessage=#{message}" if message
+					req.body = CGI::escape "offlineMessage=#{message}" if message
 				end
 			end
 		end
@@ -78,7 +79,7 @@ module Jenkins2
 		def disconnect_node( node: '(master)', message: nil )
 			if node_connected? node
 				api_request( :post, "/computer/#{node}/doDisconnect" ) do |req|
-					req.body = URI.escape "offlineMessage=#{message}" if message
+					req.body = CGI::escape "offlineMessage=#{message}" if message
 				end
 			end
 		end
@@ -219,7 +220,7 @@ module Jenkins2
 				}
 			end.to_json
 			response = api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
-				req.body = "json=#{json}"
+				req.body = "json=#{CGI::escape json}"
 			end
 		end
 
@@ -233,12 +234,7 @@ module Jenkins2
 		# +id+:: Credentials' id
 		def get_credentials( id )
 			response = api_request( :get, "/credentials/store/system/domain/_/credential/#{id}/api/json" )
-			if response.code == '200'
-				return JSON.parse( response.body )
-			else
-				Log.fatal "Failed to get credentials (#{id}) from jenkins. Error code: #{response.code}. "\
-					"Response: #{response.body}"
-			end
+			return JSON.parse( response.body ) if response.code == '200'
 			nil
 		end
 
@@ -249,15 +245,15 @@ module Jenkins2
 		end
 
 		private
-		def api_request( method, path, multipart: false )
+		def api_request( method, path )
 			uri = URI.join( @server, path )
-			Log.debug { "Request: #{method} #{uri}" }
 			req = case method
 				when :get then Net::HTTP::Get
 				when :post then Net::HTTP::Post
 			end.new uri
 			req.basic_auth @user, @key
 			yield req if block_given?
+			Log.debug { "Request: #{method} #{uri}" }
 			Log.debug { "Request body: #{req.body}" }
 			response = Net::HTTP.start( uri.hostname, uri.port ){|http| http.request req }
 			Log.debug { "Response: #{response.code}, #{response.body}" }
