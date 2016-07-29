@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+# script/console: Launch a console for the application. Optionally pass a config file path.
+
+require_relative '../lib/jenkins2'
+require 'json'
+
+def prompt_for( message )
+	STDOUT.write message
+	STDIN.gets.strip
+end
+
+opts = {}
+
+if ARGV.empty?
+	opts[:server] = prompt_for "Server: "
+	opts[:user] = prompt_for "User: "
+	opts[:key] = prompt_for "Key: "
+else
+	opts = JSON.parse( IO.read ARGV.first )
+end
+
+jc = @jc = Jenkins2::Client.new opts
+puts "Use the '@jc' or 'jc' variable to use the client."
+
+begin
+	require 'pry'
+	Pry.start
+rescue
+	IRB.start
+end
