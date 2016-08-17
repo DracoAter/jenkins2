@@ -13,7 +13,7 @@ module Jenkins2
 				if log == STDOUT
 					"#{msg}\n"
 				else
-					"[#{datetime}] #{severity}: #{msg}\n"
+					"[#{datetime}] #{severity} #{msg}\n"
 				end
 			end
 			@logger

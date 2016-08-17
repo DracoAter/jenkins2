@@ -22,7 +22,7 @@ module Jenkins2
 
 		# Returns Jenkins version
 		def version
-			api_request( :get, '/' )['X-Jenkins']
+			api_request( :get, '/', :raw )['X-Jenkins']
 		end
 
 		# Stops executing new builds, so that the system can be eventually shut down safely.
@@ -42,8 +42,7 @@ module Jenkins2
 		# +max_wait_minutes+:: Maximum wait time in minutes. Default 60.
 		def wait_nodes_idle( max_wait_minutes: 60 )
 			max_wait_minutes.times do |i|
-				response = api_request( :get, '/computer/api/json' )
-				break if response === Net::HTTPSuccess && JSON.parse( response.body )['busyExecutors'].zero?
+				break if api_request( :get, '/computer/api/json' )['busyExecutors'].zero?
 				sleep 60
 			end
 		end
@@ -56,7 +55,7 @@ module Jenkins2
 		def offline_node( node: '(master)', message: nil )
 			if node_online?( node )
 				api_request( :post, "/computer/#{node}/toggleOffline" ) do |req|
-					req.body = CGI::escape "offlineMessage=#{message}" if message
+					req.body = "offlineMessage=#{CGI::escape message}" if message
 				end
 			end
 		end
@@ -79,7 +78,7 @@ module Jenkins2
 		def disconnect_node( node: '(master)', message: nil )
 			if node_connected? node
 				api_request( :post, "/computer/#{node}/doDisconnect" ) do |req|
-					req.body = CGI::escape "offlineMessage=#{message}" if message
+					req.body = "offlineMessage=#{CGI::escape message}" if message
 				end
 			end
 		end
@@ -89,8 +88,7 @@ module Jenkins2
 		# +max_wait_minutes+:: Maximum wait time in minutes. Default 60.
 		def wait_node_idle( node: '(master)', max_wait_minutes: 60 )
 			max_wait_minutes.times do |i|
-				response = api_request( :get, "/computer/#{node}/api/json" )
-				break if response.code == '200' && JSON.parse( response.body )['idle']
+				break if api_request( :get, "/computer/#{node}/api/json" )['idle']
 				sleep 60
 			end
 		end
@@ -98,8 +96,7 @@ module Jenkins2
 		# Returns the node definition XML.
 		# +node+:: Node name, <tt>(master)</tt> for master.
 		def get_node( node: '(master)' )
-			response = api_request( :get, "/computer/#{node}/config.xml" )
-			response.body
+			api_request( :get, "/computer/#{node}/config.xml", :body )
 		end
 
 		# Updates the node definition XML
@@ -116,25 +113,13 @@ module Jenkins2
 		# Checks if node is online (= not temporarily offline )
 		# +node+:: Node name. Use <tt>(master)</tt> for master.
 		def node_online?( node )
-			response = api_request( :get, "/computer/#{node}/api/json" )
-			if response.code == '200'
-				return JSON.parse( response.body )['temporarilyOffline'] == false
-			else
-				Log.fatal "Failed to get #{node} state from jenkins. Error code: #{response.code}. "\
-					"Response: #{response.body}"
-			end
+			!api_request( :get, "/computer/#{node}/api/json" )['temporarilyOffline']
 		end
 
 		# Checks if node is connected, i.e. Master connected and launched client on it.
 		# +node+:: Node name. Use <tt>(master)</tt> for master.
 		def node_connected?( node )
-			response = api_request( :get, "/computer/#{node}/api/json" )
-			if response.code == '200'
-				return JSON.parse( response.body )['offline'] == false
-			else
-				Log.fatal "Failed to get #{node} state from jenkins. Error code: #{response.code}. "\
-					"Response: #{response.body}"
-			end
+			!api_request( :get, "/computer/#{node}/api/json" )['offline']
 		end
 
 		# Job Commands
@@ -155,9 +140,9 @@ module Jenkins2
 
 		# Plugin Commands
 
-		# Installs a plugin by short name (like +thinBackup+).
+		# Installs plugins by short name (like +thinBackup+).
+		# +names+:: Array of short names.
 		def install_plugin( name )
-			Log.debug { "Installing plugin: #{name}" }
 			api_request( :post, '/pluginManager/install' ) do |req|
 				req.form_data = { "plugin.#{name}.default" => 'on' }
 			end
@@ -172,11 +157,16 @@ module Jenkins2
 			end
 		end
 
+		# Lists installed plugins
+		def list_plugins
+			api_request( :get, '/pluginManager/api/json?depth=1' )['plugins']
+		end
+
 		# Checks if some plugin is installed
 		# +short_name+:: Short name of plugin (like +thinBackup+).
 		def plugin_installed?( short_name )
-			response = api_request( :get, '/pluginManager/api/json?depth=1' )
-			JSON.parse( response.body )['plugins'].any?{|p| p['shortName'] == short_name }
+			plugins = list_plugins
+			plugins && plugins.any?{|p| p['shortName'] == short_name }
 		end
 
 		# Creates credentials from hash
@@ -219,7 +209,7 @@ module Jenkins2
 					)
 				}
 			end.to_json
-			response = api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
+			api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
 				req.body = "json=#{CGI::escape json}"
 			end
 		end
@@ -233,20 +223,17 @@ module Jenkins2
 		# Returns credentials as json, or nil, if not found
 		# +id+:: Credentials' id
 		def get_credentials( id )
-			response = api_request( :get, "/credentials/store/system/domain/_/credential/#{id}/api/json" )
-			return JSON.parse( response.body ) if response.code == '200'
-			nil
+			api_request( :get, "/credentials/store/system/domain/_/credential/#{id}/api/json" )
 		end
 
 		# Lists all credentials
 		def list_credentials( store: 'system', domain: '_' )
-			response = api_request :get, "/credentials/store/#{store}/domain/#{domain}/api/json?depth=1"
-			JSON.parse( response.body )['credentials']
+			api_request( :get, "/credentials/store/#{store}/domain/#{domain}/api/json?depth=1" )['credentials']
 		end
 
 		private
-		def api_request( method, path )
-			uri = URI.join( @server, path )
+		def api_request( method, path, reply_with=:json )
+			uri = URI File.join( @server, path )
 			req = case method
 				when :get then Net::HTTP::Get
 				when :post then Net::HTTP::Post
@@ -255,9 +242,8 @@ module Jenkins2
 			yield req if block_given?
 			Log.debug { "Request: #{method} #{uri}" }
 			Log.debug { "Request body: #{req.body}" }
-			response = Net::HTTP.start( uri.hostname, uri.port ){|http| http.request req }
-			Log.debug { "Response: #{response.code}, #{response.body}" }
-			response
+			response = Net::HTTP.start( uri.hostname, uri.port ){ |http| http.request req }
+			handle_response( response, reply_with )
 		end
 
 		def create_credentials_secret_file( **args )
@@ -277,9 +263,29 @@ module Jenkins2
 				)
 			}.to_json
 			body << "\r\n\r\n--#{BOUNDARY}--\r\n"
-			response = api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
+			api_request( :post, '/credentials/store/system/domain/_/createCredentials' ) do |req|
 				req.add_field 'Content-Type', "multipart/form-data, boundary=#{BOUNDARY}"
 				req.body = body
+			end
+		end
+
+		def handle_response( response, reply_with=:json )
+			Log.debug { "Response: #{response.code}, #{response.body}" }
+			case response
+			when Net::HTTPSuccess
+				case reply_with
+				when :json then JSON.parse response.body
+				when :body then response.body
+				when :raw then response
+				end
+			when Net::HTTPRedirection
+				response['location']
+			when Net::HTTPClientError, Net::HTTPServerError
+				Log.error { "Response: #{response.code}, #{response.body}." }
+				response.value
+			else
+				Log.error { "Response: #{response.code}, #{response.body}." }
+				response.value
 			end
 		end
 	end

@@ -1,6 +1,9 @@
 require 'rake/testtask'
+require 'rake/clean'
 require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
+
+CLEAN << 'doc'
 
 task :default => :test
 
@@ -9,13 +12,16 @@ Rake::TestTask.new do |t|
 	t.warning = true
 	t.test_files = FileList['test/*_test.rb']
 end
+CLEAN << 'coverage'
 
 if ENV['GENERATE_REPORTS'] == 'true'
 	require 'ci/reporter/rake/minitest'
 	task :test => 'ci:setup:minitest'
 end
+CLEAN << 'test/reports'
 
 Gem::PackageTask.new( Gem::Specification.load( 'jenkins2.gemspec' ) ) do end
+CLEAN << 'pkg'
 
 task :install => :gem do |t|
 	if Process.uid == 0

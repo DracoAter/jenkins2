@@ -14,14 +14,14 @@ Gem::Specification.new do |s|
 	s.homepage = 'https://bitbucket.org/DracoAter/jenkins2'
 	s.license = 'MIT'
 	
-	s.required_ruby_version = '~> 2.3'
+	s.required_ruby_version = '~> 2.0'
 	s.add_development_dependency 'minitest', '~> 5.5'
 	s.add_development_dependency 'ci_reporter_minitest', '~> 1.0'
 	s.add_development_dependency 'mocha', '~> 1.1'
 	s.add_development_dependency 'simplecov', '~> 0.10'
-	
+
 	s.files = Dir['LICENSE', 'README.md', 'bin/*', 'lib/**/*']
 	s.require_path = 'lib'
-	
+
 	s.executables = ['jenkins2']
 end
