@@ -1,10 +1,9 @@
-#!/bin/sh -e
+#!/bin/sh -ex
 
-# script/test: Run test suite for application. Optionally pass in a path to an
+# script/unit_test: Run test suite for application. Optionally pass in a path to an
 #              individual test file to run a single test.
 
-# update the application to ensure all dependencies are met as well as any other things
-# that need to be up to date, like db migrations.
+# Bootstrap the application to ensure all gem dependencies are met.
 if [ "$RUBY_ENV" = "test" ]; then
 	# if executed and the environment is already set to `test`, then we want a
 	# clean from scratch application. This almost always means a ci environment,
@@ -18,13 +17,13 @@ else
 	# that need to be up to date, like db migrations. The environment not having
 	# already been set to `test` almost always means this is being called on it's
 	# own from a `development` environment.
+	sudo script/bootstrap
 	export RUBY_ENV="test"
-	sudo script/update
 fi
 
-echo "==== Running tests ===="
+echo "==== Running unit tests ===="
 if [ -f "$1" ]; then
-	rake test TEST=$1
+	rake test:unit TEST=$1
 else
-	rake test
+	rake test:unit
 fi

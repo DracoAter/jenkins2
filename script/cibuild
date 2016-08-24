@@ -3,10 +3,11 @@
 # script/test: Run test suite for application. Optionally pass in a path to an
 #              individual test file to run a single test.
 
-# update the application to ensure all dependencies are met as well as any other things
-# that need to be up to date, like db migrations.
+# Set environment to 'test' so other scripts knew, that we are on ci server.
 export RUBY_ENV='test'
 
-script/test
+script/unit_test
+script/integration_test
+
 echo "==== Building Gem ===="
 rake gem

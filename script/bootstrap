@@ -1,4 +1,24 @@
-#!/bin/sh -e
+#!/bin/sh -ex
 
 # script/bootstrap: Resolve all dependencies that application requires to run.
+
+# If executed and environment already set to `test`, it is most probably ci server, so
+# we do not want to interrupt a proces and ask user to rerun script with sudo rights.
+# We just go as far as we can.
+if [ "$RUBY_ENV" != "test" ]; then
+	# Not a test environment, most probably e developer machine
+	# Rerun this script as root, if you are not one.
+	if [ $USER != 'root' ]; then
+		echo "This script requires sudo rights. Please, rerun it as root."
+	fi
+fi
+
+echo "==== Install gem dependencies ===="
+# On ci server this will be run as normal user, thus installing gem dependencies in user space.
 rake bootstrap
+
+if ! [ -x $(command -v lxc) ]; then
+	echo "==== Install lxd ===="
+	# This most probably will fail in ci environment, so please, be sure lxd is installed beforehand.
+	apt-get install lxd lxd-client
+fi

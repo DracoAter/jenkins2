@@ -20,13 +20,15 @@ Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server.
 - Run [parameterized] build
 
 ## Plugin
-- Install a plugin by short name or by uploading a \*.jpi file
+- Install a plugin by short name (i.e. ssh-credentials)
+- Install a plugin by uploading a \*.jpi or \*.hpi file
 
 ## Credentials
-- Create username / password credentials
-- Create ssh username with private key credentials
-- Create secret sting credentials
-- Get credentials by id
+- Create username with password credential ( Requires credentials plugin on Jenkins )
+- Create ssh username with private key credential ( Requires ssh-credentials plugin on Jenkins )
+- Create secret string credential ( Requires plain-credentials plugin on Jenkins )
+- Create secret file credential ( Requires plain-credentials plugin on Jenkins )
+- Get credential by id
 - List credentials
 
 # Installation
@@ -80,4 +82,38 @@ Jenkins2 gem follows the [Semantic Versioning Policy](http://guides.rubygems.org
 # Contributing
 
 Additional commands and bugfixes are welcome! Please fork and submit a pull request on an
-individual branch per change.
+individual branch per change. The project follows GitHub Script
+["Scripts To Rule Them All"] (https://github.com/github/scripts-to-rule-them-all) pattern.
+
+## Bootstrap
+
+After cloning the project, run:
+
+    script/bootstrap
+
+to download gem and other dependencies (currently tested only on ubuntu xenial).
+
+## Tests
+
+The project is expected to be heavily tested :) with unit and integratin tests. To run unit tests,
+you will need to have some gems installed (see jenkins2.gemspec -> development\_dependencies or
+run bootstrap script). To run unit tests run
+
+    script/unit_test
+
+Integration tests are run against a Jenkins server. Currently they require an lxd to setup it.
+To run integration tests type
+
+    script/integration_test
+
+This will start Jenkins in lxd container, run the tests and then kill the container.
+
+## Continuous Integration
+
+If you would like to automate test runs the progect already has [Jenkinsfile](Jenkinsfile) for
+quick and easy integration with Jenkins Pipelines. If you are using another CI server, just make
+sure it runs
+
+    script/cibuild
+
+and then collects the data from the generated reports.

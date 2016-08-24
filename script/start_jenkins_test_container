@@ -1,0 +1,25 @@
+#!/bin/sh -x
+
+# script/start_jenkins_test_container: Starts lxd container with jenkins and gets credentials for
+# integration tests
+
+# If there is no jenkins_test lxd image, create it.
+if ! lxc image show jenkins_test ; then
+	script/create_lxd_with_jenkins
+fi
+
+echo "==== Start lxd container with Jenkins ===="
+# init container
+lxc init jenkins_test j
+
+# start container
+lxc start j
+
+# wait for network
+sleep 5
+
+# get ip
+lxc info j | grep "eth0:\sinet\s" | cut -f3 > test/integration/ip
+
+#get api_key
+lxc file pull j/var/lib/jenkins/secrets/initialAdminPassword test/integration/key
