@@ -23,13 +23,21 @@ namespace :test do
 	CLEAN << 'test/integration/ip'
 	CLEAN << 'test/integration/key'
 end
-
 if ENV['GENERATE_REPORTS'] == 'true'
 	require 'ci/reporter/rake/minitest'
-	task 'test:unit' => 'ci:setup:minitest'
-	task 'test:integration' => 'ci:setup:minitest'
+	task 'test:_unit' do
+		ENV['CI_REPORTS'] = 'test/unit/reports'
+		Rake::Task['ci:setup:minitest'].invoke
+	end
+	task 'test:unit' => 'test:_unit'
+	task 'test:_integration' do
+		ENV['CI_REPORTS'] = 'test/integration/reports'
+		Rake::Task['ci:setup:minitest'].invoke
+	end
+	task 'test:integration' => 'test:_integration'
 end
-CLEAN << 'test/reports'
+CLEAN << 'test/unit/reports'
+CLEAN << 'test/integration/reports'
 
 Gem::PackageTask.new( Gem::Specification.load( 'jenkins2.gemspec' ) ) do end
 CLEAN << 'pkg'

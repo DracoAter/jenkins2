@@ -8,10 +8,9 @@ module Jenkins2
 			refute @@subj.plugin_installed?( 'chucknorris' )
 		end
 
-		def test_install_plugin
-			assert_equal "http://#{@@ip}:8080/updateCenter/", @@subj.install_plugin( 'junit' )
-			sleep 5
-			assert @@subj.plugin_installed?( 'junit' )
+		def test_install_plugins
+			assert_equal "http://#{@@ip}:8080/updateCenter/", @@subj.install_plugins( 'junit' )
+			assert @@subj.wait_plugins_installed 'junit'
 			assert_includes @@subj.list_plugins, {"active"=>true, "backupVersion"=>nil, "bundled"=>false,
 				"deleted"=>false, "dependencies"=>[{}], "downgradable"=>false, "enabled"=>true,
 				"hasUpdate"=>false, "longName"=>"JUnit Plugin", "pinned"=>false, "shortName"=>"junit",
@@ -20,7 +19,8 @@ module Jenkins2
 		end
 		
 		def test_uninstall_plugin
-			assert_equal "http://#{@@ip}:8080/updateCenter/", @@subj.install_plugin( 'mailer' )
+			assert_equal "http://#{@@ip}:8080/updateCenter/", @@subj.install_plugins( 'mailer' )
+			assert @@subj.wait_plugins_installed 'mailer'
 			assert_equal "http://#{@@ip}:8080/pluginManager/installed", @@subj.uninstall_plugin( 'mailer' )
 			refute @@subj.plugin_installed?( 'mailer' )
 			assert @@subj.list_plugins.detect{|i| i['shortName'] == 'mailer' }['deleted']

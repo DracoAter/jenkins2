@@ -11,4 +11,6 @@ class Minitest::Test
 	@@key = IO.read( 'test/integration/key' ).strip
 	@@ip = IO.read( 'test/integration/ip' ).strip
 	@@subj = Jenkins2::Client.new( server: "http://#{@@ip}:8080", user: 'admin', key: @@key )
+	# Make sure Jenkins is ready and listening
+	Jenkins2::Try.try{ @@subj.version }
 end

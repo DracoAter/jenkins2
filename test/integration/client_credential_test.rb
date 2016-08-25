@@ -4,8 +4,9 @@ require_relative 'test_helper'
 
 module Jenkins2
 	class ClientCredentialTest < Minitest::Test
-		@@subj.install_plugin 'ssh-credentials'
-		@@subj.install_plugin 'plain-credentials'
+		PLUGINS = %w{ssh-credentials plain-credentials}
+		@@subj.install_plugins PLUGINS
+		@@subj.wait_plugins_installed PLUGINS
 		@@redirect_url = "http://#{@@ip}:8080/credentials/store/system/domain/_"
 
 		def test_create_credential_username_password

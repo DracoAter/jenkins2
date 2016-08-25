@@ -16,10 +16,12 @@ lxc init jenkins_test j
 lxc start j
 
 # wait for network
-sleep 5
-
-# get ip
-lxc info j | grep "eth0:\sinet\s" | cut -f3 > test/integration/ip
+for i in 1 2 3 4; do
+	# get ip
+	lxc info j | grep "eth0:\sinet\s" | cut -f3 > test/integration/ip
+	if [ -s test/integration/ip ]; then break; fi
+	sleep $i
+done
 
 #get api_key
 lxc file pull j/var/lib/jenkins/secrets/initialAdminPassword test/integration/key

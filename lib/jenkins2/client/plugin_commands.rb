@@ -3,9 +3,11 @@ module Jenkins2
 		module PluginCommands
 			# Installs plugins by short name (like +thinBackup+).
 			# +names+:: Array of short names.
-			def install_plugin( name )
+			def install_plugins( *names )
 				api_request( :post, '/pluginManager/install' ) do |req|
-					req.form_data = { "plugin.#{name}.default" => 'on', 'dynamicLoad' => ' Install without restart' }
+					req.form_data = names.flatten.collect do |n|
+						["plugin.#{n}.default", 'on']
+					end.to_h.merge( 'dynamicLoad' => 'Install without restart' )
 				end
 			end
 
@@ -38,6 +40,14 @@ module Jenkins2
 			def uninstall_plugin( name )
 				api_request( :post, "/pluginManager/plugin/#{name}/doUninstall" ) do |req|
 					req.form_data = { 'Submit' => 'Yes', 'json' => '{}' }
+				end
+			end
+
+			def wait_plugins_installed( *names, max_wait_minutes: 2 )
+				(1..(max_wait_minutes * 60)).step 5 do
+					plugins = list_plugins.select{|i| names.flatten.include? i['shortName'] }
+					return true if names.flatten.size == plugins.size and plugins.all?{|i| !i['deleted'] }
+					sleep 5
 				end
 			end
 		end
