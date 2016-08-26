@@ -13,7 +13,6 @@ namespace :test do
 		t.warning = true
 		t.test_files = FileList['test/unit/*_test.rb']
 	end
-	CLEAN << 'coverage'
 
 	Rake::TestTask.new :integration do |t|
 		t.verbose = true
@@ -37,7 +36,9 @@ if ENV['GENERATE_REPORTS'] == 'true'
 	task 'test:integration' => 'test:_integration'
 end
 CLEAN << 'test/unit/reports'
+CLEAN << 'test/unit/coverage'
 CLEAN << 'test/integration/reports'
+CLEAN << 'test/integration/coverage'
 
 Gem::PackageTask.new( Gem::Specification.load( 'jenkins2.gemspec' ) ) do end
 CLEAN << 'pkg'

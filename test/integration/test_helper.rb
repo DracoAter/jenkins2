@@ -1,3 +1,10 @@
+require 'simplecov'
+
+SimpleCov.start do
+	add_filter '/test/'
+	coverage_dir 'test/integration/coverage'
+end
+
 require 'minitest/autorun'
 require 'mocha/setup'
 
