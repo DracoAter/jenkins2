@@ -2,7 +2,7 @@ require 'uri'
 require 'mocha'
 require_relative 'test_helper'
 
-module Jenkins2
+module IntegrationTest
 	class ClientCredentialTest < Minitest::Test
 		PLUGINS = %w{ssh-credentials plain-credentials}
 		@@subj.install_plugins PLUGINS

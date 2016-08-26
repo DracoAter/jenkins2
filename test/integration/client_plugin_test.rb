@@ -2,7 +2,7 @@ require 'uri'
 require 'mocha'
 require_relative 'test_helper'
 
-module Jenkins2
+module IntegrationTest
 	class ClientPluginTest < Minitest::Test
 		def test_plugin_installed_no_such_plugin
 			refute @@subj.plugin_installed?( 'chucknorris' )
