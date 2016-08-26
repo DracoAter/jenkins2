@@ -3,8 +3,7 @@ node {
 		withEnv(['RUBY_ENV=test']) {
 
 			stage 'Checkout'
-			def hgScm = checkout([$class: 'MercurialSCM',
-				source: 'http://bitbucket.org/DracoAter/jenkins2'])
+			checkout([$class: 'MercurialSCM', source: 'http://bitbucket.org/DracoAter/jenkins2'])
 
 			stage 'Unit Tests'
 			sh 'script/unit_test'
@@ -23,6 +22,7 @@ node {
 			stage 'Build Gem'
 			sh 'rake gem'
 			archiveArtifacts artifacts: 'pkg/jenkins2-*.gem', excludes: null, onlyIfSuccessful: true
+			fingerprint 'pkg/jenkins2-*.gem'
 		}
 	}
 }
