@@ -21,4 +21,5 @@ if ! [ -x $(command -v lxc) ]; then
 	echo "==== Install lxd ===="
 	# This most probably will fail in ci environment, so please, be sure lxd is installed beforehand.
 	apt-get install lxd lxd-client
+	lxd init #Make sure you configure lxdbr0 with IPv4
 fi

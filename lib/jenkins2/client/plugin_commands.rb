@@ -2,12 +2,12 @@ module Jenkins2
 	class Client
 		module PluginCommands
 			# Installs plugins by short name (like +thinBackup+).
-			# +names+:: Array of short names.
+			# +names+:: List of short names.
 			def install_plugins( *names )
 				api_request( :post, '/pluginManager/install' ) do |req|
-					req.form_data = names.flatten.collect do |n|
-						["plugin.#{n}.default", 'on']
-					end.to_h.merge( 'dynamicLoad' => 'Install without restart' )
+					req.form_data = names.flatten.inject({}) do |memo,obj|
+						memo.merge "plugin.#{obj}.default" => 'on'
+					end.merge( 'dynamicLoad' => 'Install without restart' )
 				end
 			end
 

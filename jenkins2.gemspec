@@ -19,8 +19,9 @@ Gem::Specification.new do |s|
 	s.add_development_dependency 'ci_reporter_minitest', '~> 1.0'
 	s.add_development_dependency 'mocha', '~> 1.1'
 	s.add_development_dependency 'simplecov', '~> 0.10'
+	s.add_development_dependency 'simplecov-rcov', '~> 0.2'
 
-	s.files = Dir['LICENSE', 'README.md', 'bin/*', 'lib/**/*']
+	s.files = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'bin/*', 'lib/**/*']
 	s.require_path = 'lib'
 
 	s.executables = ['jenkins2']

@@ -7,7 +7,7 @@ echo "==== Create lxd container image with Jenkins from ubuntu/xenial/i386 ===="
 codename='xenial'
 
 # download and start container
-lxc launch lxd:ubuntu/${codename}/i386 u
+lxc launch images:ubuntu/${codename}/i386 u
 
 # wait for network
 sleep 5
