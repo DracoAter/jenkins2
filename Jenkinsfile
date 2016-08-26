@@ -2,6 +2,10 @@ node {
 	timestamps {
 		withEnv(['RUBY_ENV=test']) {
 
+			stage 'Checkout'
+			def hgScm = checkout([$class: 'MercurialSCM',
+				source: 'http://bitbucket.org/DracoAter/jenkins2'])
+
 			stage 'Unit Tests'
 			sh 'script/unit_test'
 			junit 'test/unit/reports/*.xml'
