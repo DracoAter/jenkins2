@@ -15,7 +15,7 @@ module Jenkins2
 			global = CommandParser.new 'Usage: jenkins [global-options] <command> [options]' do |opts|
 				opts.separator ''
 				opts.separator "Global options (accepted by all commands):"
-				opts.on '-s', '--server URL', URI, 'Jenkins Server Url' do |opt|
+				opts.on '-s', '--server URL', ::URI, 'Jenkins Server Url' do |opt|
 					@global_options[:server] = opt
 				end
 				opts.on '-u', '--user USER', 'Jenkins API user' do |opt|
@@ -122,7 +122,7 @@ module Jenkins2
 				end
 				opts.command 'install-plugin', 'Installs a plugin from url or by short name. '\
 					'Provide either --url or --name.' do |cmd|
-					cmd.on '-u', '--uri URI', URI, 'Uri to install plugin from.' do |opt|
+					cmd.on '-u', '--uri URI', ::URI, 'Uri to install plugin from.' do |opt|
 						@command_options[:uri] = opt
 					end
 					cmd.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |opt|
