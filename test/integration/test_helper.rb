@@ -15,9 +15,10 @@ Jenkins2::Log.init( log: STDOUT, verbose: -1 )
 
 # Setup subject just once
 class Minitest::Test
-	@@key = IO.read( 'test/integration/key' ).strip
-	@@ip = IO.read( 'test/integration/ip' ).strip
-	@@subj = Jenkins2::Client.new( server: "http://#{@@ip}:8080", user: 'admin', key: @@key )
+	@@key = ENV['JENKINS2_KEY']
+	@@server = ENV['JENKINS2_SERVER']
+	@@user = ENV['JENKINS2_USER']
+	@@subj = Jenkins2::Client.new( server: @@server, user: @@user, key: @@key )
 	# Make sure Jenkins is ready and listening
 	Jenkins2::Try.try{ @@subj.version }
 end

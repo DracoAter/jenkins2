@@ -19,8 +19,6 @@ namespace :test do
 		t.warning = true
 		t.test_files = FileList['test/integration/*_test.rb']
 	end
-	CLEAN << 'test/integration/ip'
-	CLEAN << 'test/integration/key'
 end
 if ENV['GENERATE_REPORTS'] == 'true'
 	require 'ci/reporter/rake/minitest'
@@ -44,23 +42,13 @@ Gem::PackageTask.new( Gem::Specification.load( 'jenkins2.gemspec' ) ) do end
 CLEAN << 'pkg'
 
 task :install => :gem do |t|
-	if Process.uid == 0
-		sh "gem install pkg/jenkins2-#{Jenkins2::VERSION}.gem"
-	else
-		puts 'Running as non-root. Installing into user space.'
-		sh "gem install --user-install pkg/jenkins2-#{Jenkins2::VERSION}.gem"
-	end
+	Gem::Installer.new( "pkg/jenkins2-#{Jenkins2::VERSION}.gem", user_install: Process.uid != 0 ).install
 end
 
 task :bootstrap do |t|
-	if Process.uid == 0
-		Gem::Specification.load( 'jenkins2.gemspec' ).development_dependencies.each do |dp|
-			Gem::DependencyInstaller.new.install( dp )
-		end
-	else
-		puts 'Running as non-root. Installing dependencies into user space.'
-		Gem::Specification.load( 'jenkins2.gemspec' ).development_dependencies.each do |dp|
-			Gem::DependencyInstaller.new( user_install: true ).install( dp )
+	Gem::Specification.load( 'jenkins2.gemspec' ).development_dependencies.each do |dp|
+		unless Gem::Installer.new( nil ).installation_satisfies_dependency? dp
+			Gem::DependencyInstaller.new( user_install: Process.uid != 0 ).install( dp )
 		end
 	end
 end
