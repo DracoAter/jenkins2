@@ -8,7 +8,7 @@ module Jenkins2
 			PLUGINS = %w{ssh-credentials plain-credentials}
 			@@subj.install_plugins PLUGINS
 			@@subj.wait_plugins_installed PLUGINS
-			@@redirect_url = "http://#{@@ip}:8080/credentials/store/system/domain/_"
+			@@redirect_url = "#{@@server}/credentials/store/system/domain/_"
 
 			def test_create_credential_username_password
 				assert_equal @@redirect_url, @@subj.create_credential_username_password( scope: 'GLOBAL',

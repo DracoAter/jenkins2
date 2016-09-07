@@ -25,14 +25,14 @@ module Jenkins2
 				api_request( :get, '/pluginManager/api/json?depth=1' )['plugins']
 			end
 
-			# Checks if some plugin is installed
-			# +short_name+:: Short name of plugin (like +thinBackup+).
-			def plugin_installed?( short_name )
+			# Checks, if all of the plugins from the passed list are installed
+			# +names+:: List of short names of plugins (like +thinBackup+).
+			def plugins_installed?( *names )
 				plugins = list_plugins
 				return false if plugins.nil?
-				plugin = plugins.detect{|p| p['shortName'] == short_name }
-				return false if plugin.nil?
-				!plugin['deleted']
+				names.flatten.all? do |name|
+					plugins.detect{|p| p['shortName'] == name and !p['deleted'] }
+				end
 			end
 
 			# Uninstalls a plugin
@@ -44,10 +44,8 @@ module Jenkins2
 			end
 
 			def wait_plugins_installed( *names, max_wait_minutes: 2 )
-				(1..(max_wait_minutes * 60)).step 5 do
-					plugins = list_plugins.select{|i| names.flatten.include? i['shortName'] }
-					return true if names.flatten.size == plugins.size and plugins.all?{|i| !i['deleted'] }
-					sleep 5
+				Wait.wait( max_wait_minutes: max_wait_minutes ) do
+					plugins_installed? names
 				end
 			end
 		end
