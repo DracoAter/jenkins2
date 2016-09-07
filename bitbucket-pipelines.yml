@@ -1,8 +1,10 @@
 # You can use a Docker image from Docker Hub or your own container registry
-image: ruby:2.3.0
+image: ruby:2.0.0
 
 pipelines:
   default:
   - step:
       script:
-      - script/cibuild
+      - export RUBY_ENV='test'
+      - script/unit_test
+      - rake gem

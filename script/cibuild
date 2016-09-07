@@ -9,5 +9,5 @@ export RUBY_ENV='test'
 script/unit_test
 script/integration_test
 
-echo "==== Building Gem ===="
+echo "==== Build gem ===="
 rake gem
