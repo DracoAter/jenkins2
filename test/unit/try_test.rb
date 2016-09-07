@@ -14,7 +14,7 @@ module Jenkins2
 			def test_try_raises_exception_after_retries
 				out, err = capture_subprocess_io do
 					assert_raises( Errno::ECONNREFUSED ) do
-						Try.try( retry_delay: 0 ){ puts '1'; raise Errno::ECONNREFUSED.new( 'a', 'b' ) }
+						Try.try( retry_delay: 0 ){ puts '1'; raise Errno::ECONNREFUSED.new }
 					end
 				end
 				assert_equal "1\n1\n1\n", out
