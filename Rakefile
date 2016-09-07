@@ -47,7 +47,7 @@ end
 
 task :bootstrap do |t|
 	Gem::Specification.load( 'jenkins2.gemspec' ).development_dependencies.each do |dp|
-		unless Gem::Installer.new( nil ).installation_satisfies_dependency? dp
+		unless Gem::Installer.new( '' ).installation_satisfies_dependency? dp
 			Gem::DependencyInstaller.new( user_install: Process.uid != 0 ).install( dp )
 		end
 	end
