@@ -12,18 +12,15 @@ module Jenkins2
 			end
 
 			def test_try_raises_exception_after_retries
-				out, err = capture_subprocess_io do
-					assert_raises( Errno::ECONNREFUSED ) do
-						Try.try( retry_delay: 0 ){ puts '1'; raise Errno::ECONNREFUSED.new }
-					end
+				i = 0
+				assert_raises( Errno::ECONNREFUSED ) do
+					Try.try( retry_delay: 0 ){ i += 1; raise Errno::ECONNREFUSED.new }
 				end
-				assert_equal "1\n1\n1\n", out
-				out, err = capture_subprocess_io do
-					assert_raises( Net::HTTPFatalError ) do
-						Try.try( retry_delay: 0 ){ puts '2'; raise Net::HTTPFatalError.new( 'a', 'b' ) }
-					end
+				assert_equal 3, i
+				assert_raises( Net::HTTPFatalError ) do
+					Try.try( retry_delay: 0 ){ i += 2; raise Net::HTTPFatalError.new( 'a', 'b' ) }
 				end
-				assert_equal "2\n2\n2\n", out
+				assert_equal 9, i
 			end
 		end
 	end
