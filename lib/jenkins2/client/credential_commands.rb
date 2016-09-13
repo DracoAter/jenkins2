@@ -41,7 +41,7 @@ module Jenkins2
 			# +description+:: Human readable text, what this credential is used for.
 			# +username+:: Ssh username.
 			# +private_key+:: Ssh private key, with new lines replaced by <tt>\n</tt> sequence.
-			# +passphrase+:: Passpharase for the private key. Empty string, if not provided.
+			# +passphrase+:: Passphrase for the private key. Empty string, if not provided.
 			def create_credential_ssh( **args )
 				json_body = { "" => "1",
 					credentials: {

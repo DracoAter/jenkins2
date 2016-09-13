@@ -80,6 +80,61 @@ module Jenkins2
 						@command_options[:node] = opt
 					end
 				end
+				opts.command 'create-node', 'Creates a new node from XML' do |cmd|
+					cmd.on '-n', '--node NAME', 'Name of the new node' do |opt|
+						@command_options[:node] = opt
+					end
+					cmd.on '-x', '--xml FILE', 'Path to XML configuration file' do |opt|
+						@command_options[:xml] = IO.read opt
+					end
+				end
+				opts.command 'delete-node', 'Deletes a node' do |cmd|
+					cmd.on '-n', '--node NAME', 'Node name' do |opt|
+						@command_options[:node] = opt
+					end
+				end
+				opts.command 'create-credential', 'Creates credential.' do |cmd|
+					cmd.on '-S', '--scope SCOPE', 'GLOBAL or SYSTEM scope' do |opt|
+						@command_options[:scope] = opt
+					end
+					cmd.on '-i', '--id ID', 'Unique Id of credential. Will be generated automactically, if '\
+						'not provided' do |opt|
+						@command_options[:id] = opt
+					end
+					cmd.on '-d', '--description DESC', 'Human readable text, what this credential is used for.' do |opt|
+						@command_options[:description] = opt
+					end
+					cmd.on '-n', '--username NAME', 'Username for Username-Password or SSH credential' do |opt|
+						@command_options[:username] = opt
+					end
+					cmd.on '-p', '--password PASS', 'Password in plain text for Username-Password credential' do |opt|
+						@command_options[:password] = opt
+					end
+					cmd.on '-f', '--private-key FILE', 'Path to private key file for SSH credential' do |opt|
+						@command_options[:private_key] = IO.read( opt ).gsub( "\n", "\\n" )
+					end
+					cmd.on '-P', '--passphrase PHRASE', 'Passphrase for the private key for SSH credential' do |opt|
+						@command_options[:passphrase] = opt
+					end
+					cmd.on '-e', '--secret SECRET', 'Some secret text for Secret credential' do |opt|
+						@command_options[:secret] = opt
+					end
+					cmd.on '-F', '--secret-file FILE', 'Path to secret file for Secret File credential' do |opt|
+						@command_options[:filename] = File.basename opt
+						@command_options[:content] = IO.read opt
+					end
+				end
+				opts.command 'delete-credential', 'Deletes credential.' do |cmd|
+					cmd.on '-i', '--id ID', 'Credential id' do |opt|
+						@command_options[:id] = opt
+					end
+				end
+				opts.command 'get-credential', 'Returns credential as json.' do |cmd|
+					cmd.on '-i', '--id ID', 'Credential id' do |opt|
+						@command_options[:id] = opt
+					end
+				end
+				opts.command 'list-credentials', 'Lists all credentials.'
 				opts.command 'disconnect-node', 'Disconnects a node.' do |cmd|
 					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
 						@command_options[:node] = opt
@@ -98,7 +153,12 @@ module Jenkins2
 						@command_options[:max_wait_minutes] = opt
 					end
 				end
-				opts.command 'get-node', 'Returns the node definition XML.' do |cmd|
+				opts.command 'get-node-xml', 'Returns the node definition XML.' do |cmd|
+					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
+						@command_options[:node] = opt
+					end
+				end
+				opts.command 'get-node', 'Returns the node state.' do |cmd|
 					cmd.on '-n', '--node [NAME]', 'Name of the node or empty for master' do |opt|
 						@command_options[:node] = opt
 					end
@@ -129,6 +189,7 @@ module Jenkins2
 						@command_options[:name] = opt
 					end
 				end
+				opts.command 'list-plugins', 'Lists installed plugins'
 			end
 			begin
 				global.parse!( args )
