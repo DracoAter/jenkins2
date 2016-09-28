@@ -4,8 +4,8 @@ require_relative 'log'
 
 module Jenkins2
 	module Try
-		# Tries a block several times, if raised exception is <tt>Net::HTTPFatalError</tt> or
-		# <tt>Errno::ECONNREFUSED</tt>.
+		# Tries a block several times, if raised exception is <tt>Net::HTTPFatalError</tt>,
+		# <tt>Errno::ECONNREFUSED</tt> or <tt>Net::ReadTimeout</tt>.
 		# +retries+:: Number of retries.
 		# +retry_delay+:: Seconds to sleep, before attempting next retry.
 		# +&block+:: Code to run inside <tt>retry</tt> loop.
@@ -18,7 +18,7 @@ module Jenkins2
 		# directly as ::try().
 		def try( retries: 3, retry_delay: 5, &block )
 			yield
-		rescue Errno::ECONNREFUSED, Net::HTTPFatalError => e
+		rescue Errno::ECONNREFUSED, Net::HTTPFatalError, Net::ReadTimeout => e
 			i ||= 0
 			unless ( i += 1 ) == retries
 				Log.warn { "Received error: #{e}." }
@@ -27,6 +27,9 @@ module Jenkins2
 				retry
 			end
 			Log.error { "Reached maximum number of retries (#{retries}). Giving up." }
+			raise e
+		rescue StandardError => e
+			Log.warn { "Received (fatal) error: #{e}." }
 			raise e
 		end
 
