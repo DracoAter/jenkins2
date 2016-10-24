@@ -22,14 +22,12 @@ module Jenkins2
 			i ||= 0
 			unless ( i += 1 ) == retries
 				Log.warn { "Received error: #{e}." }
-				Log.warn { "Retrying request in #{retry_delay} seconds." }
+				Log.warn { "Retry request in #{retry_delay} seconds." }
 				sleep retry_delay
 				retry
 			end
-			Log.error { "Reached maximum number of retries (#{retries}). Giving up." }
-			raise e
-		rescue StandardError => e
-			Log.warn { "Received (fatal) error: #{e}." }
+			Log.error { "Received error: #{e}." }
+			Log.error { "Reached maximum number of retries (#{retries}). Give up." }
 			raise e
 		end
 
