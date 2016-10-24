@@ -1,3 +1,5 @@
+require 'cgi'
+
 module Jenkins2
 	class Client
 		module NodeCommands

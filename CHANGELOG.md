@@ -1,8 +1,8 @@
 # Change Log
 
-## [v0.0.1](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v0.0.1) (2016-10-25)
+## [v0.0.2](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v0.0.2) (2016-10-25)
 ### Enhancements
-- Now this gem is usable
+- Hopefully this gem is now usable
 - Get Jenkins version
 - Prepare for / cancel Jenkins shutdown
 - Wait for all nodes to be idle
