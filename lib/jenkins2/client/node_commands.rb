@@ -83,7 +83,7 @@ module Jenkins2
 			end
 
 			def node_idle?( node: '(master)' )
-				get_node( node )['idle']
+				get_node( node: node )['idle']
 			end
 
 			# Checks if node is online (= not temporarily offline )
