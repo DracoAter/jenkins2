@@ -13,9 +13,9 @@ module Jenkins2
 				assert_equal "#{@@server}/updateCenter/", @@subj.install_plugins( 'junit' )
 				assert @@subj.wait_plugins_installed 'junit'
 				assert_includes @@subj.list_plugins, {"active"=>true, "backupVersion"=>nil, "bundled"=>false,
-					"deleted"=>false, "dependencies"=>[{}], "downgradable"=>false, "enabled"=>true,
-					"hasUpdate"=>false, "longName"=>"JUnit Plugin", "pinned"=>false, "shortName"=>"junit",
-					"supportsDynamicLoad"=>"MAYBE",
+					"deleted"=>false, "dependencies"=>[{},{}], "downgradable"=>false, "enabled"=>true,
+					"hasUpdate"=>false, "longName"=>"JUnit Plugin", "pinned"=>false, "requiredCoreVersion"=>"1.580.1",
+					"shortName"=>"junit", "supportsDynamicLoad"=>"MAYBE",
 					"url"=>"http://wiki.jenkins-ci.org/display/JENKINS/JUnit+Plugin", "version"=>"1.18"}
 			end
 

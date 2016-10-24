@@ -6,7 +6,7 @@ module Jenkins2
 	module IntegrationTest
 		class ClientTest < Minitest::Test
 			def test_version
-				assert_equal '2.7.2', @@subj.version
+				assert_equal '2.19.1', @@subj.version
 			end
 		end
 	end
