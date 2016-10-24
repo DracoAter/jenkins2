@@ -5,11 +5,11 @@ module Jenkins2
 	class Log
 		extend SingleForwardable
 
-		def self.init( log: STDOUT, verbose: 0 )
+		def self.init( log: $stdout, verbose: 0 )
 			@logger = Logger.new log
 			@logger.level = Logger::ERROR - verbose
 			@logger.formatter = proc do |severity, datetime, progname, msg|
-				if log == STDOUT
+				if log == $stdout
 					"#{msg}\n"
 				else
 					"[#{datetime.strftime '%FT%T%:z'}] #{severity} #{msg}\n"

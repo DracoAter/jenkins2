@@ -3,20 +3,16 @@ require_relative 'test_helper'
 module Jenkins2
 	module UnitTest
 		class LogTest < Minitest::Test
-			def setup
-				Log.init( log: STDOUT, verbose: 3 )
-			end
-
 			def teardown
-				Log.init( log: STDOUT, verbose: -1 )
+				$stdout = STDOUT
+				Log.init( log: $stdout, verbose: -1 )
 			end
 
 			def test_log_message_format_stdout
-				out, _ = capture_subprocess_io do
-					Log.info 'as is'
-					Log.info { 'as is' }
-				end
-				assert_equal "as is\nas is\n", out
+				r, $stdout = IO.pipe
+				Log.init( log: $stdout, verbose: 3 )
+				Log.info 'as is'
+				assert_equal "as is\n", r.gets
 			end
 
 			def test_log_message_format_io
