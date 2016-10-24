@@ -1,6 +1,7 @@
 # Jenkins2
 
-Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server.
+Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server. This gem has been
+tested with Jenkins 2.19.1 LTS.
 
 # Features available
 ## Global
@@ -20,8 +21,9 @@ Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server.
 - Run [parameterized] build
 
 ## Plugin
-- Install a plugin by short name (i.e. ssh-credentials)
-- Install a plugin by uploading a \*.jpi or \*.hpi file
+- List installed plugins
+- Install / uninstall a plugin by short name (i.e. ssh-credentials)
+
 
 ## Credentials
 - Create username with password credential ( Requires credentials plugin on Jenkins )

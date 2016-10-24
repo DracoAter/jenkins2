@@ -74,20 +74,39 @@ module Jenkins2
 				assert_equal xml_config, @@subj.get_node_xml( node: 'test' )
 			end
 
+			def test_delete_node_argument_error_if_nil
+				e = assert_raises ArgumentError do
+					@@subj.delete_node
+				end
+				assert_equal 'node must be provided', e.message
+			end
+
 			def test_delete_node
 				refute_nil @@subj.get_node( node: 'for deletion' )
-				@@subj.delete_node 'for deletion'
+				@@subj.delete_node node: 'for deletion'
 				e = assert_raises Net::HTTPServerException do
 					@@subj.get_node( node: 'for deletion' )
 				end
 				assert_equal '404', e.response.code
 			end
 
+			def test_idle_node
+				assert @@subj.node_idle?
+				assert @@subj.node_idle? node: '(master)'
+				assert @@subj.wait_node_idle( max_wait_minutes: 1 )
+			end
+
 			def test_online_offline_node
-				assert @@subj.node_online?( '(master)' )
+				assert @@subj.node_online?( node: '(master)' )
 				@@subj.offline_node node: '(master)', message: 'in test_online_offline_node'
-				refute @@subj.node_online?( '(master)' )
+				refute @@subj.node_online?( node: '(master)' )
 				@@subj.online_node node: '(master)'
+			end
+
+			def test_node_connected
+				assert @@subj.node_connected?
+				assert @@subj.node_connected? node: '(master)'
+				refute @@subj.node_connected? node: 'for deletion'
 			end
 		end
 	end
