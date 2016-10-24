@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/bash
 
 # script/start_jenkins_test_container: Starts lxd container with jenkins and gets credentials for
 # integration tests
@@ -11,6 +11,9 @@ fi
 echo "==== Start lxd container with Jenkins ===="
 # init container
 lxc init jenkins_test j
+
+# attach a network to it
+lxc network attach lxdbr0 j
 
 # start container
 lxc start j

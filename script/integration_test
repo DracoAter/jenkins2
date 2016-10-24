@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/bash
 
 # script/integration_test: Run test suite for application. Optionally pass in a path to an
 #              individual test file to run a single test.
@@ -23,10 +23,10 @@ fi
 
 script/start_jenkins_test_container
 
-echo "==== Get credentials from Jenkins in lxd ===="
-export JENKINS2_SERVER="http://`lxc info j | grep "eth0:\sinet\s" | cut -f3`:8080"
-export JENKINS2_KEY=`lxc exec j cat -- /var/lib/jenkins/secrets/initialAdminPassword`
-export JENKINS2_USER='admin'
+#echo "==== Get credentials from Jenkins in lxd ===="
+#export JENKINS2_SERVER="http://`lxc info j | grep "eth0:\sinet\s" | cut -f3`:8080"
+#export JENKINS2_KEY=`lxc exec j cat -- /var/lib/jenkins/secrets/initialAdminPassword`
+#export JENKINS2_USER='admin'
 
 echo "==== Running integration tests ===="
 if [ -f "$1" ]; then

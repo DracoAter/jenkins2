@@ -2,7 +2,7 @@ require 'simplecov'
 
 SimpleCov.start do
 	add_filter '/test/'
-	coverage_dir 'test/integration/coverage'
+	coverage_dir 'test/coverage/integration'
 end
 
 require 'minitest/autorun'
