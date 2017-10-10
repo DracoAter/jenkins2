@@ -2,14 +2,21 @@
 
 # script/bootstrap: Resolve all dependencies that application requires to run.
 
+sudo=""
+
+if [ "$RUBY_ENV" != 'test' ]; then
+	echo "==== Elevating privileges ===="
+	sudo="sudo"
+fi
+
 echo "==== Install gem dependencies ===="
 # On ci server this will be run as normal user, thus installing gem dependencies in user space.
-rake dependencies:install
+$sudo rake dependencies:install
 
 if ! [ -x $(command -v lxc) ]; then
 	echo "==== Install lxd ===="
 	# This most probably will fail in ci environment, so please, be sure lxd is installed beforehand.
-	apt-get install lxd lxd-client
+	$sudo apt-get install lxd lxd-client
 	echo "! Make sure you configure lxdbr0 with IPv4 !"
 	lxd init
 fi

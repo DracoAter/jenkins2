@@ -13,7 +13,7 @@ namespace :test do
 		Rake::TestTask.new name do |t|
 			t.verbose = true
 			t.warning = true
-			t.deps = ["test:#{name}:report"]
+			t.deps = ["test:#{name}:report"] if t.respond_to? :deps=
 			t.test_files = FileList["test/#{name}/*_test.rb"]
 		end
 
