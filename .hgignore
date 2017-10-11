@@ -2,3 +2,4 @@ rake.tasks~
 .gemspec.lock
 test/coverage
 .kitchen/
+pkg/

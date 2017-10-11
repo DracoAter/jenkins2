@@ -1,6 +1,11 @@
 # Change Log
 
+## [v0.1.0](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v0.1.0) (2017-10-09)
+### Enhancements
+- Support Crumbs
+
 ## [v0.0.2](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v0.0.2) (2016-10-25)
+
 ### Enhancements
 - Hopefully this gem is now usable
 - Get Jenkins version

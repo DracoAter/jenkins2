@@ -1,3 +1,4 @@
+require 'net/http'
 require 'uri'
 require 'mocha'
 require_relative 'test_helper'
@@ -33,9 +34,13 @@ module Jenkins2
 			end
 
 			def teardown
-				@@subj.delete_node 'test' rescue nil
-				@@subj.delete_node 'for deletion' rescue nil
-				@@subj.delete_node 'another one' rescue nil
+				['test', 'for deletion', 'another one'].each do |name|
+					begin
+						@@subj.delete_node node: name
+					rescue Net::HTTPServerException
+						nil
+					end
+				end
 			end
 
 			def test_get_master_node

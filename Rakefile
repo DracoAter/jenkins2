@@ -54,8 +54,8 @@ namespace :dependencies do
 		end
 		next if unsatisfied_dependencies.empty?
 		unsatisfied_dependencies.each do |dp|
-			# If environment is set to `citest`, it is most probably ci server, so we go with user_install.
-			Gem::DependencyInstaller.new( user_install: ENV['RUBY_ENV'] == 'citest' ).install( dp )
+			# If environment is set to `test`, it is most probably ci server, so we go with user_install.
+			Gem::DependencyInstaller.new( user_install: ENV['RUBY_ENV'] == 'test' ).install( dp )
 		end
 	end
 end

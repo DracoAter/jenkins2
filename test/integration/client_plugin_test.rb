@@ -16,7 +16,7 @@ module Jenkins2
 					"deleted"=>false, "dependencies"=>[{},{}], "downgradable"=>false, "enabled"=>true,
 					"hasUpdate"=>false, "longName"=>"JUnit Plugin", "pinned"=>false, "requiredCoreVersion"=>"1.580.1",
 					"shortName"=>"junit", "supportsDynamicLoad"=>"MAYBE",
-					"url"=>"http://wiki.jenkins-ci.org/display/JENKINS/JUnit+Plugin", "version"=>"1.19"}
+					"url"=>"http://wiki.jenkins-ci.org/display/JENKINS/JUnit+Plugin", "version"=>"1.21"}
 			end
 
 			def test_uninstall_plugin

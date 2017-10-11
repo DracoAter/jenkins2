@@ -1,4 +1,5 @@
 require 'net/http'
+require 'openssl'
 require 'json'
 
 require_relative 'log'
@@ -23,6 +24,7 @@ module Jenkins2
 			@server = args[:server]
 			@user = args[:user]
 			@key = args[:key]
+			@crumb = nil
 		end
 
 		# Returns Jenkins version
@@ -36,6 +38,12 @@ module Jenkins2
 			api_request( :post, '/quietDown' )
 		end
 
+		# Forcefully restart Jenkins NOW!
+		# Parameters are ignored
+		def restart!( **args )
+			api_request( :post, '/restart' )
+		end
+		
 		# Cancels the effect of +prepare-for-shutdown+ command.
 		# Parameters are ignored
 		def cancel_shutdown( **args )
@@ -78,8 +86,24 @@ module Jenkins2
 			yield req if block_given?
 			req.content_type ||= 'application/x-www-form-urlencoded'
 			Log.debug { "Request content_type: #{req.content_type}, body: #{req.body}" }
-			response = Net::HTTP.start( req.uri.hostname, req.uri.port ){ |http| http.request req }
-			handle_response( response, reply_with )
+			begin
+				req[@crumb["crumbRequestField"]] = @crumb["crumb"] if @crumb
+				response = Net::HTTP.start( req.uri.hostname, req.uri.port, use_ssl: req.uri.scheme == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE ) do |http|
+					http.request req
+				end
+				handle_response( response, reply_with )
+			rescue Net::HTTPServerException => e
+				if e.message == "403 \"No valid crumb was included in the request\""
+					update_crumbs
+					retry
+				else
+					raise
+				end
+			end
+		end
+
+		def update_crumbs
+			@crumb = api_request( :get, '/crumbIssuer/api/json' )
 		end
 
 		def handle_response( response, reply_with )
@@ -94,10 +118,8 @@ module Jenkins2
 			when Net::HTTPRedirection
 				response['location']
 			when Net::HTTPClientError, Net::HTTPServerError
-				Log.error { "Response: #{response.code}, #{response.body}" }
 				response.value
 			else
-				Log.error { "Response: #{response.code}, #{response.body}" }
 				response.value
 			end
 		end
