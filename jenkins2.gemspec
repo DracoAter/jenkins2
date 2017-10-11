@@ -5,7 +5,7 @@ require_relative 'lib/jenkins2/version'
 Gem::Specification.new do |s|
 	s.name = 'jenkins2'
 	s.version = Jenkins2::VERSION
-	s.date = '2016-07-27'
+	s.date = Date.today
 	s.summary = 'Command line interface and API client for Jenkins 2.'
 	s.description = 'Command line interface and API client for Jenkins 2. Allows manipulating nodes,'\
 		' jobs, plugins, credentials. See README.md for details.'
@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
 	s.add_development_dependency 'ci_reporter_minitest', '~> 1.0'
 	s.add_development_dependency 'mocha', '~> 1.1'
 	s.add_development_dependency 'simplecov', '~> 0.10'
+	s.add_development_dependency 'test-kitchen', '~> 1.17'
+	s.add_development_dependency 'kitchen-lxd', '~> 0.1', '>= 0.1.2'
 
 	s.files = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'bin/*', 'lib/**/*']
 	s.require_path = 'lib'

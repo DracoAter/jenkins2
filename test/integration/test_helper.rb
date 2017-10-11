@@ -19,6 +19,7 @@ class Minitest::Test
 	@@server = ENV['JENKINS2_SERVER']
 	@@user = ENV['JENKINS2_USER']
 	@@subj = Jenkins2::Client.new( server: @@server, user: @@user, key: @@key )
+
 	# Make sure Jenkins is ready and listening
 	Jenkins2::Try.try{ @@subj.version }
 end

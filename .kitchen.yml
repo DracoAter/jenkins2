@@ -1,0 +1,19 @@
+---
+driver:
+  name: lxd
+
+transport:
+  name: lxd
+
+provisioner:
+  name: shell
+
+verifier:
+  name: shell
+  command: rake test:integration
+
+platforms:
+  - name: ubuntu/xenial/i386
+
+suites:
+  - name: default

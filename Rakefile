@@ -31,8 +31,8 @@ namespace :test do
 	task :integration => :get_credentials
 
 	task :get_credentials do |t|
-		ENV['JENKINS2_SERVER'] =  'http://' + `lxc info j | grep "eth0:\\sinet\\s" | cut -f3`.strip + ':8080'
-		ENV['JENKINS2_KEY'] = `lxc exec j cat -- /var/lib/jenkins/secrets/initialAdminPassword`.strip
+		ENV['JENKINS2_SERVER'] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
+		ENV['JENKINS2_KEY'] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
 		ENV['JENKINS2_USER'] = 'admin'
 	end
 end

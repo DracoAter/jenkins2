@@ -21,19 +21,5 @@ else
 	export RUBY_ENV='test'
 fi
 
-script/start_jenkins_test_container
-
-#echo "==== Get credentials from Jenkins in lxd ===="
-#export JENKINS2_SERVER="http://`lxc info j | grep "eth0:\sinet\s" | cut -f3`:8080"
-#export JENKINS2_KEY=`lxc exec j cat -- /var/lib/jenkins/secrets/initialAdminPassword`
-#export JENKINS2_USER='admin'
-
 echo "==== Running integration tests ===="
-if [ -f "$1" ]; then
-	rake test:integration TEST=$1
-else
-	rake test:integration
-fi
-
-echo "==== Delete lxd container with Jenkins ===="
-lxc delete j --force
+kitchen test
