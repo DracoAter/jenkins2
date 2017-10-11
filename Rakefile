@@ -2,7 +2,6 @@ require 'rake/testtask'
 require 'rake/clean'
 require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
-require 'ci/reporter/rake/minitest'
 
 CLEAN << 'doc'
 
@@ -21,6 +20,7 @@ namespace :test do
 			task :report do |t, args|
 				next unless ENV['GENERATE_REPORTS']
 				ENV['CI_REPORTS'] = "test/reports/#{name}"
+				require 'ci/reporter/rake/minitest'
 				Rake::Task['ci:setup:minitest'].invoke
 			end
 		end
