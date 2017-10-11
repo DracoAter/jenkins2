@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 	s.add_development_dependency 'mocha', '~> 1.1'
 	s.add_development_dependency 'simplecov', '~> 0.10'
 	s.add_development_dependency 'test-kitchen', '~> 1.17'
-	s.add_development_dependency 'kitchen-lxd', '~> 0.1', '>= 0.1.2'
+	s.add_development_dependency 'kitchen-lxd', '~> 0.2'
 
 	s.files = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'bin/*', 'lib/**/*']
 	s.require_path = 'lib'
