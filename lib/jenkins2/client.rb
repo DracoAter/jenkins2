@@ -9,12 +9,17 @@ require_relative 'client/credential_commands'
 require_relative 'client/node_commands'
 require_relative 'client/plugin_commands'
 
+require_relative 'resource_proxy'
+require_relative 'connection'
+require_relative 'api/credentials'
+
 module Jenkins2
 	# The entrance point for your Jenkins remote management.
 	class Client
 		include CredentialCommands
 		include PluginCommands
 		include NodeCommands
+
 		# Creates a "connection" to Jenkins.
 		# Keyword parameters:
 		# +server+:: Jenkins Server URL.
@@ -57,6 +62,10 @@ module Jenkins2
 			Wait.wait( max_wait_minutes: max_wait_minutes ) do
 				api_request( :get, '/computer/api/json' )['busyExecutors'].zero?
 			end
+		end
+
+		def whoami
+			api_request( :get, '/me/api/json?depth=1' )
 		end
 
 		# Job Commands

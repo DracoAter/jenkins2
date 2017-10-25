@@ -63,6 +63,7 @@ module Jenkins2
 					req.content_type = 'application/x-www-form-urlencoded'
 				end
 			end
+			
 			# Creates a secret text credential. Jenkins must have plain-credentials plugin
 			# installed, to use this functionality. Accepts hash with the following parameters.
 			# +scope+:: Scope of the credential. GLOBAL or SYSTEM

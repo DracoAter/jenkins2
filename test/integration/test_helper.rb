@@ -15,6 +15,9 @@ Jenkins2::Log.init( log: STDOUT, verbose: -1 )
 
 # Setup subject just once
 class Minitest::Test
+		ENV['JENKINS2_SERVER'] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
+		ENV['JENKINS2_KEY'] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
+		ENV['JENKINS2_USER'] = 'admin'
 	@@key = ENV['JENKINS2_KEY']
 	@@server = ENV['JENKINS2_SERVER']
 	@@user = ENV['JENKINS2_USER']

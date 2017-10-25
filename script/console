@@ -17,7 +17,7 @@ if ARGV.empty?
 	opts[:user] = prompt_for "User: "
 	opts[:key] = prompt_for "Key: "
 else
-	opts = JSON.parse( IO.read ARGV.first )
+	opts = JSON.parse( IO.read( ARGV.first ), symbolize_names: true )
 end
 
 jc = @jc = Jenkins2::Client.new opts
