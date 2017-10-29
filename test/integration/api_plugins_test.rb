@@ -5,14 +5,17 @@ require_relative 'test_helper'
 module Jenkins2
 	module IntegrationTest
 		class ApiPluginsTest < Minitest::Test
-			@@subj = Jenkins2::Connection.new( @@server ).basic_auth @@user, @@key
+			PLUGINS = %w{mailer}
+			@@subj.plugins.install PLUGINS
+			Jenkins2::Util.wait do
+				PLUGINS.all?{|plg| @@subj.plugins.plugin( plg ).active? }
+			end
 
 			def test_plugins
-				assert_equal [], @@subj.plugins( depth: 1 )['plugins'].collect{|i| i['shortName']}.sort
+				assert_includes @@subj.plugins( depth: 1 )['plugins'].collect{|i| i['shortName']}, 'mailer'
 			end
 
 			def test_plugin_success
-				assert_equal '302', @@subj.plugins.install( 'mailer' ).code
 				assert_equal 'Jenkins Mailer Plugin', @@subj.plugins.plugin( 'mailer' )['longName']
 			end
 
@@ -25,11 +28,13 @@ module Jenkins2
 
 			def test_install
 				assert_equal '302', @@subj.plugins.install( 'junit' ).code
-				refute @@subj.plugins.plugin( 'junit' )['deleted']
+				Jenkins2::Util.wait do
+					@@subj.plugins.plugin( 'junit' ).active?
+				end
+				assert @@subj.plugins.plugin( 'junit' ).active?
 			end
 
 			def test_uninstall
-				assert_equal '302', @@subj.plugins.install( 'mailer' ).code
 				refute @@subj.plugins.plugin( 'mailer' )['deleted']
 				assert_equal '302', @@subj.plugins.plugin( 'mailer' ).uninstall.code
 				assert @@subj.plugins.plugin( 'mailer' )['deleted']

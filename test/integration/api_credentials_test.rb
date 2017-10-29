@@ -6,11 +6,13 @@ module Jenkins2
 	module IntegrationTest
 		class ApiCredentialsTest < Minitest::Test
 			PLUGINS = %w{ssh-credentials plain-credentials}
-			@@subj.install_plugins PLUGINS
-			@@subj.wait_plugins_installed PLUGINS
+			@@subj.plugins.install PLUGINS
+			Jenkins2::Util.wait do
+				PLUGINS.all?{|plg| @@subj.plugins.plugin( plg )['active'] }
+			end
 
 			def setup
-				@subj = Jenkins2::Connection.new( @@server ).basic_auth( @@user, @@key ).credentials.store('system').domain('_', depth:1)
+				@subj = @@subj.credentials.store('system').domain('_', depth:1)
 			end
 
 			def test_create_username_password

@@ -4,19 +4,19 @@ module Jenkins2
 			class Proxy < ::Jenkins2::ResourceProxy
 				def store( id, params={} )
 					path = build_path '/store', id
-					proxy = Store::Proxy.new connection, path, params
+					Store::Proxy.new connection, path, params
 				end
 			end
 
 			def credentials( params={} )
-				proxy = Proxy.new connection, "/credentials", params
+				Proxy.new connection, "/credentials", params
 			end
 
 			module Store
 				class Proxy < ::Jenkins2::ResourceProxy
 					def domain( id, params={} )
 						path = build_path '/domain', id
-						proxy = Domain::Proxy.new connection, path, params
+						Domain::Proxy.new connection, path, params
 					end
 				end
 
@@ -118,7 +118,7 @@ module Jenkins2
 						# +id+:: Credential's id
 						def credential( id, params={} )
 							path = build_path '/credential', id
-							proxy = Credential::Proxy.new connection, path, params
+							Credential::Proxy.new connection, path, params
 						end
 					end
 

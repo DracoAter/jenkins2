@@ -30,6 +30,10 @@ module Jenkins2
 						form_data = { 'Submit' => 'Yes', 'json' => '{}' }
 						connection.post( path, ::URI.encode_www_form( form_data ) )
 					end
+
+					def active?
+						raw.instance_of? Net::HTTPOK and subject['active']
+					end
 				end
 			end
 		end

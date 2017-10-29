@@ -1,30 +1,35 @@
+require_relative 'util'
+
 module Jenkins2
 	class ResourceProxy #< ::BasicObject
+		include Util
 		attr_reader :connection, :path
 
 		def initialize( connection, path, params={}, &block )
-			unless params.is_a? ::Hash
-				@id = params
-				params = {}
-			end
+			@id = nil
 			@connection, @path, @params = connection, URI.escape(path), params
-			@block = block if block
 			subject if block
 		end
 
 		def method_missing( message, *args, &block )
-			p "message=#{message}, args=#{args}"
 			subject.send(message, *args, &block)
 		end
 
+		def raw
+			@raw ||= connection.get_json( build_path, @params )
+		end
+
 		def subject
-			@subject ||= connection.get( path, @params )
+			@subject ||= JSON.parse( raw.body )
+		rescue JSON::ParserError
+			raw.value
 		end
 
 		private
 
-		def build_path( endpoint, id='' )
-			File.join( @path, endpoint, id )
+		def build_path( *sections )
+			escaped_sections = [@id, sections].flatten.compact.collect{|i| URI.escape i }
+			File.join( @path, *escaped_sections )
 		end
 	end
 end

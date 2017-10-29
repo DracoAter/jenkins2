@@ -15,13 +15,10 @@ Jenkins2::Log.init( log: STDOUT, verbose: -1 )
 
 # Setup subject just once
 class Minitest::Test
-		ENV['JENKINS2_SERVER'] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
-		ENV['JENKINS2_KEY'] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
-		ENV['JENKINS2_USER'] = 'admin'
-	@@key = ENV['JENKINS2_KEY']
-	@@server = ENV['JENKINS2_SERVER']
-	@@user = ENV['JENKINS2_USER']
-	@@subj = Jenkins2::Client.new( server: @@server, user: @@user, key: @@key )
+	@@key = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
+	@@server = 'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
+	@@user = 'admin'
+	@@subj = Jenkins2::Connection.new( @@server ).basic_auth @@user, @@key
 
 	# Restart Jenkins before running the tests, to make sure all changes are applied.
 	# For example uninstalling plugin, requires restart.
@@ -29,5 +26,5 @@ class Minitest::Test
 	@@subj.restart!
 
 	# Make sure Jenkins is ready and listening
-	Jenkins2::Try.try{ @@subj.version }
+	Jenkins2::Util.wait{ @@subj.version }
 end

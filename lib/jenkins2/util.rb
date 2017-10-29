@@ -1,6 +1,7 @@
 require 'net/http'
 
 require_relative 'log'
+require_relative 'errors'
 
 module Jenkins2
 	module Util
@@ -17,10 +18,19 @@ module Jenkins2
 		# directly as ::wait().
 		def wait( max_wait_minutes: 60, &block )
 			[3, 5, 7, 15, 30, [60] * (max_wait_minutes - 1)].flatten.each do |sec|
-				result = yield
-				return result if result
-				sleep sec
+				begin
+					result = yield
+					return result if result
+					Log.warn { "Received result is not truthy: #{result}." }
+					Log.warn { "Retry request in #{sec} seconds." }
+					sleep sec
+				rescue Jenkins2::NotFoundError, Jenkins2::ServiceUnavalableError
+					Log.warn { "Received error: #{e}." }
+					Log.warn { "Retry request in #{sec} seconds." }
+					sleep sec
+				end
 			end
+			Log.error { "Tired of waiting (#{max_wait_minutes} minutes). Give up." }
 			nil
 		end
 

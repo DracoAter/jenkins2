@@ -5,22 +5,17 @@
 require_relative '../lib/jenkins2'
 require 'json'
 
-def prompt_for( message )
-	STDOUT.write message
-	STDIN.gets.strip
-end
-
 opts = {}
 
 if ARGV.empty?
-	opts[:server] = prompt_for "Server: "
-	opts[:user] = prompt_for "User: "
-	opts[:key] = prompt_for "Key: "
+	opts[:server] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
+	opts[:key] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
+	opts[:user] = 'admin'
 else
 	opts = JSON.parse( IO.read( ARGV.first ), symbolize_names: true )
 end
 
-jc = @jc = Jenkins2::Client.new opts
+jc = @jc = Jenkins2::Connection.new( opts[:server] ).basic_auth opts[:user], opts[:key]
 puts "Use the '@jc' or 'jc' variable to use the client."
 
 begin

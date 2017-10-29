@@ -5,9 +5,7 @@ require 'json'
 require_relative 'log'
 require_relative 'uri'
 require_relative 'wait'
-require_relative 'client/credential_commands'
 require_relative 'client/node_commands'
-require_relative 'client/plugin_commands'
 
 require_relative 'resource_proxy'
 require_relative 'connection'
@@ -16,8 +14,6 @@ require_relative 'api/credentials'
 module Jenkins2
 	# The entrance point for your Jenkins remote management.
 	class Client
-		include CredentialCommands
-		include PluginCommands
 		include NodeCommands
 
 		# Creates a "connection" to Jenkins.
