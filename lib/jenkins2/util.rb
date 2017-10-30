@@ -13,7 +13,7 @@ module Jenkins2
 		#
 		# Returns the result of a block, if it eventually succeeded or nil in case of timeout.
 		#
-		# Note that this is both a method of module Wait, so you can <tt>include Jenkins::Util</tt>
+		# Note that this is both a method of module Util, so you can <tt>include Jenkins::Util</tt>
 		# into your classes so they have a #wait method, as well as a module method, so you can call it
 		# directly as ::wait().
 		def wait( max_wait_minutes: 60, &block )
@@ -45,16 +45,16 @@ module Jenkins2
 		# Returns the result of a block, if it eventually succeeded or throws the exception, thown by
 		# the block on last try.
 		#
-		# Note that this is both a method of module Try, so you can <tt>include Jenkins::Util</tt>
+		# Note that this is both a method of module Util, so you can <tt>include Jenkins::Util</tt>
 		# into your classes so they have a #try method, as well as a module method, so you can call it
 		# directly as ::try().
 		def try( retries: 3, retry_delay: 5, &block )
 			yield
 		rescue Errno::ECONNREFUSED, Net::HTTPFatalError, Net::ReadTimeout => e
 			i ||= 0
-			unless i == retries
+			unless (i+=1) == retries
 				Log.warn { "Received error: #{e}." }
-				Log.warn { "Retry request in #{retry_delay} seconds." }
+				Log.warn { "Retry request in #{retry_delay} seconds. Retry number #{i}." }
 				sleep retry_delay
 				retry
 			end

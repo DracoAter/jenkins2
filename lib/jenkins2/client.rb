@@ -4,7 +4,7 @@ require 'json'
 
 require_relative 'log'
 require_relative 'uri'
-require_relative 'wait'
+require_relative 'util'
 require_relative 'client/node_commands'
 
 require_relative 'resource_proxy'
@@ -55,7 +55,7 @@ module Jenkins2
 		# called after +prepare_for_shutdown+, otherwise new builds will still be run.
 		# +max_wait_minutes+:: Maximum wait time in minutes. Default 60.
 		def wait_nodes_idle( max_wait_minutes: 60 )
-			Wait.wait( max_wait_minutes: max_wait_minutes ) do
+			Util.wait( max_wait_minutes: max_wait_minutes ) do
 				api_request( :get, '/computer/api/json' )['busyExecutors'].zero?
 			end
 		end

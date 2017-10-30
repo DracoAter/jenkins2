@@ -11,4 +11,4 @@ require 'mocha/setup'
 require_relative '../../lib/jenkins2'
 
 # We do not want any logging in tests
-Jenkins2::Log.init( log: STDOUT, verbose: -1 )
+Jenkins2::Log.init( verbose: -1 )

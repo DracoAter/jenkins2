@@ -11,7 +11,7 @@ require 'mocha/setup'
 require_relative '../../lib/jenkins2'
 
 # We do not want any logging in tests
-Jenkins2::Log.init( log: STDOUT, verbose: -1 )
+Jenkins2::Log.init( verbose: -1 )
 
 # Setup subject just once
 class Minitest::Test
@@ -26,5 +26,5 @@ class Minitest::Test
 	@@subj.restart!
 
 	# Make sure Jenkins is ready and listening
-	Jenkins2::Util.wait{ @@subj.version }
+	Jenkins2::Util.wait( max_wait_minutes: 2 ){ @@subj.version }
 end
