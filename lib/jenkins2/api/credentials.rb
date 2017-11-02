@@ -3,19 +3,19 @@ module Jenkins2
 		module Credentials
 			class Proxy < ::Jenkins2::ResourceProxy
 				def store( id, params={} )
-					path = build_path '/store', id
+					path = build_path 'store', id
 					Store::Proxy.new connection, path, params
 				end
 			end
 
 			def credentials( params={} )
-				Proxy.new connection, "/credentials", params
+				Proxy.new connection, "credentials", params
 			end
 
 			module Store
 				class Proxy < ::Jenkins2::ResourceProxy
 					def domain( id, params={} )
-						path = build_path '/domain', id
+						path = build_path 'domain', id
 						Domain::Proxy.new connection, path, params
 					end
 				end
@@ -109,7 +109,7 @@ module Jenkins2
 						end
 
 						def create( body, headers={} )
-							path = build_path '/createCredentials'
+							path = build_path 'createCredentials'
 							headers['Content-Type'] = 'application/x-www-form-urlencoded' if headers['Content-Type'].nil?
 							connection.post( path, body, headers )
 						end
@@ -117,7 +117,7 @@ module Jenkins2
 						# Returns credential as json. Raises Net::HTTPNotFound, if no such credential
 						# +id+:: Credential's id
 						def credential( id, params={} )
-							path = build_path '/credential', id
+							path = build_path 'credential', id
 							Credential::Proxy.new connection, path, params
 						end
 					end
@@ -126,7 +126,7 @@ module Jenkins2
 						class Proxy < ::Jenkins2::ResourceProxy
 							# Deletes credential
 							def delete
-								connection.post( build_path '/doDelete' )
+								connection.post( build_path 'doDelete' )
 							end
 						end
 					end

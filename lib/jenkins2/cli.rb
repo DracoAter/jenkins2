@@ -1,3 +1,8 @@
+require 'optparse/uri'
+
+require_relative 'cli/root'
+require_relative 'cli/plugins'
+
 module Jenkins2
 	class CLI
 		attr_reader :options
@@ -42,6 +47,7 @@ module Jenkins2
 			result + parser.to_s
 		end
 
+		# This method should be overwritten in subclasses
 		def self.description
 			''
 		end

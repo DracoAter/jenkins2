@@ -24,7 +24,7 @@ module Jenkins2
 					Log.warn { "Received result is not truthy: #{result}." }
 					Log.warn { "Retry request in #{sec} seconds." }
 					sleep sec
-				rescue Jenkins2::NotFoundError, Jenkins2::ServiceUnavalableError
+				rescue Jenkins2::NotFoundError, Jenkins2::ServiceUnavalableError => e
 					Log.warn { "Received error: #{e}." }
 					Log.warn { "Retry request in #{sec} seconds." }
 					sleep sec

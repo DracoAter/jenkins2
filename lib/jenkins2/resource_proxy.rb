@@ -1,13 +1,15 @@
+require 'erb'
+
 require_relative 'util'
 
 module Jenkins2
 	class ResourceProxy #< ::BasicObject
-		include Util
 		attr_reader :connection, :path
 
 		def initialize( connection, path, params={}, &block )
+			encoded_path = path.split('/').collect{|i| ERB::Util.url_encode i}.join('/')
 			@id = nil
-			@connection, @path, @params = connection, URI.escape(path), params
+			@connection, @path, @params = connection, encoded_path, params
 			subject if block
 		end
 
@@ -28,7 +30,7 @@ module Jenkins2
 		private
 
 		def build_path( *sections )
-			escaped_sections = [@id, sections].flatten.compact.collect{|i| URI.escape i }
+			escaped_sections = [@id, sections].flatten.compact.collect{|i| ERB::Util.url_encode i }
 			File.join( @path, *escaped_sections )
 		end
 	end
