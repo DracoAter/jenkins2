@@ -55,7 +55,7 @@ module Jenkins2
 
 		def build_uri( relative_or_absolute, params={} )
 			result = ::URI.parse relative_or_absolute
-			result = ::URI.parse ::File.join( @server, relative_or_absolute ) unless result.absolute?
+			result = ::URI.parse ::File.join( @server.to_s, relative_or_absolute ) unless result.absolute?
 			result.query = ::URI.encode_www_form params
 			result
 		end
