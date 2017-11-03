@@ -1,5 +1,3 @@
-require 'uri'
-require 'mocha'
 require_relative 'test_helper'
 
 module Jenkins2
@@ -25,6 +23,7 @@ For command specific options run: jenkins2 --help <command>
 			COMMANDS_SUMMARY = %{Commands:
     cancel-quiet-down                Cancel previously issued quiet-down command
     install-plugin                   Installs a plugin
+    list-plugins                     Lists all installed plugins
     me                               Authenticated user info
     quiet-down                       Put Jenkins into the quiet mode, wait for existing builds to be completed.
     restart                          Restart Jenkins
@@ -106,21 +105,17 @@ Command Options:
 			end
 
 			def test_summary_no_commands
-				args = @args + %w{-h}
-				result = @subj.parse( args )
-				result = @subj.parse( args )
+				result = @subj.parse( [] )
 				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary
 			end
 
 			def test_print_help_part_command
-				args = @args + %w{-h install}
-				result = @subj.parse( args )
+				result = @subj.parse( %w{install} )
 				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary
 			end
 
 			def test_print_help_with_full_command
-				args = @args + %w{-h install-plugin}
-				result = @subj.parse( args )
+				result = @subj.parse( %w{install-plugin} )
 				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, result.summary
 			end
 		end

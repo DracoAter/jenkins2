@@ -19,42 +19,41 @@ module Jenkins2
 				assert_equal '302', @subj.create_username_password( scope: 'GLOBAL',
 					username: 'test', description: 'This is username_password credential for user test',
 					id: 'uniq_Test1', password: 'secretPass' ).code
-				assert_equal( { "description"=>"This is username_password credential for user test",
-					"_class"=>"com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper",
-					"displayName"=>"test/****** (This is username_password credential for user test)",
-					"fingerprint"=>nil, "fullName"=>"system/_/uniq_Test1", "id"=>"uniq_Test1",
-					"typeName"=>"Username with password" }, @subj.credential( 'uniq_Test1' ).subject )
+				assert_equal( { description: 'This is username_password credential for user test',
+					_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper',
+					displayName: 'test/****** (This is username_password credential for user test)',
+					fingerprint: nil, fullName: 'system/_/uniq_Test1', id: 'uniq_Test1',
+					typeName: 'Username with password' }, @subj.credential( 'uniq_Test1' ).to_h )
 			end
 
 			def test_create_ssh
 				assert_equal '302', @subj.create_ssh( scope: 'SYSTEM', id: 'uniq_2',
-					description: 'SSH for user test2', username: 'test2', private_key: "verybigprivate\nkey",
+					description: 'SSH for user test2', username: 'test2', private_key: 'verybigprivate\nkey',
 					passphrase: 'something' ).code
-				assert_equal( { "description"=>"SSH for user test2",
-					"displayName"=>"test2 (SSH for user test2)",
-					"_class"=>"com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper",
-					"fingerprint"=>nil, "fullName"=>"system/_/uniq_2", "id"=>"uniq_2",
-					"typeName"=>"SSH Username with private key" }, @subj.credential( 'uniq_2' ).subject )
+				assert_equal( { description: 'SSH for user test2', id: 'uniq_2',
+					displayName: 'test2 (SSH for user test2)', fingerprint: nil, fullName: 'system/_/uniq_2',
+					_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper',
+					typeName: 'SSH Username with private key' }, @subj.credential( 'uniq_2' ).to_h )
 			end
 
 			def test_create_secret_text
 				assert_equal '302', @subj.create_secret_text( scope: 'GLOBAL', id: 'r3',
 					description: 'secret r3', secret: 'hello' ).code
-				assert_equal( { "description"=>"secret r3", "displayName"=>"secret r3",
-					"_class"=>"com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper",
-					"fingerprint"=>nil, "fullName"=>"system/_/r3", "id"=>"r3", "typeName"=>"Secret text"},
-					@subj.credential( 'r3' ).subject )
+				assert_equal( { description: 'secret r3', displayName: 'secret r3',
+					_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper',
+					fingerprint: nil, fullName: 'system/_/r3', id: 'r3', typeName: 'Secret text'},
+					@subj.credential( 'r3' ).to_h )
 			end
 
 			def test_create_secret_file
 				assert_equal '302', @subj.create_secret_file( scope: 'SYSTEM', filename: 'client.pem',
 					description: 'secret file with no id', content: 'secretcontent' ).code
-				cred = @subj['credentials'].detect{|i| i['description'] == 'secret file with no id' }
-				assert_equal "secret file with no id", cred['description']
-				assert_equal "client.pem (secret file with no id)", cred["displayName"]
-				assert_equal 'Secret file', cred['typeName']
-				refute_nil cred['id']
-				assert_equal "system/_/#{cred['id']}", cred['fullName']
+				cred = @subj.credentials.detect{|i| i.description == 'secret file with no id' }
+				assert_equal 'secret file with no id', cred.description
+				assert_equal 'client.pem (secret file with no id)', cred.displayName
+				assert_equal 'Secret file', cred.typeName
+				refute_nil cred.id
+				assert_equal "system/_/#{cred.id}", cred.fullName
 			end
 
 			def test_delete_credential

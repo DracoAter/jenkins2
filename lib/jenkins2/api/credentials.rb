@@ -1,15 +1,15 @@
 module Jenkins2
 	module API
 		module Credentials
+			def credentials( params={} )
+				Proxy.new connection, "credentials", params
+			end
+
 			class Proxy < ::Jenkins2::ResourceProxy
 				def store( id, params={} )
 					path = build_path 'store', id
 					Store::Proxy.new connection, path, params
 				end
-			end
-
-			def credentials( params={} )
-				Proxy.new connection, "credentials", params
 			end
 
 			module Store
@@ -48,7 +48,7 @@ module Jenkins2
 									'$class' => 'com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey'
 								}
 							}.to_json
-							create( "json=#{CGI.escape json_body}" )
+							create( "json=#{::CGI.escape json_body}" )
 						end
 
 						# Creates a secret text credential. Jenkins must have plain-credentials plugin
@@ -63,7 +63,7 @@ module Jenkins2
 									'$class' => 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl'
 								)
 							}.to_json
-							create( "json=#{CGI.escape json_body}" )
+							create( "json=#{::CGI.escape json_body}" )
 						end
 
 						# Creates a secret file credential. Jenkins must have plain-credentials plugin
@@ -90,7 +90,7 @@ module Jenkins2
 								)
 							}.to_json
 							body << "\r\n\r\n--#{BOUNDARY}--\r\n"
-							create( body, { 'Content-Type' => "multipart/form-data, boundary=#{BOUNDARY}" } )
+							create( body, "multipart/form-data, boundary=#{BOUNDARY}" )
 						end
 
 						# Creates username and password credential. Accepts hash with the following parameters.
@@ -105,13 +105,14 @@ module Jenkins2
 									'$class' => 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl'
 								)
 							}.to_json
-							create( "json=#{CGI.escape json_body}" )
+							create( "json=#{::CGI.escape json_body}" )
 						end
 
-						def create( body, headers={} )
+						def create( body, content_type='application/x-www-form-urlencoded' )
 							path = build_path 'createCredentials'
-							headers['Content-Type'] = 'application/x-www-form-urlencoded' if headers['Content-Type'].nil?
-							connection.post( path, body, headers )
+							connection.post( path, body ) do |req|
+								req['Content-Type'] = content_type
+							end
 						end
 
 						# Returns credential as json. Raises Net::HTTPNotFound, if no such credential

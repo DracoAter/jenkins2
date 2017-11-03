@@ -131,5 +131,9 @@ module Jenkins2
 				c.kind_of?( Class ) and c.superclass == Jenkins2::CLI
 			end.sort_by(&:to_s)
 		end
+
+		def jc
+			@jc ||= Jenkins2::Connection.new( options[:server] ).basic_auth options[:user], options[:key]
+		end
 	end
 end

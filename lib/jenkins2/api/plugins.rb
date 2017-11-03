@@ -32,7 +32,7 @@ module Jenkins2
 					end
 
 					def active?
-						raw.instance_of? Net::HTTPOK and subject['active']
+						raw.instance_of? ::Net::HTTPOK and subject['active']
 					end
 				end
 			end

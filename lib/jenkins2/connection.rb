@@ -8,6 +8,7 @@ require_relative 'api/credentials'
 require_relative 'api/computer'
 require_relative 'api/plugins'
 require_relative 'api/root'
+require_relative 'api/view'
 
 module Jenkins2
 	class Connection
@@ -15,6 +16,7 @@ module Jenkins2
 		include Jenkins2::API::Computer
 		include Jenkins2::API::Plugins
 		include Jenkins2::API::Root
+		include Jenkins2::API::View
 
 		attr_reader :connection
 
@@ -48,9 +50,9 @@ module Jenkins2
 			api_request( Net::HTTP::Head, build_uri( path, params ), &block )
 		end
 
-		def post( path, body=nil, headers={}, &block )
-			headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
-			api_request( Net::HTTP::Post, build_uri( path ), body, headers, &block )
+		def post( path, body=nil, params={}, &block )
+			headers = { 'Content-Type' => 'application/x-www-form-urlencoded' }
+			api_request( Net::HTTP::Post, build_uri( path, params ), body, headers, &block )
 		end
 
 		def build_uri( relative_or_absolute, params={} )
@@ -65,12 +67,12 @@ module Jenkins2
 			req.basic_auth @user, @key if @user and @key
 			req.body = body
 			yield req if block_given?
-			Log.debug { "Request uri: #{req.uri}" }
-			Log.debug { "Request content_type: #{req.content_type}, body: #{req.body}" }
 			Net::HTTP.start( req.uri.hostname, req.uri.port,
 				use_ssl: req.uri.scheme == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE ) do |http|
 				begin
 					req[@crumb["crumbRequestField"]] = @crumb["crumb"] if @crumb
+					Log.debug { "Request uri: #{req.uri}" }
+					Log.debug { "Request content_type: #{req.content_type}, body: #{req.body}" }
 					response = http.request req
 					handle_response response
 				rescue Jenkins2::NoValidCrumbError

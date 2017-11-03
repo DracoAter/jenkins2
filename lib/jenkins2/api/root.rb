@@ -17,8 +17,15 @@ module Jenkins2
 				connection.post 'cancelQuietDown'
 			end
 
+			def restart
+				connection.post 'safeRestart'
+			end
+
 			def restart!
 				connection.post 'restart'
+			end
+
+			class Proxy < ::Jenkins2::ResourceProxy
 			end
 
 			module Me

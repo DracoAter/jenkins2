@@ -15,11 +15,10 @@ module Jenkins2
 					connection.post path
 				end
 
-				def create( config_xml=nil )
-					name = @id
+				def create
+					form_data = { name: @id, type: 'hudson.slaves.DumbSlave$DescriptorImpl', json: '{}' }
 					@id = nil
 					path = build_path 'doCreateItem'
-					form_data = { name: name, type: 'hudson.slaves.DumbSlave$DescriptorImpl', json: '{}' }
 					connection.post path, ::URI.encode_www_form( form_data )
 				end
 

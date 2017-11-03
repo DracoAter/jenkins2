@@ -3,11 +3,11 @@ require 'erb'
 require_relative 'util'
 
 module Jenkins2
-	class ResourceProxy #< ::BasicObject
+	class ResourceProxy < ::BasicObject
 		attr_reader :connection, :path
 
 		def initialize( connection, path, params={}, &block )
-			encoded_path = path.split('/').collect{|i| ERB::Util.url_encode i}.join('/')
+			encoded_path = path.split('/').collect{|i| ::ERB::Util.url_encode i}.join('/')
 			@id = nil
 			@connection, @path, @params = connection, encoded_path, params
 			subject if block
@@ -22,16 +22,16 @@ module Jenkins2
 		end
 
 		def subject
-			@subject ||= JSON.parse( raw.body )
-		rescue JSON::ParserError
+			@subject ||= ::JSON.parse( raw.body, object_class: ::OpenStruct  )
+		rescue ::JSON::ParserError
 			raw.value
 		end
 
 		private
 
 		def build_path( *sections )
-			escaped_sections = [@id, sections].flatten.compact.collect{|i| ERB::Util.url_encode i }
-			File.join( @path, *escaped_sections )
+			escaped_sections = [@id, sections].flatten.compact.collect{|i| ::ERB::Util.url_encode i }
+			::File.join( @path, *escaped_sections )
 		end
 	end
 end

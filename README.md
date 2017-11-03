@@ -1,37 +1,47 @@
 # Jenkins2
 
 Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server. This gem has been
-tested with Jenkins 2.19.1 LTS.
+tested with Jenkins 2.73.2 LTS.
 
 # Features available
+
 ## Global
-- Get Jenkins version
-- Prepare for shutdown
-- Cancel shutdown
-- Wait for all nodes to be idle
 
-## Node
-- Set node temporarily offline / online
-- Connect / Disconnect node
-- Wait for node to become idle
-- Get node definition as XML
-- Update node definition from XML
+- Jenkins version
+- Quiet Down Jenkins
+- Cancel Quiet Down Jenkins
+- Immediate and Safe Restart
 
-## Job
-- Run [parameterized] build
+## Users / People
 
-## Plugin
+- Get authenticated user (whoami)
+
+## Node / Slave / Computer
+
+- Create slave from config.xml
+- Delete slave
+- Toggle slave offline / online
+- Launch slave agent
+- Disconnect slave
+- Get slave's config.xml
+- Get slave state in json
+- Get all slaves state in json
+
+## Plugins
+
 - List installed plugins
 - Install / uninstall a plugin by short name (i.e. ssh-credentials)
-
+- Show plugin info
 
 ## Credentials
-- Create username with password credential ( Requires credentials plugin on Jenkins )
-- Create ssh username with private key credential ( Requires ssh-credentials plugin on Jenkins )
-- Create secret string credential ( Requires plain-credentials plugin on Jenkins )
-- Create secret file credential ( Requires plain-credentials plugin on Jenkins )
-- Get credential by id
-- List credentials
+
+- Create username with password credentials ( Requires credentials plugin on Jenkins )
+- Create ssh username with private key credentials ( Requires ssh-credentials plugin on Jenkins )
+- Create secret string credentials ( Requires plain-credentials plugin on Jenkins )
+- Create secret file credentials ( Requires plain-credentials plugin on Jenkins )
+- Get credentials by id
+- Delete credentials
+- List credentials in particular store and domain
 
 # Installation
 
@@ -49,11 +59,14 @@ This can be avoided by creating a json configuration file like this
     {
       "server": "http://jenkins.example.com",
       "user": "admin",
-      "key": "mysecretkey"
+      "key": "mysecretkey",
+      "verbose": 3,
+      "log": "/var/log/jenkins2.log"
     }
 
-By default Jenkins2 expects this file to be at ~/.jenkins2.json, but you can provide your own path
-with --config-file switch. This way the above mentioned command will be much shorter.
+and putting global options there. By default Jenkins2 expects this file to be at ~/.jenkins2.json,
+but you can provide your own path with --config-file switch. This way the above mentioned command
+will be much shorter.
 
     jenkins2 -c offline-node -n mynode # => -c switch tells Jenkins2 to read configuration file
 
@@ -68,9 +81,10 @@ Either run it from command line:
 Or use it in your ruby code:
 
     require 'jenkins2'
-    jc = Jenkins2::Client.new( server: 'http://jenkins.example.com' )
+    jc = Jenkins2::Connection.new( server: 'http://jenkins.example.com' )
+    jc.basic_auth 'admin', 'mysecretkey'
     jc.version
-    jc.offline_node( node: 'mynode' )
+    jc.computer( 'mynode' ).toggle_offline( 'Some reason, why' )
 
 # License
 
@@ -103,7 +117,7 @@ run bootstrap script). To run unit tests run
 
     script/unit_test
 
-Integration tests are run against a Jenkins server. Currently they require an lxd to setup it.
+Integration tests are run against a Jenkins server. urrently they require an lxd to setup it.
 To run integration tests type
 
     script/integration_test

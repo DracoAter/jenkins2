@@ -16,6 +16,18 @@ module Jenkins2
 			end
 		end
 
+		class ListPlugins < CLI
+			def self.description
+				'Lists all installed plugins'
+			end
+
+			def run
+				jc.plugins( depth: 1 )['plugins'].collect do |pl|
+					"%s (%s)" % [pl['shortName'], pl['version']]
+				end.join("\n")
+			end
+		end
+
 		class UninstallPlugin < CLI
 			def self.description
 				'Uninstalls a plugin'
