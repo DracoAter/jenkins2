@@ -1,12 +1,12 @@
 module Jenkins2
 	module API
 		module Root
+			def root( **params )
+				Proxy.new connection, '', params
+			end
+
 			def version
 				connection.head( '/' )['X-Jenkins']
-			end
-				
-			def me( **params )
-				Me::Proxy.new connection, 'me', params
 			end
 
 			def quiet_down
@@ -26,11 +26,6 @@ module Jenkins2
 			end
 
 			class Proxy < ::Jenkins2::ResourceProxy
-			end
-
-			module Me
-				class Proxy < ::Jenkins2::ResourceProxy
-				end
 			end
 		end
 	end

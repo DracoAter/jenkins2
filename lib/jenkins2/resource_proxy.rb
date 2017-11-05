@@ -3,7 +3,7 @@ require 'erb'
 require_relative 'util'
 
 module Jenkins2
-	class ResourceProxy < ::BasicObject
+	class ResourceProxy #< ::BasicObject
 		attr_reader :connection, :path
 
 		def initialize( connection, path, params={}, &block )
@@ -14,6 +14,7 @@ module Jenkins2
 		end
 
 		def method_missing( message, *args, &block )
+			::Jenkins2::Log.debug message
 			subject.send(message, *args, &block)
 		end
 

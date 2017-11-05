@@ -5,7 +5,7 @@ module Jenkins2
 	class Log
 		extend SingleForwardable
 
-		def self.init( log: $stdout, verbose: 0 )
+		def self.init( log: $stderr, verbose: 0 )
 			@logger = Logger.new log
 			@logger.level = Logger::ERROR - verbose
 			@logger.formatter = proc do |severity, datetime, progname, msg|

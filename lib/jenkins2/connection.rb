@@ -2,31 +2,15 @@ require 'net/http'
 require 'openssl'
 require 'json'
 
-require_relative 'resource_proxy'
-require_relative 'errors'
-require_relative 'api/credentials'
-require_relative 'api/computer'
-require_relative 'api/plugins'
-require_relative 'api/root'
-require_relative 'api/view'
 
 module Jenkins2
 	class Connection
-		include Jenkins2::API::Credentials
-		include Jenkins2::API::Computer
-		include Jenkins2::API::Plugins
-		include Jenkins2::API::Root
-		include Jenkins2::API::View
-
-		attr_reader :connection
-
 		# Creates a "connection" to Jenkins.
 		# Parameter:
 		# +server+:: Jenkins Server URL.
 		def initialize( url )
 			@server = url
 			@crumb = nil
-			@connection = self
 		end
 
 		# Add basic auth to existing connection. Returns self.

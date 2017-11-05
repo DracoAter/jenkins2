@@ -1,5 +1,3 @@
-require 'uri'
-require 'mocha'
 require_relative 'test_helper'
 
 module Jenkins2

@@ -1,19 +1,29 @@
 module Jenkins2
 	module API
 		module Job
-			def job( id, **params )
-				path = build_path 'job', id
-				Proxy.new connection, path, params
+			def job( name, **params )
+				proxy = Proxy.new connection, 'job', params
+				proxy.id = name
+				proxy
 			end
 
 			class Proxy < ::Jenkins2::ResourceProxy
-				def config_xml( config_xml=nil )
+				attr_accessor :id
+
+				def create( config_xml )
+					connection.post( 'createItem', config_xml, name: id ) do |req|
+						req['Content-Type'] = 'text/xml'
+					end.code == '200'
+				end
+
+				def update( config_xml )
 					path = build_path 'config.xml'
-					if config_xml.nil?
-						connection.get path
-					else
-						connection.post path, config_xml
-					end
+					connection.post( path, config_xml ).code == '200'
+				end
+
+				def config_xml
+					path = build_path 'config.xml'
+					connection.get path
 				end
 
 				def delete
@@ -22,11 +32,11 @@ module Jenkins2
 				end
 
 				def disable
-					connection.post build_path 'disable'
+					connection.post( build_path 'disable' ).code == '302'
 				end
 
 				def enable
-					connection.post build_path 'enable'
+					connection.post( build_path 'enable' ).code == '302'
 				end
 			end
 		end

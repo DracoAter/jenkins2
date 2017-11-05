@@ -15,7 +15,7 @@ else
 	opts = JSON.parse( IO.read( ARGV.first ), symbolize_names: true )
 end
 
-jc = @jc = Jenkins2::Connection.new( opts[:server] ).basic_auth opts[:user], opts[:key]
+jc = @jc = Jenkins2::Client.new( opts )
 puts "Use the '@jc' or 'jc' variable to use the client."
 
 begin

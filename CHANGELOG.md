@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.0.0](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v1.0.0)
+
+- Completely refactored API and CLI
+- Log will write to stderr by default (instead of stdout).
+- Added Views Support
+- Added Job support
+
 ## [v0.1.0](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v0.1.0) (2017-10-11)
 
 ### Enhancements
