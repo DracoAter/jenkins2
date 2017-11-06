@@ -6,6 +6,7 @@
 - Log will write to stderr by default (instead of stdout).
 - Added Views Support
 - Added Job support
+- Added Users support
 
 ## [v0.1.0](https://bitbucket.org/DracoAter/jenkins2/commits/tag/v0.1.0) (2017-10-11)
 

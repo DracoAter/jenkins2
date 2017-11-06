@@ -10,19 +10,19 @@ module Jenkins2
 			end
 
 			def quiet_down
-				connection.post 'quietDown'
+				connection.post( 'quietDown' ).code == '302'
 			end
 
 			def cancel_quiet_down
-				connection.post 'cancelQuietDown'
+				connection.post( 'cancelQuietDown' ).code == '302'
 			end
 
 			def restart
-				connection.post 'safeRestart'
+				connection.post( 'safeRestart' ).code == '302'
 			end
 
 			def restart!
-				connection.post 'restart'
+				connection.post( 'restart' ).code == '302'
 			end
 
 			class Proxy < ::Jenkins2::ResourceProxy

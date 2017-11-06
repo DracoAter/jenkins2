@@ -16,24 +16,22 @@ module Jenkins2
 			class Proxy < ::Jenkins2::ResourceProxy
 				attr_accessor :id
 
-				def config_xml( config_xml=nil )
-					path = build_path 'config.xml'
-					if config_xml.nil?
-						connection.get path
-					else
-						connection.post path, config_xml
-					end
+				def config_xml
+					connection.get build_path 'config.xml'
+				end
+
+				def update( config_xml )
+					connection.post( build_path( 'config.xml' ), config_xml ).code == '200'
 				end
 
 				def create( config_xml )
 					connection.post( 'createView', config_xml, name: id ) do |req|
 						req['Content-Type'] = 'text/xml'
-					end
+					end.code == '200'
 				end
 
 				def delete
-					path = build_path 'doDelete'
-					connection.post path
+					connection.post( build_path 'doDelete' ).code == '302'
 				end
 			end
 		end

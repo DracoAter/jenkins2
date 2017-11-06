@@ -18,11 +18,11 @@ module Jenkins2
 			end
 
 			def test_quiet_down
-				refute @@subj.root.quietingDown
-				assert_equal '302', @@subj.quiet_down.code
-				assert @@subj.root.quietingDown
-				assert_equal '302', @@subj.cancel_quiet_down.code
-				refute @@subj.root.quietingDown
+				assert_equal false, @@subj.root.quietingDown
+				assert_equal true, @@subj.quiet_down
+				assert_equal true, @@subj.root.quietingDown
+				assert_equal true, @@subj.cancel_quiet_down
+				assert_equal false, @@subj.root.quietingDown
 			end
 		end
 	end

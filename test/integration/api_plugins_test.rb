@@ -12,11 +12,11 @@ module Jenkins2
 			end
 
 			def test_plugins
-				assert_includes @@subj.plugins( depth: 1 )['plugins'].collect{|i| i['shortName']}, 'mailer'
+				assert_includes @@subj.plugins( depth: 1 ).plugins.collect(&:shortName), 'mailer'
 			end
 
 			def test_plugin_success
-				assert_equal 'Jenkins Mailer Plugin', @@subj.plugins.plugin( 'mailer' )['longName']
+				assert_equal 'Jenkins Mailer Plugin', @@subj.plugins.plugin( 'mailer' ).longName
 			end
 
 			def test_plugin_fail_not_found
@@ -27,17 +27,21 @@ module Jenkins2
 			end
 
 			def test_install
-				assert_equal '302', @@subj.plugins.install( 'junit' ).code
+				assert_equal true, @@subj.plugins.install( 'junit' )
 				Jenkins2::Util.wait do
 					@@subj.plugins.plugin( 'junit' ).active?
 				end
-				assert @@subj.plugins.plugin( 'junit' ).active?
+				assert_equal true, @@subj.plugins.plugin( 'junit' ).active?
 			end
 
 			def test_uninstall
-				refute @@subj.plugins.plugin( 'mailer' )['deleted']
-				assert_equal '302', @@subj.plugins.plugin( 'mailer' ).uninstall.code
-				assert @@subj.plugins.plugin( 'mailer' )['deleted']
+				assert_equal false, @@subj.plugins.plugin( 'mailer' ).deleted
+				assert_equal true, @@subj.plugins.plugin( 'mailer' ).uninstall
+				assert_equal true, @@subj.plugins.plugin( 'mailer' ).deleted
+			end
+
+			def test_upload
+				skip 'Implement the test, with some small dummy plugin file'
 			end
 		end
 	end

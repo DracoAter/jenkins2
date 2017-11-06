@@ -73,6 +73,7 @@ module Jenkins2
 
 			def teardown
 				@@subj.view( 'xml config' ).delete
+				@@subj.view( 'new one' ).delete rescue nil
 			end
 
 			def test_view
@@ -85,27 +86,26 @@ module Jenkins2
 
 			def test_create
 				refute_includes @@subj.views.collect(&:name), 'new one'
-				@@subj.view( 'new one' ).create( CONFIG_XML )
+				assert_equal true, @@subj.view( 'new one' ).create( CONFIG_XML )
 				assert_includes @@subj.views.collect(&:name), 'new one'
-				@@subj.view( 'new one' ).delete rescue nil
 			end
 
 			def test_delete
 				@@subj.view( 'for deletion' ).create( CONFIG_XML ) rescue nil
 				assert_includes @@subj.views.collect(&:name), 'for deletion'
-				@@subj.view( 'for deletion' ).delete
+				assert_equal true, @@subj.view( 'for deletion' ).delete
 				refute_includes @@subj.views.collect(&:name), 'for deletion'
 			end
 			
-			def test_get_config_xml
+			def test_config_xml
 				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
 			end
 
-			def test_post_config_xml
+			def test_update
 				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
-				assert_equal '200', @@subj.view('xml config').config_xml( NEW_CONFIG_XML ).code
+				assert_equal true, @@subj.view('xml config').update( NEW_CONFIG_XML )
 				assert_equal NEW_CONFIG_XML, @@subj.view('xml config').config_xml.body
-				assert_equal '200', @@subj.view('xml config').config_xml( CONFIG_XML ).code
+				assert_equal true, @@subj.view('xml config').update( CONFIG_XML )
 				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
 			end
 		end

@@ -109,10 +109,9 @@ module Jenkins2
 						end
 
 						def create( body, content_type='application/x-www-form-urlencoded' )
-							path = build_path 'createCredentials'
-							connection.post( path, body ) do |req|
+							connection.post( build_path( 'createCredentials' ), body ) do |req|
 								req['Content-Type'] = content_type
-							end
+							end.code == '302'
 						end
 
 						# Returns credential as json. Raises Net::HTTPNotFound, if no such credential
@@ -127,7 +126,7 @@ module Jenkins2
 						class Proxy < ::Jenkins2::ResourceProxy
 							# Deletes credential
 							def delete
-								connection.post( build_path 'doDelete' )
+								connection.post( build_path 'doDelete' ).code == '302'
 							end
 						end
 					end

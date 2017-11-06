@@ -45,49 +45,49 @@ module Jenkins2
 </slave>'
 
 			def setup
+				@@subj.computer( 'for deletion' ).create
 				@@subj.computer( 'xml config' ).create
 			end
 
 			def teardown
 				@@subj.computer( 'xml config' ).delete
+				@@subj.computer( 'for deletion' ).delete rescue nil
+				@@subj.computer( 'new one' ).delete rescue nil
 			end
 
 			def test_computer
-				assert_includes @@subj.computer['computer'].collect{|i| i['displayName'] }, 'master'
+				assert_includes @@subj.computer.computer.collect(&:displayName), 'master'
 			end
 
 			def test_create
-				refute_includes @@subj.computer['computer'].collect{|i| i['displayName'] }, 'new one'
-				@@subj.computer( 'new one' ).create
-				assert_includes @@subj.computer['computer'].collect{|i| i['displayName'] }, 'new one'
-			ensure
-				@@subj.computer( 'new one' ).delete
+				refute_includes @@subj.computer.computer.collect(&:displayName), 'new one'
+				assert_equal true, @@subj.computer( 'new one' ).create
+				assert_includes @@subj.computer.computer.collect(&:displayName), 'new one'
 			end
 
 			def test_delete
-				@@subj.computer( 'for deletion' ).create rescue nil
-				assert_includes @@subj.computer['computer'].collect{|i| i['displayName'] }, 'for deletion'
-				@@subj.computer( 'for deletion' ).delete
-				refute_includes @@subj.computer['computer'].collect{|i| i['displayName'] }, 'for deletion'
+				assert_includes @@subj.computer.computer.collect(&:displayName), 'for deletion'
+				assert_equal true, @@subj.computer( 'for deletion' ).delete
+				refute_includes @@subj.computer.computer.collect(&:displayName), 'for deletion'
 			end
 			
 			def test_get_config_xml
 				assert_raises Net::HTTPServerException do
 					@@subj.computer('(master)').config_xml.code
 				end
-				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml.body
+				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml
 			end
 
-			def test_post_config_xml
-				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml.body
-				assert_equal '200', @@subj.computer('xml config').config_xml( NEW_CONFIG_XML ).code
-				assert_equal NEW_CONFIG_XML, @@subj.computer('xml config').config_xml.body
-				assert_equal '200', @@subj.computer('xml config').config_xml( CONFIG_XML ).code
-				assert_equal CONFIG_XML_AFTER, @@subj.computer('xml config').config_xml.body
+			def test_update
+				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml
+				assert_equal true, @@subj.computer('xml config').update( NEW_CONFIG_XML )
+				assert_equal NEW_CONFIG_XML, @@subj.computer('xml config').config_xml
+				assert_equal true, @@subj.computer('xml config').update( CONFIG_XML )
+				assert_equal CONFIG_XML_AFTER, @@subj.computer('xml config').config_xml
 			end
 
 			def test_idle
-				assert @@subj.computer( '(master)' )['idle']
+				assert_equal true, @@subj.computer( '(master)' ).idle
 			end
 		end
 	end

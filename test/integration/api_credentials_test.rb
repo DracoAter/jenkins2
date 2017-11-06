@@ -16,9 +16,9 @@ module Jenkins2
 			end
 
 			def test_create_username_password
-				assert_equal '302', @subj.create_username_password( scope: 'GLOBAL',
+				assert_equal true, @subj.create_username_password( scope: 'GLOBAL',
 					username: 'test', description: 'This is username_password credential for user test',
-					id: 'uniq_Test1', password: 'secretPass' ).code
+					id: 'uniq_Test1', password: 'secretPass' )
 				assert_equal( { description: 'This is username_password credential for user test',
 					_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper',
 					displayName: 'test/****** (This is username_password credential for user test)',
@@ -27,9 +27,9 @@ module Jenkins2
 			end
 
 			def test_create_ssh
-				assert_equal '302', @subj.create_ssh( scope: 'SYSTEM', id: 'uniq_2',
+				assert_equal true, @subj.create_ssh( scope: 'SYSTEM', id: 'uniq_2',
 					description: 'SSH for user test2', username: 'test2', private_key: 'verybigprivate\nkey',
-					passphrase: 'something' ).code
+					passphrase: 'something' )
 				assert_equal( { description: 'SSH for user test2', id: 'uniq_2',
 					displayName: 'test2 (SSH for user test2)', fingerprint: nil, fullName: 'system/_/uniq_2',
 					_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper',
@@ -37,8 +37,8 @@ module Jenkins2
 			end
 
 			def test_create_secret_text
-				assert_equal '302', @subj.create_secret_text( scope: 'GLOBAL', id: 'r3',
-					description: 'secret r3', secret: 'hello' ).code
+				assert_equal true, @subj.create_secret_text( scope: 'GLOBAL', id: 'r3',
+					description: 'secret r3', secret: 'hello' )
 				assert_equal( { description: 'secret r3', displayName: 'secret r3',
 					_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$CredentialsWrapper',
 					fingerprint: nil, fullName: 'system/_/r3', id: 'r3', typeName: 'Secret text'},
@@ -46,8 +46,8 @@ module Jenkins2
 			end
 
 			def test_create_secret_file
-				assert_equal '302', @subj.create_secret_file( scope: 'SYSTEM', filename: 'client.pem',
-					description: 'secret file with no id', content: 'secretcontent' ).code
+				assert_equal true, @subj.create_secret_file( scope: 'SYSTEM', filename: 'client.pem',
+					description: 'secret file with no id', content: 'secretcontent' )
 				cred = @subj.credentials.detect{|i| i.description == 'secret file with no id' }
 				assert_equal 'secret file with no id', cred.description
 				assert_equal 'client.pem (secret file with no id)', cred.displayName
@@ -57,11 +57,11 @@ module Jenkins2
 			end
 
 			def test_delete_credential
-				@subj.create_ssh( scope: 'GLOBAL', id: 'delete_me',
+				assert_equal true, @subj.create_ssh( scope: 'GLOBAL', id: 'delete_me',
 					description: 'SSH for deletion', username: 'deleteme', private_key: "delete\nme\nkey",
 					passphrase: 'delete_me' )
 				refute_nil @subj.credential( 'delete_me' ).subject
-				@subj.credential( 'delete_me' ).delete
+				assert_equal true, @subj.credential( 'delete_me' ).delete
 				exc = assert_raises Net::HTTPServerException do
 					@subj.credential( 'delete_me' ).subject
 				end

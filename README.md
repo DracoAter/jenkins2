@@ -43,6 +43,10 @@ tested with Jenkins 2.73.2 LTS.
 - Delete credentials
 - List credentials in particular store and domain
 
+## Views
+
+## Jobs
+
 # Installation
 
     gem install jenkins2
