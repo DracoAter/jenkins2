@@ -88,10 +88,10 @@ module Jenkins2
 			end
 
 			def test_job
-				exc = assert_raises Net::HTTPServerException do
+				exc = assert_raises Jenkins2::NotFoundError do
 					@@subj.job( 'nonexistent' ).subject
 				end
-				assert_equal '404 "Not Found"', exc.message
+				assert_equal 'Problem accessing /job/nonexistent/api/json.', exc.message
 			end
 
 			def test_update_config_xml
@@ -103,10 +103,10 @@ module Jenkins2
 			def test_delete
 				assert_equal 'for deletion', @@subj.job( 'for deletion' ).name
 				assert_equal true, @@subj.job( 'for deletion' ).delete
-				exc = assert_raises Net::HTTPServerException do
+				exc = assert_raises Jenkins2::NotFoundError do
 					@@subj.job( 'for deletion' ).subject
 				end
-				assert_equal '404 "Not Found"', exc.message
+				assert_equal 'Problem accessing /job/for%20deletion/api/json.', exc.message
 			end
 
 			def test_enable_disable
@@ -138,6 +138,10 @@ module Jenkins2
 				assert_equal( {"bool"=>true, "str"=>"test", "cred"=>nil}, @@subj.
 					job( 'parameterized', depth: 3 ).builds.first.actions.first.
 					parameters.each_with_object({}){|i,memo| memo[i.name] = i.value} )
+			end
+
+			def test_polling
+				assert_equal true, @@subj.job( 'xml config' ).polling
 			end
 		end
 	end

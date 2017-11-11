@@ -14,7 +14,7 @@ tested with Jenkins 2.73.2 LTS.
 
 ## Users / People
 
-- Get authenticated user (whoami)
+- Get authenticated user (who-am-i)
 
 ## Node / Slave / Computer
 
@@ -31,6 +31,7 @@ tested with Jenkins 2.73.2 LTS.
 
 - List installed plugins
 - Install / uninstall a plugin by short name (i.e. ssh-credentials)
+- Install a plugin from hpi or jpi file
 - Show plugin info
 
 ## Credentials
@@ -45,11 +46,41 @@ tested with Jenkins 2.73.2 LTS.
 
 ## Views
 
+- List views
+- Get view configuraiton xml
+- Update view configuraiton xml
+- Create View
+- Delete View
+
 ## Jobs
+
+- List jobs
+- Create job from config.xml or by copying another one
+- Set (Update) job configuration
+- Get job configuration
+- Delete job
+- Enable, disable job
+- Run build (with parameters, if required)
 
 # Installation
 
     gem install jenkins2
+
+# Usage
+
+Either run it from command line:
+
+    jenkins2 -s http://jenkins.example.com offline-node -n mynode
+    jenkins2 --help # => for help and list of available commands
+    jenkins2 --help <command> # => for help on particular command
+
+Or use it in your ruby code:
+
+    require 'jenkins2'
+    jc = Jenkins2::Client.new( server: 'http://jenkins.example.com', user: 'admin',
+      key:  'mysecretkey' )
+    jc.version
+    jc.computer( 'mynode' ).toggle_offline( 'Some reason, why' )
 
 # Configuration
 
@@ -73,22 +104,6 @@ but you can provide your own path with --config-file switch. This way the above 
 will be much shorter.
 
     jenkins2 -c offline-node -n mynode # => -c switch tells Jenkins2 to read configuration file
-
-# Usage
-
-Either run it from command line:
-
-    jenkins2 -s http://jenkins.example.com offline-node -n mynode
-    jenkins2 --help # => for help and list of available commands
-    jenkins2 --help <command> # => for help on particular command
-
-Or use it in your ruby code:
-
-    require 'jenkins2'
-    jc = Jenkins2::Connection.new( server: 'http://jenkins.example.com' )
-    jc.basic_auth 'admin', 'mysecretkey'
-    jc.version
-    jc.computer( 'mynode' ).toggle_offline( 'Some reason, why' )
 
 # License
 

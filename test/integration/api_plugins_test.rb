@@ -20,10 +20,10 @@ module Jenkins2
 			end
 
 			def test_plugin_fail_not_found
-				exc = assert_raises Net::HTTPServerException do
+				exc = assert_raises Jenkins2::NotFoundError do
 					@@subj.plugins.plugin( 'chucknorris', depth: 1 ).subject
 				end
-				assert_equal '404 "Not Found"', exc.message
+				assert_equal 'Problem accessing /pluginManager/plugin/chucknorris/api/json.', exc.message
 			end
 
 			def test_install

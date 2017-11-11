@@ -17,7 +17,7 @@ module Jenkins2
 				attr_accessor :id
 
 				def config_xml
-					connection.get build_path 'config.xml'
+					connection.get( build_path 'config.xml' ).body
 				end
 
 				def update( config_xml )
@@ -32,6 +32,14 @@ module Jenkins2
 
 				def delete
 					connection.post( build_path 'doDelete' ).code == '302'
+				end
+
+				def add_job( job_name )
+					connection.post( build_path( 'addJobToView' ), nil, name: job_name ).code == '200'
+				end
+
+				def remove_job( job_name )
+					connection.post( build_path( 'removeJobFromView' ), nil, name: job_name ).code == '200'
 				end
 			end
 		end

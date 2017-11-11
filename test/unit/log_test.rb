@@ -4,13 +4,13 @@ module Jenkins2
 	module UnitTest
 		class LogTest < Minitest::Test
 			def teardown
-				$stdout = STDOUT
-				Log.init( log: $stdout, verbose: -1 )
+				$stderr = STDERR
+				Log.init( log: $stderr, verbose: -1 )
 			end
 
-			def test_log_message_format_stdout
-				r, $stdout = IO.pipe
-				Log.init( log: $stdout, verbose: 3 )
+			def test_log_message_format_stderr
+				r, $stderr = IO.pipe
+				Log.init( verbose: 3 )
 				Log.info 'as is'
 				assert_equal "as is\n", r.gets
 			end

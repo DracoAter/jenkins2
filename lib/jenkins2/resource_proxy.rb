@@ -24,8 +24,8 @@ module Jenkins2
 
 		def subject
 			@subject ||= ::JSON.parse( raw.body, object_class: ::OpenStruct  )
-		rescue ::JSON::ParserError
-			raw.value
+#		rescue ::JSON::ParserError
+#			raw.body
 		end
 
 		private

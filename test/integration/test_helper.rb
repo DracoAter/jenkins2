@@ -18,7 +18,8 @@ class Minitest::Test
 	@@key = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
 	@@server = 'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
 	@@user = 'admin'
-	@@subj = Jenkins2::Client.new( server: @@server, user: @@user, key: @@key )
+	@@opts = { server: @@server, user: @@user, key: @@key }
+	@@subj = Jenkins2::Client.new( @@opts )
 
 	# Restart Jenkins before running the tests, to make sure all changes are applied.
 	# For example uninstalling plugin, requires restart.

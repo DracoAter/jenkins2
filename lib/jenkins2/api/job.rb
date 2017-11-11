@@ -49,7 +49,7 @@ module Jenkins2
 				end
 			
 				def polling
-					connection.post( build_path 'polling' )
+					connection.post( build_path 'polling' ).code == '302'
 				end
 			end
 		end

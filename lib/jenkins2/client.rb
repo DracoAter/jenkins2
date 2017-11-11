@@ -23,6 +23,7 @@ module Jenkins2
 		def initialize( **options )
 			@connection = Jenkins2::Connection.new( options[:server] ).
 				basic_auth options[:user], options[:key]
+			Log.init( log: options[:log], verbose: options[:verbose] )
 		end
 	end
 end

@@ -59,7 +59,7 @@ module Jenkins2
 					Log.debug { "Request content_type: #{req.content_type}, body: #{req.body}" }
 					response = http.request req
 					handle_response response
-				rescue Jenkins2::NoValidCrumbError
+				rescue Jenkins2::NoValidCrumbMatcher
 					update_crumbs
 					retry
 				end
@@ -73,7 +73,13 @@ module Jenkins2
 		def handle_response( response )
 			Log.debug { "Response: #{response.code}, #{response.body}" }
 			case response
-			when Net::HTTPClientError, Net::HTTPServerError
+			when Net::HTTPNotFound
+				raise Jenkins2::NotFoundError, response
+			when Net::HTTPBadRequest
+				raise Jenkins2::BadRequestError, response
+			when Net::HTTPServiceUnavailable
+				raise Jenkins2::ServiceUnavailableError, response
+			when Net::HTTPClientError, Net::HTTPServerError #4XX, 5XX
 				response.value
 			else
 				response

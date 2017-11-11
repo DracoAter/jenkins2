@@ -72,8 +72,8 @@ module Jenkins2
 			end
 			
 			def test_get_config_xml
-				assert_raises Net::HTTPServerException do
-					@@subj.computer('(master)').config_xml.code
+				assert_raises Jenkins2::BadRequestError do
+					@@subj.computer('(master)').config_xml
 				end
 				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml
 			end

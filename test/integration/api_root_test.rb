@@ -4,6 +4,7 @@ module Jenkins2
 	module IntegrationTest
 		class ApiRootTest < Minitest::Test
 			def teardown
+				Jenkins2::Util.wait( max_wait_minutes: 2 ){ @@subj.version }
 				@@subj.cancel_quiet_down
 			end
 
@@ -23,6 +24,20 @@ module Jenkins2
 				assert_equal true, @@subj.root.quietingDown
 				assert_equal true, @@subj.cancel_quiet_down
 				assert_equal false, @@subj.root.quietingDown
+			end
+
+			def test_restart
+				assert_equal true, @@subj.restart!
+				assert_raises Jenkins2::ServiceUnavailableError do
+					@@subj.version
+				end
+			end
+
+			def test_safe_restart
+				assert_equal true, @@subj.restart
+				assert_raises Jenkins2::ServiceUnavailableError do
+					@@subj.version
+				end
 			end
 		end
 	end

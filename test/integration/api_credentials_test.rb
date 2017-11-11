@@ -62,10 +62,10 @@ module Jenkins2
 					passphrase: 'delete_me' )
 				refute_nil @subj.credential( 'delete_me' ).subject
 				assert_equal true, @subj.credential( 'delete_me' ).delete
-				exc = assert_raises Net::HTTPServerException do
+				exc = assert_raises Jenkins2::NotFoundError do
 					@subj.credential( 'delete_me' ).subject
 				end
-				assert_equal '404 "Not Found"', exc.message
+				assert_equal 'Problem accessing /credentials/store/system/domain/_/credential/delete_me/api/json.', exc.message
 			end
 		end
 	end

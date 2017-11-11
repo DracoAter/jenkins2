@@ -1,8 +1,18 @@
 module Jenkins2
 	class CLI
+		class SafeRestart < CLI
+			def self.description
+				'Safely restart Jenkins.'
+			end
+
+			def run
+				jc.restart
+			end
+		end
+
 		class Restart < CLI
 			def self.description
-				'Restart Jenkins'
+				'Restart Jenkins.'
 			end
 			
 			def run
@@ -22,7 +32,7 @@ module Jenkins2
 
 		class CancelQuietDown < CLI
 			def self.description
-				'Cancel previously issued quiet-down command'
+				'Cancel previously issued quiet-down command.'
 			end
 			
 			def run
@@ -30,19 +40,9 @@ module Jenkins2
 			end
 		end
 
-		class Me < CLI
-			def self.description
-				'Authenticated user info'
-			end
-			
-			def run
-				jc.me
-			end
-		end
-
 		class Version < CLI
 			def self.description
-				'Jenkins version'
+				'Jenkins version.'
 			end
 			
 			def run

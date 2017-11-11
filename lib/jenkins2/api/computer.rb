@@ -44,6 +44,10 @@ module Jenkins2
 					body = "offlineMessage=#{CGI.escape offline_message}" unless offline_message.nil?
 					connection.post path, body
 				end
+
+				def online?
+					not ( offline or temporarilyOffline )
+				end
 			end
 		end
 	end

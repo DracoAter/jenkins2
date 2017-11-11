@@ -2,10 +2,11 @@ module Jenkins2
 	class CLI
 		class InstallPlugin < CLI
 			def self.description
-				'Installs a plugin'
+				'Installs a plugin.'
 			end
 
 			def add_options
+				parser.separator 'Required arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end
@@ -18,7 +19,7 @@ module Jenkins2
 
 		class ListPlugins < CLI
 			def self.description
-				'Lists all installed plugins'
+				'Lists all installed plugins.'
 			end
 
 			def run
@@ -30,10 +31,11 @@ module Jenkins2
 
 		class UninstallPlugin < CLI
 			def self.description
-				'Uninstalls a plugin'
+				'Uninstalls a plugin.'
 			end
 
 			def add_options
+				parser.separator 'Required arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end
@@ -46,10 +48,11 @@ module Jenkins2
 
 		class ShowPlugin < CLI
 			def self.description
-				'Show plugin info'
+				'Show plugin info.'
 			end
 
 			def add_options
+				parser.separator 'Required arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end

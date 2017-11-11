@@ -1,7 +1,11 @@
 require 'optparse/uri'
 
+require_relative 'cli/credentials'
+require_relative 'cli/nodes'
 require_relative 'cli/root'
 require_relative 'cli/plugins'
+require_relative 'cli/user'
+require_relative 'cli/view'
 
 module Jenkins2
 	class CLI
@@ -68,47 +72,48 @@ module Jenkins2
 				key = @command.join ' '
 				@parser.top.append( OptionParser::Switch::NoArgument.new( key, nil, [key], nil,
 					nil, [self.class.description], Proc.new{ OptionParser.new( &block ) } ), [], [key] )
-				@parser.separator 'Command Options:'
 			end
 			@parser
 		end
 
 		def global_parser
 			@global_parser ||= OptionParser.new do |parser|
-				parser.banner = 'Usage: jenkins2 [global-options] <command> [options]'
+				parser.banner = 'Usage: jenkins2 [global-arguments] <command> [command-arguments]'
 				parser.separator ''
-				parser.separator 'Global options (accepted by all commands):'
+				parser.separator 'Global arguments (accepted by all commands):'
 				parser.on '-s', '--server URL', ::URI, 'Jenkins Server Url' do |s|
-					options[:server] = s
+					@options[:server] = s
 				end
 				parser.on '-u', '--user USER', 'Jenkins API User' do |u|
-					options[:user] = u
+					@options[:user] = u
 				end
 				parser.on '-k', '--key KEY', 'Jenkins API Key' do |k|
-					options[:key] = k
+					@options[:key] = k
 				end
 				parser.on '-c', '--config [PATH]', 'Use configuration file. Instead of providing '\
 					'server, user and key through command line, you can do that with configuration file. '\
 					'File format is json: { "server": "http://jenkins.example.com", "user": "admin", '\
-					'"key": "123456" }. Options provided in command line will overwrite ones from '\
-				'configuration file. Program looks for ~/.jenkins2.json if no PATH is provided.' do |c|
-					options[:config] = opt || ::File.join( ENV['HOME'], '.jenkins2.json' )
+					'"key": "123456" }. Arguments provided in command line will overwrite ones from '\
+					'configuration file. Program looks for ~/.jenkins2.json if no PATH is provided.' do |c|
+					@options[:config] = c || ::File.join( ENV['HOME'], '.jenkins2.json' )
+					config_file_options = JSON.parse( IO.read( options[:config] ), symbolize_names: true )
+					@options = config_file_options.merge options
 				end
 				parser.on '-l', '--log FILE', 'Log file. Prints to standard out, if not provided' do |l|
-					@log_opts[:log] = opt
+					@options[:log] = l
 				end
-				parser.on '-v', '--verbose', 'Print more info. Up to -vvv. Prints only errors by default.' do
-					@log_opts[:verbose] += 1
+				parser.on '-v', '--verbose VALUE', Integer, 'Print more info. 1 up to 3. Prints only errors by default.' do |v|
+					@options[:verbose] = v
 				end
 				parser.on '-h', '--help', 'Show help' do
-					options[:help] = true
+					@options[:help] = true
 				end
 				parser.on '-V', '--version', 'Show version' do
 					puts VERSION
 					exit
 				end
 				parser.separator ''
-				parser.separator 'For command specific options run: jenkins2 --help <command>'
+				parser.separator 'For command specific arguments run: jenkins2 --help <command>'
 				parser.separator ''
 			end
 		end
@@ -133,7 +138,7 @@ module Jenkins2
 		end
 
 		def jc
-			@jc ||= Jenkins2::Connection.new( options[:server] ).basic_auth options[:user], options[:key]
+			@jc ||= Jenkins2::Client.new( options )
 		end
 	end
 end

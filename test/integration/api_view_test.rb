@@ -5,6 +5,9 @@ require_relative 'test_helper'
 module Jenkins2
 	module IntegrationTest
 		class ApiViewTest < Minitest::Test
+			JOB_CONFIG_XML = '<?xml version="1.0" encoding="UTF-8"?><project><builders/>'\
+				'<publishers/><buildWrappers/></project>'
+
 			CONFIG_XML = '<?xml version="1.0" encoding="UTF-8"?>
 <hudson.model.ListView>
   <filterExecutors>false</filterExecutors>
@@ -72,8 +75,8 @@ module Jenkins2
 			end
 
 			def teardown
-				@@subj.view( 'xml config' ).delete
 				@@subj.view( 'new one' ).delete rescue nil
+				@@subj.view( 'xml config' ).delete
 			end
 
 			def test_view
@@ -108,6 +111,18 @@ module Jenkins2
 				assert_equal true, @@subj.view('xml config').update( CONFIG_XML )
 				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
 			end
+
+			def test_add_remove_job
+				@@subj.job( 'empty job' ).create( JOB_CONFIG_XML )
+				refute_includes @@subj.view( 'xml config' ).jobs.collect(&:name), 'empty job'
+				assert_equal true, @@subj.view( 'xml config' ).add_job( 'empty job' )
+				assert_includes @@subj.view( 'xml config' ).jobs.collect(&:name), 'empty job'
+				assert_equal true, @@subj.view( 'xml config' ).remove_job( 'empty job' )
+				refute_includes @@subj.view( 'xml config' ).jobs.collect(&:name), 'empty job'
+			ensure
+				@@subj.job( 'empty job' ).delete rescue nil
+			end
+				
 		end
 	end
 end
