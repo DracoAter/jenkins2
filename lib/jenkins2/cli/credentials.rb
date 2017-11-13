@@ -6,7 +6,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-u', '--username USER', 'SSH username.' do |u|
 					options[:username] = u
 				end

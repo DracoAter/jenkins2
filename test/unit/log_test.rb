@@ -11,7 +11,9 @@ module Jenkins2
 			def test_log_message_format_stderr
 				r, $stderr = IO.pipe
 				Log.init( verbose: 3 )
-				Log.info 'as is'
+				$stderr.stub :tty?, true do
+					Log.info 'as is'
+				end
 				assert_equal "as is\n", r.gets
 			end
 

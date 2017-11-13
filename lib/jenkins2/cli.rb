@@ -18,8 +18,8 @@ module Jenkins2
 			@parser = nil
 		end
 
-		def run
-			Log.unknown summary
+		def summary_or_run
+			options[:help] ? summary : run
 		end
 
 		def parse( args )
@@ -32,23 +32,11 @@ module Jenkins2
 					next
 				end
 			end
-			self
-		end
-
-		def summary
-			result = ''
-			if self.class.subcommands.empty?
-				result += global_parser.to_s
-			else
-				parser.separator 'Commands:'
-				self.class.subcommands.each do |sc|
-					key = sc.class_to_command
-					parser.base.append( OptionParser::Switch::NoArgument.new( key, nil, [key], nil, nil,
-						[sc.description], Proc.new{ OptionParser.new( &block ) } ), [], [key] )
-					sc.new.summary
-				end
+			missing = mandatory_arguments.select{|a| options[a].nil? }
+			unless missing.empty?
+				raise OptionParser::MissingArgument, missing.join(', ')
 			end
-			result + parser.to_s
+			self
 		end
 
 		# This method should be overwritten in subclasses
@@ -58,8 +46,32 @@ module Jenkins2
 
 		private
 
+		# This method can be overwritten in subclasses, to add more mandatory arguments
+		def mandatory_arguments
+			[:server]
+		end
+
 		# This method should be overwritten in subclasses
 		def add_options
+		end
+
+		# This method should be overwritten in subclasses
+		def run
+			summary
+		end
+
+		def summary
+			if self.class.subcommands.empty?
+				global_parser.to_s + parser.to_s
+			else
+				parser.separator 'Commands:'
+				self.class.subcommands.each do |sc|
+					key = sc.class_to_command
+					parser.base.append( OptionParser::Switch::NoArgument.new( key, nil, [key], nil, nil,
+						[sc.description], Proc.new{ OptionParser.new( &block ) } ), [], [key] )
+				end
+				parser.to_s
+			end
 		end
 
 		def parser

@@ -22,7 +22,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-f', '--from NAME', 'Name of the job to copy.' do |f|
 					options[:from] = f
 				end

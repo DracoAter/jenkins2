@@ -54,7 +54,7 @@ For command specific arguments run: jenkins2 --help <command>
 
 			COMMAND_SUMMARY = %{Command:
     install-plugin                   Installs a plugin.
-Required arguments:
+Mandatory arguments:
     -n, --name SHORTNAME             Plugin short name (like thinBackup).
 }
 
@@ -64,12 +64,17 @@ Required arguments:
 					f.write('{"user":"fromconfigfile","verbose":"3"}')
 					f
 				end
-
 				@args = %w{-s http://jenkins.com -k as213t2e --user admin}
 			end
 
 			def teardown
 #				@config_file.unlink
+			end
+
+			def test_parse_arguments_mandatory_missing
+				assert_raises OptionParser::MissingArgument do
+					@subj.parse( [] )
+				end
 			end
 
 			def test_parse_global_arguments
@@ -86,16 +91,16 @@ Required arguments:
 			end
 
 			def test_parse_global_arguments_with_2_word_command
-				args = @args + %w{install-plugin}
+				args = @args + %w{install-plugin -n test}
 				result = @subj.parse( args )
-				assert_equal PARSED_ARGS, @subj.options
+				assert_equal PARSED_ARGS.merge( name: 'test' ), @subj.options
 				assert_equal Jenkins2::CLI::InstallPlugin, result.class
 			end
 
 			def test_parse_global_arguments_with_2_word_command_separated_by_space
-				args = @args + %w{install plugin}
+				args = @args + %w{install plugin -n test}
 				result = @subj.parse( args )
-				assert_equal PARSED_ARGS, @subj.options
+				assert_equal PARSED_ARGS.merge( name: 'test' ), @subj.options
 				assert_equal Jenkins2::CLI::InstallPlugin, result.class
 			end
 
@@ -131,29 +136,43 @@ Required arguments:
 			end
 
 			def test_parse_verbose
-				assert_equal 1, Jenkins2::CLI.new.parse( %w{-v1} ).options[:verbose]
-				assert_equal 2, Jenkins2::CLI.new.parse( %w{-v2} ).options[:verbose]
-				assert_equal 3, Jenkins2::CLI.new.parse( %w{-v3} ).options[:verbose]
-				assert_equal 2, Jenkins2::CLI.new.parse( %w{-v 2} ).options[:verbose]
+				assert_equal 1, Jenkins2::CLI.new.parse( @args + %w{-v1} ).options[:verbose]
+				assert_equal 2, Jenkins2::CLI.new.parse( @args + %w{-v2} ).options[:verbose]
+				assert_equal 3, Jenkins2::CLI.new.parse( @args + %w{-v3} ).options[:verbose]
+				assert_equal 2, Jenkins2::CLI.new.parse( @args + %w{-v 2} ).options[:verbose]
 			end
 
-			def test_summary_no_commands
-				result = @subj.parse( [] )
-				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary
+			def test_run_no_commands
+				result = @subj.parse( @args )
+				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary_or_run
 			end
 
-			def test_print_help_part_command
-				result = @subj.parse( %w{install} )
-				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary
+			def test_run_part_command
+				result = @subj.parse( @args + %w{install} )
+				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary_or_run
 			end
 
-			def test_print_help_with_full_command
-				result = @subj.parse( %w{install-plugin} )
-				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, result.summary
+			def test_show_help_with_full_command
+				result = @subj.parse( @args + %w{--help install-plugin -n test} )
+				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, result.summary_or_run
+			end
+
+			def test_show_help_with_full_command_missing_mandatory_arguments
+				exc = assert_raises OptionParser::MissingArgument do
+					@subj.parse( %w{--help install-plugin} )
+				end
+				assert_equal 'missing argument: server, name', exc.message
+			end
+
+			def test_show_help_with_full_command_missing_mandatory_argument
+				exc = assert_raises OptionParser::MissingArgument do
+					@subj.parse( @args + %w{--help install-plugin} )
+				end
+				assert_equal 'missing argument: name', exc.message
 			end
 
 			def test_read_config_file
-				result = @subj.parse( @args + ['-c', @config_file.path] )
+				@subj.parse( @args + ['-c', @config_file.path] )
 				assert_equal PARSED_ARGS.merge( verbose: '3', config: @config_file.path ), @subj.options
 			end
 		end

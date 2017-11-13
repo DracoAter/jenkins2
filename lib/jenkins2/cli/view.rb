@@ -6,7 +6,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
@@ -28,7 +28,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
@@ -45,7 +45,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name X,Y,..', Array, 'View names to delete.' do |n|
 					options[:name] = n
 				end
@@ -64,7 +64,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
@@ -81,7 +81,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
@@ -103,7 +103,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end

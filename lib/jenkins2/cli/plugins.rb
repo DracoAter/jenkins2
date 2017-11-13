@@ -5,11 +5,17 @@ module Jenkins2
 				'Installs a plugin.'
 			end
 
+			private
+
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run
@@ -35,7 +41,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end
@@ -52,7 +58,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end

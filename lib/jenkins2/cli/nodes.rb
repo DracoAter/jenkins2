@@ -6,7 +6,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name X,Y,..', Array, 'Slave name, or "(master)" for master, '\
 					'comma-separated list is supported.' do |n|
 					options[:name] = n
@@ -26,7 +26,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node.' do |n|
 					options[:name] = n
 				end
@@ -44,7 +44,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name X,Y,..', Array, 'Names of nodes to delete.' do |n|
 					options[:name] = n
 				end
@@ -63,7 +63,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name X,Y,..', Array, 'Slave name, or "(master)" for master, '\
 					'comma-separated list is supported.' do |n|
 					options[:name] = n
@@ -88,7 +88,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node.' do |n|
 					options[:name] = n
 				end
@@ -126,7 +126,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node or "(master)" for master.' do |n|
 					options[:name] = n
 				end
@@ -151,7 +151,7 @@ module Jenkins2
 			end
 			
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node or "(master)" for master.' do |n|
 					options[:name] = n
 				end
@@ -170,7 +170,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node.' do |n|
 					options[:name] = n
 				end
@@ -187,7 +187,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node.' do |n|
 					options[:name] = n
 				end
@@ -211,7 +211,7 @@ module Jenkins2
 			end
 
 			def add_options
-				parser.separator 'Required arguments:'
+				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node.' do |n|
 					options[:name] = n
 				end
