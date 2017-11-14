@@ -5,6 +5,8 @@ module Jenkins2
 				'Lists all jobs in a specific view or item group.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Optional arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view. Default - all' do |n|
@@ -21,6 +23,8 @@ module Jenkins2
 				'Copies a job.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-f', '--from NAME', 'Name of the job to copy.' do |f|
@@ -29,6 +33,10 @@ module Jenkins2
 				parser.on '-n', '--name NAME', 'Name of the new job, to be created.' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name, :from]
 			end
 
 			def run

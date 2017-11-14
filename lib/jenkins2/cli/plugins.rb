@@ -28,6 +28,8 @@ module Jenkins2
 				'Lists all installed plugins.'
 			end
 
+			private
+
 			def run
 				jc.plugins( depth: 1 )['plugins'].collect do |pl|
 					"%s (%s)" % [pl['shortName'], pl['version']]
@@ -40,11 +42,17 @@ module Jenkins2
 				'Uninstalls a plugin.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run
@@ -57,11 +65,17 @@ module Jenkins2
 				'Show plugin info.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name SHORTNAME', 'Plugin short name (like thinBackup).' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run

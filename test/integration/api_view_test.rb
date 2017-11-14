@@ -101,15 +101,15 @@ module Jenkins2
 			end
 			
 			def test_config_xml
-				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
+				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml
 			end
 
 			def test_update
-				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
+				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml
 				assert_equal true, @@subj.view('xml config').update( NEW_CONFIG_XML )
-				assert_equal NEW_CONFIG_XML, @@subj.view('xml config').config_xml.body
+				assert_equal NEW_CONFIG_XML, @@subj.view('xml config').config_xml
 				assert_equal true, @@subj.view('xml config').update( CONFIG_XML )
-				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml.body
+				assert_equal CONFIG_XML_WITH_NAME, @@subj.view('xml config').config_xml
 			end
 
 			def test_add_remove_job

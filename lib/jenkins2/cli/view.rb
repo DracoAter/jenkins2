@@ -5,6 +5,8 @@ module Jenkins2
 				'Adds jobs to view.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
@@ -13,6 +15,10 @@ module Jenkins2
 				parser.on '-j', '--job X,Y,..', Array, 'Job name(s) to add.' do |j|
 					options[:job] = j
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name, :job]
 			end
 
 			def run
@@ -27,11 +33,17 @@ module Jenkins2
 				'Creates a new view by reading stdin as a XML configuration.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run
@@ -44,11 +56,17 @@ module Jenkins2
 				'Delete view(s).'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name X,Y,..', Array, 'View names to delete.' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run
@@ -63,11 +81,17 @@ module Jenkins2
 				'Dumps the view definition XML to stdout.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run
@@ -80,6 +104,8 @@ module Jenkins2
 				'Removes jobs from view.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
@@ -88,6 +114,10 @@ module Jenkins2
 				parser.on '-j', '--job X,Y,..', Array, 'Job name(s) to remove.' do |j|
 					options[:job] = j
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name, :job]
 			end
 
 			def run
@@ -102,11 +132,17 @@ module Jenkins2
 				'Updates the view definition XML from stdin. The opposite of the get-view command.'
 			end
 
+			private
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the view.' do |n|
 					options[:name] = n
 				end
+			end
+
+			def mandatory_arguments
+				super + [:name]
 			end
 
 			def run

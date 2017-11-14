@@ -1,3 +1,5 @@
+require_relative 'rud'
+
 module Jenkins2
 	module API
 		module Job
@@ -9,6 +11,7 @@ module Jenkins2
 
 			class Proxy < ::Jenkins2::ResourceProxy
 				attr_accessor :id
+				include ::Jenkins2::RUD
 
 				def create( config_xml )
 					connection.post( 'createItem', config_xml, name: id ) do |req|
@@ -18,18 +21,6 @@ module Jenkins2
 
 				def copy( from )
 					connection.post( 'createItem', nil, name: id, from: from, mode: 'copy' ).code == '302'
-				end
-
-				def update( config_xml )
-					connection.post( build_path( 'config.xml' ), config_xml ).code == '200'
-				end
-
-				def config_xml
-					connection.get( build_path 'config.xml' ).body
-				end
-
-				def delete
-					connection.post( build_path 'doDelete' ).code == '302'
 				end
 
 				def disable

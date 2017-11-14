@@ -1,3 +1,5 @@
+require_relative 'rud'
+
 module Jenkins2
 	module API
 		module View
@@ -15,23 +17,12 @@ module Jenkins2
 
 			class Proxy < ::Jenkins2::ResourceProxy
 				attr_accessor :id
-
-				def config_xml
-					connection.get( build_path 'config.xml' ).body
-				end
-
-				def update( config_xml )
-					connection.post( build_path( 'config.xml' ), config_xml ).code == '200'
-				end
+				include ::Jenkins2::RUD
 
 				def create( config_xml )
 					connection.post( 'createView', config_xml, name: id ) do |req|
 						req['Content-Type'] = 'text/xml'
 					end.code == '200'
-				end
-
-				def delete
-					connection.post( build_path 'doDelete' ).code == '302'
 				end
 
 				def add_job( job_name )

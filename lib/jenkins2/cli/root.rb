@@ -5,6 +5,8 @@ module Jenkins2
 				'Safely restart Jenkins.'
 			end
 
+			private
+
 			def run
 				jc.restart
 			end
@@ -15,6 +17,8 @@ module Jenkins2
 				'Restart Jenkins.'
 			end
 			
+			private
+
 			def run
 				jc.restart!
 			end
@@ -25,6 +29,8 @@ module Jenkins2
 				'Put Jenkins into the quiet mode, wait for existing builds to be completed.'
 			end
 			
+			private
+
 			def run
 				jc.quiet_down
 			end
@@ -35,6 +41,8 @@ module Jenkins2
 				'Cancel previously issued quiet-down command.'
 			end
 			
+			private
+
 			def run
 				jc.cancel_quiet_down
 			end
@@ -45,6 +53,8 @@ module Jenkins2
 				'Jenkins version.'
 			end
 			
+			private
+
 			def run
 				jc.version
 			end
