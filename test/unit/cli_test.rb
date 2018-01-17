@@ -72,9 +72,7 @@ Mandatory arguments:
 			end
 
 			def test_parse_arguments_mandatory_missing
-				assert_raises OptionParser::MissingArgument do
-					@subj.parse( [] )
-				end
+				assert_equal ['Missing argument(s): server.'], @subj.parse( [] ).errors
 			end
 
 			def test_parse_global_arguments
@@ -143,32 +141,28 @@ Mandatory arguments:
 			end
 
 			def test_run_no_commands
-				result = @subj.parse( @args )
-				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary_or_run
+				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, @subj.parse( @args ).call
 			end
 
 			def test_run_part_command
-				result = @subj.parse( @args + %w{install} )
-				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, result.summary_or_run
+				assert_equal GLOBAL_SUMMARY + COMMANDS_SUMMARY, @subj.parse( @args + %w{install} ).call
 			end
 
 			def test_show_help_with_full_command
-				result = @subj.parse( @args + %w{--help install-plugin -n test} )
-				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, result.summary_or_run
+				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, @subj.
+					parse( @args + %w{--help install-plugin -n test} ).call
 			end
 
 			def test_show_help_with_full_command_missing_mandatory_arguments
-				exc = assert_raises OptionParser::MissingArgument do
-					@subj.parse( %w{--help install-plugin} )
-				end
-				assert_equal 'missing argument: server, name', exc.message
+				result = @subj.parse( %w{--help install-plugin} )
+				assert_equal ['Missing argument(s): server, name.'], result.errors
+				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, result.call
 			end
 
-			def test_show_help_with_full_command_missing_mandatory_argument
-				exc = assert_raises OptionParser::MissingArgument do
-					@subj.parse( @args + %w{--help install-plugin} )
-				end
-				assert_equal 'missing argument: name', exc.message
+			def test_full_command_missing_mandatory_argument
+				result = @subj.parse( @args + %w{install-plugin} )
+				assert_equal ['Missing argument(s): name.'], result.errors
+				assert_equal result.errors.first + "\n" + GLOBAL_SUMMARY + COMMAND_SUMMARY, result.call
 			end
 
 			def test_read_config_file

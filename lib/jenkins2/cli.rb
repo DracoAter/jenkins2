@@ -9,17 +9,24 @@ require_relative 'cli/view'
 
 module Jenkins2
 	class CLI
-		attr_reader :options
+		attr_reader :options, :errors
 
 		def initialize( options={}, command=[] )
 			@options = options
 			@command = command
+			@errors = []
 			@log_opts = {}
 			@parser = nil
 		end
 
-		def summary_or_run
-			options[:help] ? summary : run
+		def call
+			if options[:help]
+				summary
+			elsif !errors.empty?
+				errors.join( "\n" ) + "\n" + summary
+			else
+				run
+			end
 		end
 
 		def parse( args )
@@ -34,7 +41,7 @@ module Jenkins2
 			end
 			missing = mandatory_arguments.select{|a| options[a].nil? }
 			unless missing.empty?
-				raise OptionParser::MissingArgument, missing.join(', ')
+				@errors << "Missing argument(s): #{missing.join(', ')}."
 			end
 			self
 		end
