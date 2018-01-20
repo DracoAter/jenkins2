@@ -6,7 +6,8 @@ module Jenkins2
 			end
 
 			def run
-				jc.me
+				r = jc.me.subject
+				%w{id fullName description}.collect{|p| "#{p}: #{r[p]}" }.join "\n"
 			end
 		end
 	end

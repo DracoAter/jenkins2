@@ -60,22 +60,22 @@ module Jenkins2
 				$stdin, w = IO.pipe
 				w.write( CONFIG_XML % 'cli new one' )
 				w.close
-				assert_equal true, Jenkins2::CLI::CreateNode.new( @@opts.merge( name: 'cli new one') ).run
+				assert_equal true, Jenkins2::CLI::CreateNode.new( @@opts.merge( name: 'cli new one') ).call
 				assert_includes @@subj.computer.computer.collect(&:displayName), 'cli new one'
 			end
 
 			def test_delete
 				assert_includes @@subj.computer.computer.collect(&:displayName), 'cli for deletion'
-				assert_equal true, Jenkins2::CLI::DeleteNode.new( @@opts.merge( name: ['cli for deletion']) ).run
+				assert_equal true, Jenkins2::CLI::DeleteNode.new( @@opts.merge( name: ['cli for deletion']) ).call
 				refute_includes @@subj.computer.computer.collect(&:displayName), 'cli for deletion'
 			end
 			
 			def test_get_node
 				assert_raises Jenkins2::BadRequestError do
-					Jenkins2::CLI::GetNode.new( @@opts.merge( name: '(master)') ).run
+					Jenkins2::CLI::GetNode.new( @@opts.merge( name: '(master)') ).call
 				end
 				assert_equal CONFIG_XML % 'cli xml config', Jenkins2::CLI::GetNode.new(
-					@@opts.merge( name: 'cli xml config') ).run
+					@@opts.merge( name: 'cli xml config') ).call
 			end
 
 			def test_update_node
@@ -83,13 +83,13 @@ module Jenkins2
 				$stdin, w = IO.pipe
 				w.write( NEW_CONFIG_XML )
 				w.close
-				assert_equal true, Jenkins2::CLI::UpdateNode.new( @@opts.merge( name: 'cli xml config' ) ).run
+				assert_equal true, Jenkins2::CLI::UpdateNode.new( @@opts.merge( name: 'cli xml config' ) ).call
 				assert_equal NEW_CONFIG_XML, @@subj.computer('cli xml config').config_xml
 				$stdin, w = IO.pipe
 				w.write( CONFIG_XML % 'cli xml config' )
 				w.close
-				assert_equal true, Jenkins2::CLI::UpdateNode.new( @@opts.merge( name: 'cli xml config' ) ).run
-				assert_equal CONFIG_XML_AFTER, @@subj.computer('cli xml config').config_xml
+				assert_equal true, Jenkins2::CLI::UpdateNode.new( @@opts.merge( name: 'cli xml config' ) ).call
+				assert_equal CONFIG_XML % 'cli xml config', @@subj.computer('cli xml config').config_xml
 			end
 		end
 	end

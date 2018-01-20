@@ -33,7 +33,7 @@ module Jenkins2
 				def toggle_offline( offline_message=nil )
 					path = build_path 'toggleOffline'
 					body = "offlineMessage=#{CGI.escape offline_message}" unless offline_message.nil?
-					connection.post path, body
+					connection.post( path, body ).code == '302'
 				end
 
 				def online?

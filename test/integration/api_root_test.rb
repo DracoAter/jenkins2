@@ -15,7 +15,7 @@ module Jenkins2
 			end
 
 			def test_version
-				assert_equal '2.73.2', @@subj.version
+				assert_equal '2.89.3', @@subj.version
 			end
 
 			def test_quiet_down
