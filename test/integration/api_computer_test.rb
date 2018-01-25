@@ -53,6 +53,11 @@ module Jenkins2
   <nodeProperties/>
 </slave>'
 
+			PLUGINS = %w{command-launcher}
+			@@subj.plugins.install PLUGINS
+			Jenkins2::Util.wait do
+				PLUGINS.all?{|plg| @@subj.plugins.plugin( plg ).active? }
+			end
 
 			def setup
 				@@subj.computer( 'xml config' ).create
@@ -116,11 +121,6 @@ module Jenkins2
 			end
 
 			def test_launch_agent_and_disconnect
-				plugins = %w{command-launcher}
-				@@subj.plugins.install plugins
-				Jenkins2::Util.wait do
-					plugins.all?{|plg| @@subj.plugins.plugin( plg ).active? }
-				end
 				assert_equal true, @@subj.computer( 'localhost' ).update( LOCALHOST_CONFIG_XML )
 				assert_equal true, @@subj.computer( 'localhost' ).launch_agent
 				Jenkins2::Util.wait( max_wait_minutes: 2 ) do
