@@ -1,5 +1,5 @@
 module Jenkins2
-	module API
+	class API
 		module Plugins
 			def plugins( **params )
 				Proxy.new connection, 'pluginManager', params

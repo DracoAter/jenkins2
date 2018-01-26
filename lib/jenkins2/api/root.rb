@@ -1,5 +1,5 @@
 module Jenkins2
-	module API
+	class API
 		module Root
 			def root( **params )
 				Proxy.new connection, '', params

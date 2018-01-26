@@ -1,4 +1,5 @@
 require_relative 'resource_proxy'
+require_relative 'connection'
 require_relative 'errors'
 require_relative 'api/credentials'
 require_relative 'api/computer'
@@ -9,14 +10,14 @@ require_relative 'api/user'
 require_relative 'api/view'
 
 module Jenkins2
-	class Client
-		include Jenkins2::API::Credentials
-		include Jenkins2::API::Computer
-		include Jenkins2::API::Job
-		include Jenkins2::API::Plugins
-		include Jenkins2::API::Root
-		include Jenkins2::API::User
-		include Jenkins2::API::View
+	class API
+		include Credentials
+		include Computer
+		include Job
+		include Plugins
+		include Root
+		include User
+		include View
 
 		attr_reader :connection
 

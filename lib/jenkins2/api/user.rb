@@ -1,5 +1,5 @@
 module Jenkins2
-	module API
+	class API
 		module User
 			def me( **params )
 				Me::Proxy.new connection, 'me', params

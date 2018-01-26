@@ -1,7 +1,7 @@
 require_relative 'rud'
 
 module Jenkins2
-	module API
+	class API
 		module View
 			MODE_LIST_VIEW = 'hudson.model.ListView'
 

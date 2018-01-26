@@ -1,5 +1,5 @@
 module Jenkins2
-	module API
+	class API
 		module Credentials
 			def credentials( params={} )
 				Proxy.new connection, "credentials", params

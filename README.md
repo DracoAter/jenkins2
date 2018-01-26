@@ -77,7 +77,7 @@ Either run it from command line:
 Or use it in your ruby code:
 
     require 'jenkins2'
-    jc = Jenkins2::Client.new( server: 'http://jenkins.example.com', user: 'admin',
+    jc = Jenkins2.connect( server: 'http://jenkins.example.com', user: 'admin',
       key:  'mysecretkey' )
     jc.version
     jc.computer( 'mynode' ).toggle_offline( 'Some reason, why' )
@@ -136,7 +136,7 @@ run bootstrap script). To run unit tests run
 
     script/unit_test
 
-Integration tests are run against a Jenkins server. urrently they require an lxd to setup it.
+Integration tests are run against a Jenkins server. Currently they require an lxd to setup it.
 To run integration tests type
 
     script/integration_test

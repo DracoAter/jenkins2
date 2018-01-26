@@ -1,7 +1,7 @@
 require_relative 'rud'
 
 module Jenkins2
-	module API
+	class API
 		module Job
 			def job( name, **params )
 				proxy = Proxy.new connection, 'job', params

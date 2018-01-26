@@ -1,6 +1,7 @@
-require_relative 'jenkins2/client'
-require_relative 'jenkins2/version'
-require_relative 'jenkins2/log'
-require_relative 'jenkins2/cli'
-require_relative 'jenkins2/connection'
-require_relative 'jenkins2/util'
+require_relative 'jenkins2/api'
+
+module Jenkins2
+	def self.connect( **opts )
+		Jenkins2::API.new opts
+	end
+end

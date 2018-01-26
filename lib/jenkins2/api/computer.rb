@@ -1,7 +1,7 @@
 require_relative 'rud'
 
 module Jenkins2
-	module API
+	class API
 		module Computer
 			def computer( id=nil, **params )
 				proxy = Proxy.new connection, 'computer', params

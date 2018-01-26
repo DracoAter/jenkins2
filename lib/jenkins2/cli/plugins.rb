@@ -31,8 +31,8 @@ module Jenkins2
 			private
 
 			def run
-				jc.plugins( depth: 1 )['plugins'].collect do |pl|
-					"%s (%s)" % [pl['shortName'], pl['version']]
+				jc.plugins( depth: 1 ).plugins.collect do |pl|
+					"%s (%s)" % [pl.shortName, pl.version]
 				end.join("\n")
 			end
 		end
@@ -79,7 +79,8 @@ module Jenkins2
 			end
 
 			def run
-				jc.plugins.plugin( options[:name] ).subject
+				pl = jc.plugins.plugin( options[:name] ).subject
+				"%s (%s) - %s" % [pl.shortName, pl.version, pl.longName]
 			end
 		end
 	end
