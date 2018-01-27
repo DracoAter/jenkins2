@@ -5,6 +5,7 @@ require_relative 'errors'
 
 module Jenkins2
 	module Util
+		extend self
 		# Waits for a block to return +truthful+ value. Useful, for example, when you set a node tenporarily
 		# offline, and then wait for it to become idle.
 		# +max_wait_minutes+:: Maximum wait time in minutes.
@@ -34,8 +35,6 @@ module Jenkins2
 			nil
 		end
 
-		module_function :wait
-
 		# Tries a block several times, if raised exception is <tt>Net::HTTPFatalError</tt>,
 		# <tt>Errno::ECONNREFUSED</tt> or <tt>Net::ReadTimeout</tt>.
 		# +retries+:: Number of retries.
@@ -62,7 +61,5 @@ module Jenkins2
 			Log.error { "Reached maximum number of retries (#{retries}). Give up." }
 			raise e
 		end
-
-		module_function :try
 	end
 end

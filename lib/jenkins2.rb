@@ -1,4 +1,5 @@
 require_relative 'jenkins2/api'
+require_relative 'jenkins2/cli'
 
 module Jenkins2
 	def self.connect( **opts )

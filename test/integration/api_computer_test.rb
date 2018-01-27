@@ -55,8 +55,8 @@ module Jenkins2
 
 			PLUGINS = %w{command-launcher}
 			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do
-				PLUGINS.all?{|plg| @@subj.plugins.plugin( plg ).active? }
+			Jenkins2::Util.wait do |s|
+				@@subj.plugins( depth: 1 ).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
 			end
 
 			def setup

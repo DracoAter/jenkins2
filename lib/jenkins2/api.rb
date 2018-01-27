@@ -1,6 +1,7 @@
 require_relative 'resource_proxy'
 require_relative 'connection'
 require_relative 'errors'
+require_relative 'util'
 require_relative 'api/credentials'
 require_relative 'api/computer'
 require_relative 'api/job'
