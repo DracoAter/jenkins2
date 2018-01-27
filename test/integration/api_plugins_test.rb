@@ -5,7 +5,7 @@ require_relative 'test_helper'
 module Jenkins2
 	module IntegrationTest
 		class ApiPluginsTest < Minitest::Test
-			PLUGINS = %w{mailer script-security}
+			PLUGINS = %w{mailer label-verifier}
 			@@subj.plugins.install PLUGINS
 			Jenkins2::Util.wait do
 				PLUGINS.all?{|plg| @@subj.plugins.plugin( plg ).active? }
@@ -35,9 +35,9 @@ module Jenkins2
 			end
 
 			def test_uninstall
-				assert_equal false, @@subj.plugins.plugin( 'script-security' ).deleted
-				assert_equal true, @@subj.plugins.plugin( 'script-security' ).uninstall
-				assert_equal true, @@subj.plugins.plugin( 'script-security' ).deleted
+				assert_equal false, @@subj.plugins.plugin( 'label-verifier' ).deleted
+				assert_equal true, @@subj.plugins.plugin( 'label-verifier' ).uninstall
+				assert_equal true, @@subj.plugins.plugin( 'label-verifier' ).deleted
 			end
 
 			def test_upload
