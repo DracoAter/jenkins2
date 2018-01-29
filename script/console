@@ -5,22 +5,23 @@
 require_relative '../lib/jenkins2'
 require 'json'
 
-opts = {}
+opts = @opts = {}
 
 if ARGV.empty?
-	opts[:server] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
-	opts[:key] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
-	opts[:user] = 'admin'
+	@opts[:server] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
+	@opts[:key] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
+	@opts[:user] = 'admin'
 else
-	opts = JSON.parse( IO.read( ARGV.first ), symbolize_names: true )
+	@opts = JSON.parse( IO.read( ARGV.first ), symbolize_names: true )
 end
 
-jc = @jc = Jenkins2::API.new( opts )
+jc = @jc = Jenkins2.connect( @opts )
 puts "Use the '@jc' or 'jc' variable to use the client."
 
 begin
 	require 'pry'
-	Pry.start
-rescue
+	pry
+rescue LoadError
+	require 'irb'
 	IRB.start
 end
