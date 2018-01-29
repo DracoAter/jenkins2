@@ -32,7 +32,7 @@ For command specific arguments run: jenkins2 --help <command>
     disconnect-node                  Disconnects node(s).
     get-node                         Dumps the node definition XML to stdout.
     get-view                         Dumps the view definition XML to stdout.
-    install-plugin                   Installs a plugin.
+    install-plugin                   Installs a plugin either from a file, an URL, standard input or from update center.
     list-node                        Outputs the node list.
     list-online-node                 Outputs the online node list.
     list-plugins                     Lists all installed plugins.
@@ -53,7 +53,7 @@ For command specific arguments run: jenkins2 --help <command>
 }
 
 			COMMAND_SUMMARY = %{Command:
-    install-plugin                   Installs a plugin.
+    uninstall-plugin                 Uninstalls a plugin.
 Mandatory arguments:
     -n, --name SHORTNAME             Plugin short name (like thinBackup).
 }
@@ -150,17 +150,17 @@ Mandatory arguments:
 
 			def test_show_help_with_full_command
 				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, @subj.
-					parse( @args + %w{--help install-plugin -n test} ).call
+					parse( @args + %w{--help uninstall-plugin -n test} ).call
 			end
 
 			def test_show_help_with_full_command_missing_mandatory_arguments
-				result = @subj.parse( %w{--help install-plugin} )
+				result = @subj.parse( %w{--help uninstall-plugin} )
 				assert_equal ['Missing argument(s): server, name.'], result.errors
 				assert_equal GLOBAL_SUMMARY + COMMAND_SUMMARY, result.call
 			end
 
 			def test_full_command_missing_mandatory_argument
-				result = @subj.parse( @args + %w{install-plugin} )
+				result = @subj.parse( @args + %w{uninstall-plugin} )
 				assert_equal ['Missing argument(s): name.'], result.errors
 				assert_equal result.errors.first + "\n" + GLOBAL_SUMMARY + COMMAND_SUMMARY, result.call
 			end
