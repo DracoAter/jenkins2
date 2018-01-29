@@ -3,4 +3,5 @@ rake.tasks~
 test/coverage
 test/reports
 .kitchen/
+.kitchen.local.yml
 pkg/
