@@ -16,9 +16,9 @@ module Jenkins2
 					connection.post( path, ::URI.encode_www_form( form_data ) ).code == '302'
 				end
 
-				def upload( hpi_file )
+				def upload( hpi_file, filename )
 					body = "--#{BOUNDARY}\r\n"
-					body << "Content-Disposition: form-data; name=\"file0\"; filename=\"file.hpi\"\r\n"
+					body << "Content-Disposition: form-data; name=\"file0\"; filename=\"#{filename}\"\r\n"
 					body << "Content-Type: application/octet-stream\r\n\r\n"
 					body << hpi_file
 					body << "\r\n"

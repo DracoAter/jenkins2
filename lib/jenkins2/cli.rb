@@ -157,7 +157,7 @@ module Jenkins2
 		end
 
 		def jc
-			@jc ||= Jenkins2::API.new( options )
+			@jc ||= Jenkins2.connect options
 		end
 	end
 end
