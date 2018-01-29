@@ -10,7 +10,10 @@ if [ "$RUBY_ENV" = "test" ]; then
 	# since we set the environment to `test` directly in `script/cibuild`.
 	script/bootstrap
 	#should be after bootstrap, because otherwise required gem is not installed
-	export GENERATE_REPORTS='true'
+	echo "==== Running integration tests ===="
+	kitchen converge
+	rake ci:integration
+	kitchen destroy
 else
 	# if the environment isn't set to `test`, set it to `test` and update the
 	# application to ensure all dependencies are met as well as any other things
@@ -19,7 +22,7 @@ else
 	# own from a `development` environment.
 	script/bootstrap
 	export RUBY_ENV='test'
+	echo "==== Running integration tests ===="
+	kitchen test
 fi
 
-echo "==== Running integration tests ===="
-kitchen test

@@ -10,7 +10,8 @@ if [ "$RUBY_ENV" = "test" ]; then
 	# since we set the environment to `test` directly in `script/cibuild`.
 	script/bootstrap
 	#should be after bootstrap, because otherwise required gem is not installed
-	export GENERATE_REPORTS='true'
+	echo "==== Running unit tests ===="
+	rake ci:unit $@
 else
 	# if the environment isn't set to `test`, set it to `test` and update the
 	# application to ensure all dependencies are met as well as any other things
@@ -19,11 +20,6 @@ else
 	# own from a `development` environment.
 	sudo script/bootstrap
 	export RUBY_ENV="test"
-fi
-
-echo "==== Running unit tests ===="
-if [ -f "$1" ]; then
-	rake test:unit TEST=$1
-else
-	rake test:unit
+	echo "==== Running unit tests ===="
+	rake test:unit $@
 fi

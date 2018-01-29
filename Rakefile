@@ -4,36 +4,42 @@ require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
 
 CLEAN << 'doc'
+CLEAN << 'test/coverage'
+CLEAN << 'test/reports'
 
 task :default => 'test:unit'
 
 namespace :test do
 	%w{unit integration}.each do |name|
 		Rake::TestTask.new name do |t|
+			t.description = "Run #{name} tests and generate coverage reports."
 			t.verbose = true
 			t.warning = true
-			t.deps = ["test:#{name}:report"] if t.respond_to? :deps=
 			t.test_files = FileList["test/#{name}/*_test.rb"]
 		end
-
-		namespace name do
-			task :report do |t, args|
-				next unless ENV['GENERATE_REPORTS']
-				ENV['CI_REPORTS'] = "test/reports/#{name}"
-				require 'ci/reporter/rake/minitest'
-				Rake::Task['ci:setup:minitest'].invoke
-			end
-		end
 	end
-	CLEAN << "test/coverage"
-	CLEAN << 'test/reports'
+
+
+	desc 'Run all tests and generate coverage reports.'
+	task :all => [:unit, :integration]
 
 	task :integration => :get_credentials
-
 	task :get_credentials do |t|
 		ENV['JENKINS2_SERVER'] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
 		ENV['JENKINS2_KEY'] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
 		ENV['JENKINS2_USER'] = 'admin'
+	end
+end
+
+namespace :ci do
+	%w{all unit integration}.each do |name|
+		desc "Run #{name} tests and generate report for CI"
+		task name do
+			ENV['CI_REPORTS'] = "test/reports/"
+			require 'ci/reporter/rake/minitest'
+			Rake::Task['ci:setup:minitest'].invoke
+			Rake::Task["test:#{name}"].invoke
+		end
 	end
 end
 

@@ -30,16 +30,17 @@ tested with Jenkins 2.73.2 LTS.
 ## Plugins
 
 - List installed plugins
-- Install / uninstall a plugin by short name (i.e. ssh-credentials)
-- Install a plugin from hpi or jpi file
+- Install a plugin either from a file, an URL or from update center (by short name like
+  thinBackup)
 - Show plugin info
+- Uninstall a plugin
 
 ## Credentials
 
-- Create username with password credentials ( Requires credentials plugin on Jenkins )
-- Create ssh username with private key credentials ( Requires ssh-credentials plugin on Jenkins )
-- Create secret string credentials ( Requires plain-credentials plugin on Jenkins )
-- Create secret file credentials ( Requires plain-credentials plugin on Jenkins )
+- Create username with password credentials (Requires credentials plugin on Jenkins)
+- Create ssh username with private key credentials (Requires ssh-credentials plugin on Jenkins)
+- Create secret string credentials (Requires plain-credentials plugin on Jenkins)
+- Create secret file credentials (Requires plain-credentials plugin on Jenkins)
 - Get credentials by id
 - Delete credentials
 - List credentials in particular store and domain

@@ -1,10 +1,4 @@
 require 'simplecov'
-
-SimpleCov.start do
-	add_filter '/test/'
-	coverage_dir 'test/coverage/integration'
-end
-
 require 'minitest/autorun'
 require 'mocha/setup'
 
@@ -15,10 +9,8 @@ Jenkins2::Log.init( verbose: 3 )
 
 # Setup subject just once
 class Minitest::Test
-	@@key = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
-	@@server = 'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
-	@@user = 'admin'
-	@@opts = { server: @@server, user: @@user, key: @@key }
+	@@opts = { server: ENV['JENKINS2_SERVER'], user: ENV['JENKINS2_USER'],
+		key: ENV['JENKINS2_KEY'] }
 	@@subj = Jenkins2.connect @@opts
 
 	# Restart Jenkins before running the tests, to make sure all pending changes are applied.
