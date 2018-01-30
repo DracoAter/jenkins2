@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
 	s.add_development_dependency 'rake', '~> 11.3'
 	s.add_development_dependency 'minitest', '~> 5.5'
 	s.add_development_dependency 'ci_reporter_minitest', '~> 1.0'
-	s.add_development_dependency 'mocha', '~> 1.1'
 	s.add_development_dependency 'simplecov', '~> 0.10'
 	s.add_development_dependency 'test-kitchen', '~> 1.17'
 	s.add_development_dependency 'kitchen-lxd', '~> 0.2', '>= 0.2.2'
