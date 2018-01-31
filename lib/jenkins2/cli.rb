@@ -11,12 +11,13 @@ module Jenkins2
 	class CLI
 		attr_reader :options, :errors
 
-		def initialize( options={}, command=[] )
+		def initialize( options={} )
 			@options = options
-			@command = command
+			@command = []
 			@errors = []
 			@log_opts = {}
 			@parser = nil
+			add_options
 		end
 
 		def call
@@ -30,11 +31,10 @@ module Jenkins2
 		end
 
 		def parse( args )
-			add_options
 			parser.order! args do |nonopt|
 				@command << nonopt
 				if command_to_class
-					return command_to_class.new( options, @command ).parse( args )
+					return command_to_class.new( options ).parse( args )
 				else
 					next
 				end
@@ -83,14 +83,14 @@ module Jenkins2
 
 		def parser
 			return @parser if @parser
-			if @command.empty?
-				@parser = global_parser
-			else
+			if self.class.class_to_command
 				@parser = OptionParser.new
 				@parser.banner = 'Command:'
-				key = @command.join ' '
+				key = self.class.class_to_command
 				@parser.top.append( OptionParser::Switch::NoArgument.new( key, nil, [key], nil,
 					nil, [self.class.description], Proc.new{ OptionParser.new( &block ) } ), [], [key] )
+			else
+				@parser = global_parser
 			end
 			@parser
 		end
@@ -147,7 +147,7 @@ module Jenkins2
 		end
 
 		def self.class_to_command
-			to_s.split('::').last.gsub(/(.)([A-Z])/, '\1-\2').downcase
+			to_s.split('::').last.gsub(/(.)([A-Z])/, '\1-\2').downcase if superclass == Jenkins2::CLI
 		end
 
 		def self.subcommands
