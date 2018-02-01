@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jenkins2
 	class CLI
 		class ListJobs < CLI
@@ -14,8 +16,7 @@ module Jenkins2
 				end
 			end
 
-			def run
-			end
+			def run; end
 		end
 
 		class CopyJob < CLI
@@ -36,11 +37,11 @@ module Jenkins2
 			end
 
 			def mandatory_arguments
-				super + [:name, :from]
+				super + %i[name from]
 			end
 
 			def run
-				jc.job( options[:name] ).copy( options[:from] )
+				jc.job(options[:name]).copy(options[:from])
 			end
 		end
 	end

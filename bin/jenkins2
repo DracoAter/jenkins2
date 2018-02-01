@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../lib/jenkins2'
 
-result = Jenkins2::CLI.new.parse( ARGV ).call
+result = Jenkins2::CLI.new.parse(ARGV).call
 if result.is_a? String
 	puts result
 elsif !result

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper'
 
 module Jenkins2
@@ -53,23 +55,23 @@ module Jenkins2
   <nodeProperties/>
 </slave>'
 
-			PLUGINS = %w{command-launcher}
+			PLUGINS = %w[command-launcher].freeze
 			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do |s|
-				@@subj.plugins( depth: 1 ).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
+			Jenkins2::Util.wait do
+				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
 			end
 
 			def setup
-				@@subj.computer( 'xml config' ).create
-				@@subj.computer( 'localhost' ).create
-				@@subj.computer( 'for deletion' ).create
+				@@subj.computer('xml config').create
+				@@subj.computer('localhost').create
+				@@subj.computer('for deletion').create
 			end
 
 			def teardown
-				@@subj.computer( 'xml config' ).delete
-				@@subj.computer( 'localhost' ).delete
-				@@subj.computer( 'for deletion' ).delete rescue nil
-				@@subj.computer( 'new one' ).delete rescue nil
+				@@subj.computer('xml config').delete
+				@@subj.computer('localhost').delete
+				@@subj.computer('for deletion').delete rescue nil
+				@@subj.computer('new one').delete rescue nil
 			end
 
 			def test_computer
@@ -78,16 +80,16 @@ module Jenkins2
 
 			def test_create
 				refute_includes @@subj.computer.computer.collect(&:displayName), 'new one'
-				assert_equal true, @@subj.computer( 'new one' ).create
+				assert_equal true, @@subj.computer('new one').create
 				assert_includes @@subj.computer.computer.collect(&:displayName), 'new one'
 			end
 
 			def test_delete
 				assert_includes @@subj.computer.computer.collect(&:displayName), 'for deletion'
-				assert_equal true, @@subj.computer( 'for deletion' ).delete
+				assert_equal true, @@subj.computer('for deletion').delete
 				refute_includes @@subj.computer.computer.collect(&:displayName), 'for deletion'
 			end
-			
+
 			def test_get_config_xml
 				assert_raises Jenkins2::BadRequestError do
 					@@subj.computer('(master)').config_xml
@@ -97,39 +99,39 @@ module Jenkins2
 
 			def test_update
 				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml
-				assert_equal true, @@subj.computer('xml config').update( NEW_CONFIG_XML )
+				assert_equal true, @@subj.computer('xml config').update(NEW_CONFIG_XML)
 				assert_equal NEW_CONFIG_XML, @@subj.computer('xml config').config_xml
-				assert_equal true, @@subj.computer('xml config').update( CONFIG_XML )
+				assert_equal true, @@subj.computer('xml config').update(CONFIG_XML)
 				assert_equal CONFIG_XML, @@subj.computer('xml config').config_xml
 			end
 
 			def test_idle
-				assert_equal true, @@subj.computer( '(master)' ).idle
+				assert_equal true, @@subj.computer('(master)').idle
 			end
 
 			def test_toggle_offline
-				assert_equal true, @@subj.computer( '(master)' ).online?
-				assert_equal false, @@subj.computer( '(master)' ).temporarilyOffline
-				assert_equal true, @@subj.computer( '(master)' ).toggle_offline( 'test message' )
-				assert_equal 'test message', @@subj.computer( '(master)' ).offlineCauseReason
-				assert_equal true, @@subj.computer( '(master)' ).temporarilyOffline
-				assert_equal false, @@subj.computer( '(master)' ).online?
-				assert_equal true, @@subj.computer( '(master)' ).toggle_offline( 'test message' )
-				assert_equal false, @@subj.computer( '(master)' ).temporarilyOffline
+				assert_equal true, @@subj.computer('(master)').online?
+				assert_equal false, @@subj.computer('(master)').temporarilyOffline
+				assert_equal true, @@subj.computer('(master)').toggle_offline('test message')
+				assert_equal 'test message', @@subj.computer('(master)').offlineCauseReason
+				assert_equal true, @@subj.computer('(master)').temporarilyOffline
+				assert_equal false, @@subj.computer('(master)').online?
+				assert_equal true, @@subj.computer('(master)').toggle_offline('test message')
+				assert_equal false, @@subj.computer('(master)').temporarilyOffline
 			ensure
-				@@subj.computer( '(master)' ).toggle_offline if @@subj.computer( '(master)' ).temporarilyOffline
+				@@subj.computer('(master)').toggle_offline if @@subj.computer('(master)').temporarilyOffline
 			end
 
 			def test_launch_agent_and_disconnect
-				assert_equal true, @@subj.computer( 'localhost' ).update( LOCALHOST_CONFIG_XML )
-				assert_equal true, @@subj.computer( 'localhost' ).launch_agent
-				Jenkins2::Util.wait( max_wait_minutes: 2 ) do
-					@@subj.computer( 'localhost' ).online?
+				assert_equal true, @@subj.computer('localhost').update(LOCALHOST_CONFIG_XML)
+				assert_equal true, @@subj.computer('localhost').launch_agent
+				Jenkins2::Util.wait(max_wait_minutes: 2) do
+					@@subj.computer('localhost').online?
 				end
-				assert_equal true, @@subj.computer( 'localhost' ).online?
-				assert_equal true, @@subj.computer( 'localhost' ).disconnect( 'disconnected in test' )
-				assert_equal false, @@subj.computer( 'localhost' ).online?
-				assert_equal 'disconnected in test', @@subj.computer( 'localhost' ).offlineCauseReason
+				assert_equal true, @@subj.computer('localhost').online?
+				assert_equal true, @@subj.computer('localhost').disconnect('disconnected in test')
+				assert_equal false, @@subj.computer('localhost').online?
+				assert_equal 'disconnected in test', @@subj.computer('localhost').offlineCauseReason
 			end
 		end
 	end

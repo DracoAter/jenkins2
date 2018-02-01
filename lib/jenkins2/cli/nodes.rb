@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jenkins2
 	class CLI
 		class ConnectNode < CLI
@@ -15,7 +17,7 @@ module Jenkins2
 
 			def run
 				options[:name].all? do |name|
-					jc.computer( name ).launch_agent
+					jc.computer(name).launch_agent
 				end
 			end
 		end
@@ -33,8 +35,8 @@ module Jenkins2
 			end
 
 			def run
-				jc.computer( options[:name] ).create and
-					jc.computer( options[:name] ).update( $stdin.read )
+				jc.computer(options[:name]).create and
+					jc.computer(options[:name]).update($stdin.read)
 			end
 		end
 
@@ -52,7 +54,7 @@ module Jenkins2
 
 			def run
 				options[:name].all? do |name|
-					jc.computer( name ).delete
+					jc.computer(name).delete
 				end
 			end
 		end
@@ -77,11 +79,11 @@ module Jenkins2
 
 			def run
 				options[:name].all? do |name|
-					jc.computer( name ).disconnect( options[:message] )
+					jc.computer(name).disconnect(options[:message])
 				end
 			end
 		end
-		
+
 		class GetNode < CLI
 			def self.description
 				'Dumps the node definition XML to stdout.'
@@ -95,10 +97,10 @@ module Jenkins2
 			end
 
 			def run
-				jc.computer( options[:name] ).config_xml
+				jc.computer(options[:name]).config_xml
 			end
 		end
-		
+
 		class ListNode < CLI
 			def self.description
 				'Outputs the node list.'
@@ -138,9 +140,8 @@ module Jenkins2
 			end
 
 			def run
-				unless jc.computer( options[:name] ).temporarilyOffline
-					jc.computer( options[:name] ).toggle_offline( options[:message] )
-				end
+				return if jc.computer(options[:name]).temporarilyOffline
+				jc.computer(options[:name]).toggle_offline(options[:message])
 			end
 		end
 
@@ -149,7 +150,7 @@ module Jenkins2
 				'Resume using a node for performing builds, to cancel out the earlier "offline-node" '\
 				'command.'
 			end
-			
+
 			def add_options
 				parser.separator 'Mandatory arguments:'
 				parser.on '-n', '--name NAME', 'Name of the node or "(master)" for master.' do |n|
@@ -158,9 +159,8 @@ module Jenkins2
 			end
 
 			def run
-				if jc.computer( options[:name] ).temporarilyOffline
-					jc.computer( options[:name] ).toggle_offline
-				end
+				return unless jc.computer(options[:name]).temporarilyOffline
+				jc.computer(options[:name]).toggle_offline
 			end
 		end
 
@@ -177,7 +177,7 @@ module Jenkins2
 			end
 
 			def run
-				jc.computer( options[:name] ).update( ARGF.read )
+				jc.computer(options[:name]).update(ARGF.read)
 			end
 		end
 
@@ -199,8 +199,8 @@ module Jenkins2
 			end
 
 			def run
-				Jenkins2::Util.wait( options[:wait] ) do
-					!jc.computer( options[:name] ).online?
+				Jenkins2::Util.wait(options[:wait]) do
+					!jc.computer(options[:name]).online?
 				end
 			end
 		end
@@ -223,8 +223,8 @@ module Jenkins2
 			end
 
 			def run
-				Jenkins2::Util.wait( options[:wait] ) do
-					jc.computer( options[:name] ).online?
+				Jenkins2::Util.wait(options[:wait]) do
+					jc.computer(options[:name]).online?
 				end
 			end
 		end

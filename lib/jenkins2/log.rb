@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 require 'logger'
 
@@ -5,11 +7,11 @@ module Jenkins2
 	class Log
 		extend SingleForwardable
 
-		def self.init( log: $stderr, verbose: 0 )
+		def self.init(log: $stderr, verbose: 0)
 			log ||= $stderr
 			@logger = Logger.new log
 			@logger.level = Logger::ERROR - verbose.to_i
-			@logger.formatter = proc do |severity, datetime, progname, msg|
+			@logger.formatter = proc do |severity, datetime, _progname, msg|
 				if log.tty?
 					"#{msg}\n"
 				else
@@ -21,10 +23,8 @@ module Jenkins2
 
 		def_delegators :logger, :debug, :info, :warn, :error, :fatal, :unknown, :level
 
-		private
-
 		def self.logger
-			@logger ||= self.init
+			@logger ||= init
 		end
 	end
 end

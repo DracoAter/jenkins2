@@ -1,28 +1,30 @@
+# frozen_string_literal: true
+
 module Jenkins2
 	class API
 		module Root
-			def root( **params )
+			def root(**params)
 				Proxy.new connection, '', params
 			end
 
 			def version
-				connection.head( '/' )['X-Jenkins']
+				connection.head('/')['X-Jenkins']
 			end
 
 			def quiet_down
-				connection.post( 'quietDown' ).code == '302'
+				connection.post('quietDown').code == '302'
 			end
 
 			def cancel_quiet_down
-				connection.post( 'cancelQuietDown' ).code == '302'
+				connection.post('cancelQuietDown').code == '302'
 			end
 
 			def restart
-				connection.post( 'safeRestart' ).code == '302'
+				connection.post('safeRestart').code == '302'
 			end
 
 			def restart!
-				connection.post( 'restart' ).code == '302'
+				connection.post('restart').code == '302'
 			end
 
 			class Proxy < ::Jenkins2::ResourceProxy

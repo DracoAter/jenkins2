@@ -1,21 +1,28 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # script/console: Launch a console for the application. Optionally pass a config file path.
 
 require_relative '../lib/jenkins2'
 require 'json'
 
+# rubocop:disable Lint/UselessAssignment
 opts = @opts = {}
+# rubocop:enable Lint/UselessAssignment
 
 if ARGV.empty?
-	@opts[:server] =  'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
-	@opts[:key] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").last.strip
+	@opts[:server] = 'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
+	@opts[:key] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").
+		last.strip
 	@opts[:user] = 'admin'
 else
-	@opts = JSON.parse( IO.read( ARGV.first ), symbolize_names: true )
+	@opts = JSON.parse(IO.read(ARGV.first), symbolize_names: true)
 end
 
-jc = @jc = Jenkins2.connect( @opts )
+# rubocop:disable Lint/UselessAssignment
+jc = @jc = Jenkins2.connect(@opts)
+# rubocop:enable Lint/UselessAssignment
+
 puts "Use the '@jc' or 'jc' variable to use the client."
 
 begin

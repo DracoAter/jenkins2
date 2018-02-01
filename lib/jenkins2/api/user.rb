@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 module Jenkins2
 	class API
 		module User
-			def me( **params )
+			def me(**params)
 				Me::Proxy.new connection, 'me', params
 			end
 
-			def user( id, **params )
+			def user(id, **params)
 				proxy = Proxy.new connection, 'user', params
 				proxy.id = id
 				proxy
 			end
-			
-			def people( **params )
+
+			def people(**params)
 				People::Proxy.new connection, 'people', params
 			end
 

@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper'
 
 module Jenkins2
 	module IntegrationTest
 		class ApiRootTest < Minitest::Test
 			def teardown
-				Jenkins2::Util.wait( max_wait_minutes: 2 ){ @@subj.version }
+				Jenkins2::Util.wait(max_wait_minutes: 2){ @@subj.version }
 				@@subj.cancel_quiet_down
 			end
 
 			def test_root
-				assert_equal [:_class, :assignedLabels, :mode, :nodeDescription, :nodeName, :numExecutors,
-					:description, :jobs, :overallLoad, :primaryView, :quietingDown, :slaveAgentPort,
-					:unlabeledLoad, :useCrumbs, :useSecurity, :views], @@subj.root.to_h.keys
+				assert_equal %i[_class assignedLabels mode nodeDescription nodeName numExecutors
+                    description jobs overallLoad primaryView quietingDown slaveAgentPort
+                    unlabeledLoad useCrumbs useSecurity views], @@subj.root.to_h.keys
 			end
 
 			def test_version

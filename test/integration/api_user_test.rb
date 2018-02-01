@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper'
 
 module Jenkins2
@@ -8,7 +10,7 @@ module Jenkins2
 			end
 
 			def test_user
-				assert_equal 'admin', @@subj.user( 'admin' ).fullName
+				assert_equal 'admin', @@subj.user('admin').fullName
 			end
 
 			def test_people

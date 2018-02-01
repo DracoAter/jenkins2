@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'optparse/uri'
 
 require_relative 'cli/credentials'
@@ -11,7 +13,7 @@ module Jenkins2
 	class CLI
 		attr_reader :options, :errors
 
-		def initialize( options={} )
+		def initialize(options={})
 			@options = options
 			@command = []
 			@errors = []
@@ -24,31 +26,36 @@ module Jenkins2
 			if options[:help]
 				summary
 			elsif !errors.empty?
-				errors.join( "\n" ) + "\n" + summary
+				errors.join("\n") + "\n" + summary
 			else
 				run
 			end
 		end
 
-		def parse( args )
+		def parse(args)
 			parser.order! args do |nonopt|
 				@command << nonopt
-				if command_to_class
-					return command_to_class.new( options ).parse( args )
-				else
-					next
-				end
+				return command_to_class.new(options).parse(args) if command_to_class
+				next
 			end
 			missing = mandatory_arguments.select{|a| options[a].nil? }
-			unless missing.empty?
-				@errors << "Missing argument(s): #{missing.join(', ')}."
-			end
+			@errors << "Missing argument(s): #{missing.join(', ')}." unless missing.empty?
 			self
 		end
 
 		# This method should be overwritten in subclasses
 		def self.description
 			''
+		end
+
+		def self.class_to_command
+			to_s.split('::').last.gsub(/(.)([A-Z])/, '\1-\2').downcase if superclass == Jenkins2::CLI
+		end
+
+		def self.subcommands
+			constants(false).collect{|c| const_get(c) }.select do |c|
+				c.is_a?(Class) and c.superclass == Jenkins2::CLI
+			end.sort_by(&:to_s)
 		end
 
 		private
@@ -59,8 +66,7 @@ module Jenkins2
 		end
 
 		# This method should be overwritten in subclasses
-		def add_options
-		end
+		def add_options; end
 
 		# This method should be overwritten in subclasses
 		def run
@@ -74,25 +80,23 @@ module Jenkins2
 				parser.separator 'Commands:'
 				self.class.subcommands.each do |sc|
 					key = sc.class_to_command
-					parser.base.append( OptionParser::Switch::NoArgument.new( key, nil, [key], nil, nil,
-						[sc.description], Proc.new{ OptionParser.new( &block ) } ), [], [key] )
+					parser.base.append(OptionParser::Switch::NoArgument.new(key, nil, [key], nil, nil,
+						[sc.description], proc{ OptionParser.new(&block) }), [], [key])
 				end
 				parser.to_s
 			end
 		end
 
 		def parser
-			return @parser if @parser
-			if self.class.class_to_command
-				@parser = OptionParser.new
-				@parser.banner = 'Command:'
-				key = self.class.class_to_command
-				@parser.top.append( OptionParser::Switch::NoArgument.new( key, nil, [key], nil,
-					nil, [self.class.description], Proc.new{ OptionParser.new( &block ) } ), [], [key] )
+			@parser ||= if (key = self.class.class_to_command)
+				OptionParser.new do |parser|
+					parser.banner = 'Command:'
+					parser.top.append(OptionParser::Switch::NoArgument.new(key, nil, [key], nil,
+						nil, [self.class.description], proc{ OptionParser.new(&block) }), [], [key])
+				end
 			else
-				@parser = global_parser
+				global_parser
 			end
-			@parser
 		end
 
 		def global_parser
@@ -114,14 +118,15 @@ module Jenkins2
 					'File format is json: { "server": "http://jenkins.example.com", "user": "admin", '\
 					'"key": "123456" }. Arguments provided in command line will overwrite ones from '\
 					'configuration file. Program looks for ~/.jenkins2.json if no PATH is provided.' do |c|
-					@options[:config] = c || ::File.join( ENV['HOME'], '.jenkins2.json' )
-					config_file_options = JSON.parse( IO.read( options[:config] ), symbolize_names: true )
+					@options[:config] = c || ::File.join(ENV['HOME'], '.jenkins2.json')
+					config_file_options = JSON.parse(IO.read(options[:config]), symbolize_names: true)
 					@options = config_file_options.merge options
 				end
 				parser.on '-l', '--log FILE', 'Log file. Prints to standard out, if not provided' do |l|
 					@options[:log] = l
 				end
-				parser.on '-v', '--verbose VALUE', Integer, 'Print more info. 1 up to 3. Prints only errors by default.' do |v|
+				parser.on '-v', '--verbose VALUE', Integer, 'Print more info. 1 up to 3. Prints only '\
+					'errors by default.' do |v|
 					@options[:verbose] = v
 				end
 				parser.on '-h', '--help', 'Show help' do
@@ -139,21 +144,11 @@ module Jenkins2
 
 		def command_to_class
 			const = @command.join('-').split('-').map(&:capitalize).join
-			if self.class.const_defined?( const )
-				klass = self.class.const_get( const )
-				return klass if klass.kind_of?( Class ) and klass.superclass == Jenkins2::CLI
+			if self.class.const_defined?(const)
+				klass = self.class.const_get(const)
+				return klass if klass.is_a?(Class) and klass.superclass == Jenkins2::CLI
 			end
 			nil
-		end
-
-		def self.class_to_command
-			to_s.split('::').last.gsub(/(.)([A-Z])/, '\1-\2').downcase if superclass == Jenkins2::CLI
-		end
-
-		def self.subcommands
-			constants( false ).collect{|c| const_get( c ) }.select do |c|
-				c.kind_of?( Class ) and c.superclass == Jenkins2::CLI
-			end.sort_by(&:to_s)
 		end
 
 		def jc

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'resource_proxy'
 require_relative 'connection'
 require_relative 'errors'
@@ -22,10 +24,10 @@ module Jenkins2
 
 		attr_reader :connection
 
-		def initialize( **options )
-			@connection = Jenkins2::Connection.new( options[:server] ).
+		def initialize(**options)
+			@connection = Jenkins2::Connection.new(options[:server]).
 				basic_auth options[:user], options[:key]
-			Log.init( log: options[:log], verbose: options[:verbose] )
+			Log.init(log: options[:log], verbose: options[:verbose])
 		end
 	end
 end

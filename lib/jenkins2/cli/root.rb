@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jenkins2
 	class CLI
 		class SafeRestart < CLI
@@ -16,7 +18,7 @@ module Jenkins2
 			def self.description
 				'Restart Jenkins.'
 			end
-			
+
 			private
 
 			def run
@@ -28,7 +30,7 @@ module Jenkins2
 			def self.description
 				'Put Jenkins into the quiet mode, wait for existing builds to be completed.'
 			end
-			
+
 			private
 
 			def run
@@ -40,7 +42,7 @@ module Jenkins2
 			def self.description
 				'Cancel previously issued quiet-down command.'
 			end
-			
+
 			private
 
 			def run
@@ -52,7 +54,7 @@ module Jenkins2
 			def self.description
 				'Jenkins version.'
 			end
-			
+
 			private
 
 			def run

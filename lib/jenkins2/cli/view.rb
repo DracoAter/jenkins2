@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jenkins2
 	class CLI
 		class CreateView < CLI
@@ -19,7 +21,7 @@ module Jenkins2
 			end
 
 			def run
-				jc.view( options[:name] ).create( $stdin.read )
+				jc.view(options[:name]).create($stdin.read)
 			end
 		end
 
@@ -43,7 +45,7 @@ module Jenkins2
 
 			def run
 				options[:name].all? do |name|
-					jc.view( options[:name] ).delete
+					jc.view(name).delete
 				end
 			end
 		end
@@ -67,7 +69,7 @@ module Jenkins2
 			end
 
 			def run
-				jc.view( options[:name] ).config_xml
+				jc.view(options[:name]).config_xml
 			end
 		end
 
@@ -90,7 +92,7 @@ module Jenkins2
 			end
 
 			def run
-				jc.view( options[:name] ).update( $stdin.read )
+				jc.view(options[:name]).update($stdin.read)
 			end
 		end
 
@@ -112,12 +114,12 @@ module Jenkins2
 			end
 
 			def mandatory_arguments
-				super + [:name, :job]
+				super + %i[name job]
 			end
 
 			def run
 				options[:job].all? do |job|
-					jc.view( options[:name] ).add_job( job )
+					jc.view(options[:name]).add_job(job)
 				end
 			end
 		end
@@ -140,12 +142,12 @@ module Jenkins2
 			end
 
 			def mandatory_arguments
-				super + [:name, :job]
+				super + %i[name job]
 			end
 
 			def run
 				options[:job].all? do |job|
-					jc.view( options[:name] ).remove_job( job )
+					jc.view(options[:name]).remove_job(job)
 				end
 			end
 		end

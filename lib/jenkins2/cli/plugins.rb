@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 
 module Jenkins2
@@ -26,10 +28,10 @@ module Jenkins2
 				when nil, ''
 					jc.plugins.install options[:name]
 				when '-'
-					jc.plugins.upload( ARGF.read, options[:name] )
+					jc.plugins.upload(ARGF.read, options[:name])
 				else
-					open( options[:source], 'rb' ) do |f|
-						jc.plugins.upload( f.read, options[:name] || File.basename( options[:name] ) )
+					open(options[:source], 'rb') do |f|
+						jc.plugins.upload(f.read, options[:name] || File.basename(options[:name]))
 					end
 				end
 			end
@@ -43,8 +45,8 @@ module Jenkins2
 			private
 
 			def run
-				jc.plugins( depth: 1 ).plugins.collect do |pl|
-					"%s (%s)" % [pl.shortName, pl.version]
+				jc.plugins(depth: 1).plugins.collect do |pl|
+					"#{pl.shortName} (#{pl.version})"
 				end.join("\n")
 			end
 		end
@@ -68,7 +70,7 @@ module Jenkins2
 			end
 
 			def run
-				jc.plugins.plugin( options[:name] ).uninstall
+				jc.plugins.plugin(options[:name]).uninstall
 			end
 		end
 
@@ -91,8 +93,8 @@ module Jenkins2
 			end
 
 			def run
-				pl = jc.plugins.plugin( options[:name] ).subject
-				"%s (%s) - %s" % [pl.shortName, pl.version, pl.longName]
+				pl = jc.plugins.plugin(options[:name]).subject
+				"#{pl.shortName} (#{pl.version}) - #{pl.longName}"
 			end
 		end
 	end
