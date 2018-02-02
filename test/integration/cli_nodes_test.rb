@@ -60,7 +60,7 @@ module Jenkins2
 			def test_create_node
 				refute_includes @@subj.computer.computer.collect(&:displayName), 'cli new one'
 				$stdin, w = IO.pipe
-				w.write(CONFIG_XML.format(name: 'cli new one'))
+				w.write(format(CONFIG_XML, name: 'cli new one'))
 				w.close
 				assert_equal true, Jenkins2::CLI::CreateNode.new(@@opts.merge(name: 'cli new one')).call
 				assert_includes @@subj.computer.computer.collect(&:displayName), 'cli new one'
@@ -76,13 +76,13 @@ module Jenkins2
 				assert_raises Jenkins2::BadRequestError do
 					Jenkins2::CLI::GetNode.new(@@opts.merge(name: '(master)')).call
 				end
-				assert_equal CONFIG_XML.format(name: 'cli xml config'), Jenkins2::CLI::GetNode.new(
+				assert_equal format(CONFIG_XML, name: 'cli xml config'), Jenkins2::CLI::GetNode.new(
 					@@opts.merge(name: 'cli xml config')
 				).call
 			end
 
 			def test_update_node
-				assert_equal CONFIG_XML.format(name: 'cli xml config'),
+				assert_equal format(CONFIG_XML, name: 'cli xml config'),
 					@@subj.computer('cli xml config').config_xml
 				$stdin, w = IO.pipe
 				w.write(NEW_CONFIG_XML)
@@ -90,10 +90,10 @@ module Jenkins2
 				assert_equal true, Jenkins2::CLI::UpdateNode.new(@@opts.merge(name: 'cli xml config')).call
 				assert_equal NEW_CONFIG_XML, @@subj.computer('cli xml config').config_xml
 				$stdin, w = IO.pipe
-				w.write(CONFIG_XML.format(name: 'cli xml config'))
+				w.write(format(CONFIG_XML, name: 'cli xml config'))
 				w.close
 				assert_equal true, Jenkins2::CLI::UpdateNode.new(@@opts.merge(name: 'cli xml config')).call
-				assert_equal CONFIG_XML.format(name: 'cli xml config'),
+				assert_equal format(CONFIG_XML, name: 'cli xml config'),
 					@@subj.computer('cli xml config').config_xml
 			end
 		end
