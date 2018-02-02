@@ -9,7 +9,7 @@ CLEAN << 'doc'
 CLEAN << 'test/coverage'
 CLEAN << 'test/reports'
 
-task default: 'test:unit'
+task default: %i[test:unit]
 
 namespace :test do
 	%w[unit integration].each do |name|
@@ -51,6 +51,7 @@ begin
 	RuboCop::RakeTask.new(:rubocop) do |t|
 		t.options = ['--display-cop-names']
 	end
+	task 'test:unit' => :rubocop
 rescue LoadError
 	puts "Rubocop not found. It's rake tasks are disabled."
 end
