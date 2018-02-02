@@ -34,7 +34,7 @@ For command specific arguments run: jenkins2 --help <command>
     add-job-to-view                  Adds jobs to view.
     cancel-quiet-down                Cancel previously issued quiet-down command.
     connect-node                     Reconnect node(s).
-    create-node                      Creates a new node by reading stdin as a XML configuration.
+    create-node                      Creates a new node by reading stdin for an XML configuration.
     create-ssh-credentials           Creates username with ssh private key credentials. Jenkins \
 must have ssh-credentials plugin installed.
     create-view                      Creates a new view by reading stdin as a XML configuration.

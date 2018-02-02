@@ -24,7 +24,7 @@ module Jenkins2
 
 		class CreateNode < CLI
 			def self.description
-				'Creates a new node by reading stdin as a XML configuration.'
+				'Creates a new node by reading stdin for an XML configuration.'
 			end
 
 			def add_options
@@ -72,7 +72,7 @@ module Jenkins2
 				end
 				parser.separator 'Optional arguments:'
 				parser.on '-m', '--message TEXT', 'Record the reason about why you are disconnecting the'\
-					'node(s).' do |m|
+					' node(s).' do |m|
 					options[:message] = m
 				end
 			end
@@ -117,7 +117,8 @@ module Jenkins2
 			end
 
 			def run
-				jc.computer.computer.select(&:online?).collect(&:displayName).join("\n")
+				jc.computer.computer.delete_if{|i| i.offline or i.temporarilyOffline }.
+					collect(&:displayName).join("\n")
 			end
 		end
 
@@ -134,7 +135,7 @@ module Jenkins2
 				end
 				parser.separator 'Optional arguments:'
 				parser.on '-m', '--message TEXT', 'Record the reason about why you are disconnecting the'\
-					'node.' do |m|
+					' node.' do |m|
 					options[:message] = m
 				end
 			end
@@ -177,7 +178,7 @@ module Jenkins2
 			end
 
 			def run
-				jc.computer(options[:name]).update(ARGF.read)
+				jc.computer(options[:name]).update($stdin.read)
 			end
 		end
 
@@ -199,7 +200,7 @@ module Jenkins2
 			end
 
 			def run
-				Jenkins2::Util.wait(options[:wait]) do
+				Jenkins2::Util.wait(max_wait_minutes: options[:wait]) do
 					!jc.computer(options[:name]).online?
 				end
 			end
@@ -223,7 +224,7 @@ module Jenkins2
 			end
 
 			def run
-				Jenkins2::Util.wait(options[:wait]) do
+				Jenkins2::Util.wait(max_wait_minutes: options[:wait]) do
 					jc.computer(options[:name]).online?
 				end
 			end
