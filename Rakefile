@@ -7,7 +7,7 @@ require 'rubygems/dependency_installer'
 
 CLEAN << 'doc'
 CLEAN << 'test/coverage'
-CLEAN << 'test/reports'
+CLEAN << 'test-reports'
 
 task default: %i[test:unit]
 
@@ -38,7 +38,7 @@ namespace :ci do
 	%w[all unit integration].each do |name|
 		desc "Run #{name} tests and generate report for CI"
 		task name do
-			ENV['CI_REPORTS'] = 'test/reports/'
+			ENV['CI_REPORTS'] = 'test-reports/'
 			require 'ci/reporter/rake/minitest'
 			Rake::Task['ci:setup:minitest'].invoke
 			Rake::Task["test:#{name}"].invoke
