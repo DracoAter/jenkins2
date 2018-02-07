@@ -17,11 +17,10 @@ Global arguments (accepted by all commands):
     -s, --server URL                 Jenkins Server Url
     -u, --user USER                  Jenkins API User
     -k, --key KEY                    Jenkins API Key
-    -c, --config [PATH]              Use configuration file. Instead of providing server, user \
-and key through command line, you can do that with configuration file. File format is json: { \
-"server": "http://jenkins.example.com", "user": "admin", "key": "123456" }. Arguments provided \
-in command line will overwrite ones from configuration file. Program looks for ~/.jenkins2.json \
-if no PATH is provided.
+    -c, --config [PATH]              Read configuration file. All global options can be \
+configured in configuration file. File format is yaml. Arguments provided in command line will \
+overwrite those in configuration file. Program looks for .jenkins2.conf in current directory if \
+no PATH is provided.
     -l, --log FILE                   Log file. Prints to standard out, if not provided
     -v, --verbose VALUE              Print more info. 1 up to 3. Prints only errors by default.
     -h, --help                       Show help
@@ -49,9 +48,9 @@ input or from update center.
     list-online-node                 Outputs the online node list.
     list-plugins                     Lists all installed plugins.
     offline-node                     Stop using a node for performing builds temporarily, until \
-the next \"online-node\" command.
+the next "online-node" command.
     online-node                      Resume using a node for performing builds, to cancel out \
-the earlier \"offline-node\" command.
+the earlier "offline-node" command.
     quiet-down                       Put Jenkins into the quiet mode, wait for existing builds \
 to be completed.
     remove-job-from-view             Removes jobs from view.
@@ -77,8 +76,13 @@ Mandatory arguments:
 
 			def setup
 				@subj = Jenkins2::CLI.new
-				@config_file = Tempfile.open('jenkins2.json') do |f|
-					f.write('{"user":"fromconfigfile","verbose":"3"}')
+				@config_file = Tempfile.open('jenkins2.conf') do |f|
+					f.write(<<~YAML
+						---
+						:user: fromconfigfile
+						:verbose: 3
+					YAML
+					)
 					f
 				end
 				@args = %w[-s http://jenkins.com -k as213t2e --user admin]
@@ -184,7 +188,11 @@ Mandatory arguments:
 
 			def test_read_config_file
 				@subj.parse(@args + ['-c', @config_file.path])
-				assert_equal PARSED_ARGS.merge(verbose: '3', config: @config_file.path), @subj.options
+				assert_equal PARSED_ARGS.merge(verbose: 3, config: @config_file.path), @subj.options
+			end
+
+			def test_gem_version
+				assert_equal '1.0.0', Jenkins2::CLI.new.parse(%w[-V]).call
 			end
 		end
 	end

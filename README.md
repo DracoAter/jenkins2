@@ -1,22 +1,23 @@
 # Jenkins2
 
-Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server. This gem has been
-tested with Jenkins 2.73.2 LTS.
+Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server. This gem is
+tested with latest Jenkins LTS. (See the [CHANGELOG](CHANGELOG.md) for exact versions.)
 
-# Features available
+## Features available
 
-## Global
+### Global
 
 - Jenkins version
-- Quiet Down Jenkins
-- Cancel Quiet Down Jenkins
-- Immediate and Safe Restart
+- Quiet Down
+- Cancel Quiet Down
+- Safe Restart
+- Immediate Restart
 
-## Users / People
+### Users / People
 
 - Get authenticated user (who-am-i)
 
-## Node / Slave / Computer
+### Node / Slave / Computer
 
 - Create slave from config.xml
 - Delete slave
@@ -24,18 +25,19 @@ tested with Jenkins 2.73.2 LTS.
 - Launch slave agent
 - Disconnect slave
 - Get slave's config.xml
-- Get slave state in json
-- Get all slaves state in json
+- List \[online\] slaves
+- Get slave(s) states
 
-## Plugins
+### Plugins
 
 - List installed plugins
-- Install a plugin either from a file, an URL or from update center (by short name like
-  thinBackup)
-- Show plugin info
+- Install a plugin and its dependencies from update center (providing a short name e.g.
+thinBackup).
+- Install a plugin either from a file or an URL. Dependencies are not installed!
+- Show plugin information
 - Uninstall a plugin
 
-## Credentials
+### Credentials
 
 - Create username with password credentials (Requires credentials plugin on Jenkins)
 - Create ssh username with private key credentials (Requires ssh-credentials plugin on Jenkins)
@@ -45,83 +47,98 @@ tested with Jenkins 2.73.2 LTS.
 - Delete credentials
 - List credentials in particular store and domain
 
-## Views
+### Views
 
 - List views
 - Get view configuraiton xml
 - Update view configuraiton xml
 - Create View
 - Delete View
+- Add job to view
+- Remove job from view
 
-## Jobs
+### Jobs
 
 - List jobs
 - Create job from config.xml or by copying another one
-- Set (Update) job configuration
-- Get job configuration
+- Set (Update) job's config.xml
+- Get job's config.xml
 - Delete job
 - Enable, disable job
 - Run build (with parameters, if required)
 
-# Installation
+## Installation
 
-    gem install jenkins2
+```sh
+$ gem install jenkins2
+```
 
-# Usage
+## Usage
 
 Either run it from command line:
 
-    jenkins2 -s http://jenkins.example.com offline-node -n mynode
-    jenkins2 --help # => for help and list of available commands
-    jenkins2 --help <command> # => for help on particular command
+```sh
+$ jenkins2 -s http://jenkins.example.com offline-node -n mynode
+$ jenkins2 --help # => for help and list of available commands
+$ jenkins2 --help <command> # => for help on particular command
+```
 
 Or use it in your ruby code:
 
-    require 'jenkins2'
-    jc = Jenkins2.connect( server: 'http://jenkins.example.com', user: 'admin',
-      key:  'mysecretkey' )
-    jc.version
-    jc.computer( 'mynode' ).toggle_offline( 'Some reason, why' )
+```ruby
+require 'jenkins2'
 
-# Configuration
+jc = Jenkins2.connect(server: 'http://jenkins.example.com', user: 'admin', key:  'mysecretkey')
+jc.version
+jc.computer('mynode').toggle_offline( 'Some reason, why' )
+```
+
+## Configuration
 
 The gem does not require any configuration. However, if your Jenkins is secured you will have to
 provide credentials with every CLI call.
 
-    jenkins2 -s http://jenkins.example.com -u admin -k mysecretkey offline-node -n mynode
+```sh
+$ jenkins2 -s http://jenkins.example.com -u admin -k mysecretkey offline-node -n mynode
+```
 
-This can be avoided by creating a json configuration file like this
+This can be avoided by creating a yaml configuration file like this
 
-    {
-      "server": "http://jenkins.example.com",
-      "user": "admin",
-      "key": "mysecretkey",
-      "verbose": 3,
-      "log": "/var/log/jenkins2.log"
-    }
+```yaml
+---
+:server: http://jenkins.example.com
+:user: admin
+:key: mysecretkey
+:verbose: 3
+:log: /var/log/jenkins2.log
+```
 
-and putting global options there. By default Jenkins2 expects this file to be at ~/.jenkins2.json,
-but you can provide your own path with --config-file switch. This way the above mentioned command
-will be much shorter.
+and putting global options there. Jenkins will not read the file unless you use `-c` or
+`--config-file` switches. If you use the switch, bnut omit the file path, the gem will look for
+`.jenkins2.conf` in current directory.
 
-    jenkins2 -c offline-node -n mynode # => -c switch tells Jenkins2 to read configuration file
+This way the above mentioned command is much shorter
 
-# License
+```sh
+$ jenkins2 -c offline-node -n mynode # => -c switch tells Jenkins2 to read .jenkins2.conf file
+```
+
+## License
 
 MIT - see the accompanying [LICENSE](LICENSE) file for details.
 
-# Changelog
+## Changelog
 
 To see what has changed in recent versions see the [CHANGELOG](CHANGELOG.md).
 Jenkins2 gem follows the [Semantic Versioning Policy](http://guides.rubygems.org/patterns).
 
-# Contributing
+## Contributing
 
 Additional commands and bugfixes are welcome! Please fork and submit a pull request on an
 individual branch per change. The project follows GitHub Script
 ["Scripts To Rule Them All"] (https://github.com/github/scripts-to-rule-them-all) pattern.
 
-## Bootstrap
+### Bootstrap
 
 After cloning the project, run:
 
@@ -129,7 +146,7 @@ After cloning the project, run:
 
 to download gem and other dependencies (currently tested only on ubuntu xenial).
 
-## Tests
+### Tests
 
 The project is expected to be heavily tested :) with unit and integratin tests. To run unit tests,
 you will need to have some gems installed (see jenkins2.gemspec -> development\_dependencies or
@@ -144,7 +161,7 @@ To run integration tests type
 
 This will start Jenkins in lxd container, run the tests and then kill the container.
 
-## Continuous Integration
+### Continuous Integration
 
 If you would like to automate test runs the progect already has [Jenkinsfile](Jenkinsfile) for
 quick and easy integration with Jenkins Pipelines. If you are using another CI server, just make

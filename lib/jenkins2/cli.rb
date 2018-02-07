@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'optparse/uri'
+require 'yaml'
 
+require_relative 'version'
 require_relative 'cli/credentials'
 require_relative 'cli/nodes'
 require_relative 'cli/root'
@@ -25,6 +27,8 @@ module Jenkins2
 		def call
 			if options[:help]
 				summary
+			elsif options[:version]
+				Jenkins2::VERSION
 			elsif !errors.empty?
 				errors.join("\n") + "\n" + summary
 			else
@@ -44,9 +48,7 @@ module Jenkins2
 		end
 
 		# This method should be overwritten in subclasses
-		def self.description
-			''
-		end
+		def self.description; end
 
 		def self.class_to_command
 			to_s.split('::').last.gsub(/(.)([A-Z])/, '\1-\2').downcase if superclass == Jenkins2::CLI
@@ -113,13 +115,12 @@ module Jenkins2
 				parser.on '-k', '--key KEY', 'Jenkins API Key' do |k|
 					@options[:key] = k
 				end
-				parser.on '-c', '--config [PATH]', 'Use configuration file. Instead of providing '\
-					'server, user and key through command line, you can do that with configuration file. '\
-					'File format is json: { "server": "http://jenkins.example.com", "user": "admin", '\
-					'"key": "123456" }. Arguments provided in command line will overwrite ones from '\
-					'configuration file. Program looks for ~/.jenkins2.json if no PATH is provided.' do |c|
-					@options[:config] = c || ::File.join(ENV['HOME'], '.jenkins2.json')
-					config_file_options = JSON.parse(IO.read(options[:config]), symbolize_names: true)
+				parser.on '-c', '--config [PATH]', %(Read configuration file. All global options can be \
+configured in configuration file. File format is yaml. Arguments provided in command line will \
+overwrite those in configuration file. Program looks for .jenkins2.conf in current directory if \
+no PATH is provided.) do |c|
+					@options[:config] = c || ::File.join('.jenkins2.conf')
+					config_file_options = YAML.load_file(options[:config])
 					@options = config_file_options.merge options
 				end
 				parser.on '-l', '--log FILE', 'Log file. Prints to standard out, if not provided' do |l|
@@ -133,8 +134,7 @@ module Jenkins2
 					@options[:help] = true
 				end
 				parser.on '-V', '--version', 'Show version' do
-					puts VERSION
-					exit
+					@options[:version] = true
 				end
 				parser.separator ''
 				parser.separator 'For command specific arguments run: jenkins2 --help <command>'
