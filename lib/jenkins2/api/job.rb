@@ -13,7 +13,7 @@ module Jenkins2
 
 			class Proxy < ::Jenkins2::ResourceProxy
 				attr_accessor :id
-				include ::Jenkins2::RUD
+				include ::Jenkins2::API::RUD
 
 				def create(config_xml)
 					connection.post('createItem', config_xml, name: id) do |req|

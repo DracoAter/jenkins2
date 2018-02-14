@@ -5,8 +5,10 @@ module Jenkins2
 		def initialize(res)
 			if res.body.nil? or res.body.empty?
 				super('', res)
-			else
-				super(res.body.match('<h1>Error</h1><p>(.*)</p>')[1], res)
+			elsif (match = res.body.match('<h1>Error</h1><p>(.*)</p>'))
+				super(match[1], res)
+			elsif (match = res.body.match('<h2>HTTP ERROR 404</h2>\n<p>(.*) Reason:'))
+				super(match[1], res)
 			end
 		end
 	end

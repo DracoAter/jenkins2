@@ -11,8 +11,50 @@ module Jenkins2
 				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
 			end
 
+			SECRET_TEXT = %(<org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl \
+plugin="plain-credentials@1.4">
+  <scope>GLOBAL</scope>
+  <id>api uniq 1</id>
+  <description>secret</description>
+  <secret>somesecrettext</secret>
+</org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl>)
+
+			DOMAIN_XML = %(<com.cloudbees.plugins.credentials.domains.Domain plugin="credentials@2.1.16">
+  <name>api create</name>
+  <description>this is desc</description>
+</com.cloudbees.plugins.credentials.domains.Domain>)
+
 			def setup
 				@subj = @@subj.credentials.store('system').domain('_', depth: 1)
+				@subj.create(SECRET_TEXT)
+			end
+
+			def teardown
+				@subj.credential('api uniq 1').delete
+			end
+
+			def test_domain_crud
+				subj = @@subj.credentials.store('system')
+				subj.domain('api create').delete rescue nil
+				assert_raises Jenkins2::NotFoundError do
+					subj.domain('api create').to_h
+				end
+				assert_equal true, subj.create_domain(DOMAIN_XML)
+				assert_equal(
+					{
+						_class: 'com.cloudbees.plugins.credentials.CredentialsStoreAction$DomainWrapper',
+						credentials: [], description: 'this is desc', displayName: 'api create',
+						fullDisplayName: 'System » api create', fullName: 'system/api%20create',
+						global: false, urlName: 'api%20create'
+					}, subj.domain('api create').to_h
+				)
+				assert_equal DOMAIN_XML, subj.domain('api create').config_xml
+				assert_equal true, subj.domain('api create').update(DOMAIN_XML.sub('this is', 'hello'))
+				assert_equal 'hello desc', subj.domain('api create').description
+				assert_equal true, subj.domain('api create').delete
+				assert_raises Jenkins2::NotFoundError do
+					subj.domain('api create').to_h
+				end
 			end
 
 			def test_create_username_password
@@ -59,6 +101,24 @@ module Jenkins2
 				assert_equal 'Secret file', cred.typeName
 				refute_nil cred.id
 				assert_equal "system/_/#{cred.id}", cred.fullName
+			end
+
+			def test_config_xml
+				assert_equal SECRET_TEXT.sub('somesecrettext', "\n    <secret-redacted/>\n  "),
+					@subj.credential('api uniq 1').config_xml
+			end
+
+			def test_update
+				assert_equal 'secret', @subj.credential('api uniq 1').description
+				assert_equal true, @subj.credential('api uniq 1').update(SECRET_TEXT.sub('secret', 'hello'))
+				assert_equal 'hello', @subj.credential('api uniq 1').description
+			end
+
+			def test_create
+				@subj.credential('api uniq 1').delete
+				assert_equal false, @subj.credentials.collect(&:id).include?('api uniq 1')
+				assert_equal true, @subj.create(SECRET_TEXT)
+				refute_nil @subj.credential('api uniq 1')
 			end
 
 			def test_delete_credential

@@ -31,7 +31,7 @@ module Jenkins2
 					jc.plugins.upload(ARGF.read, options[:name])
 				else
 					open(options[:source], 'rb') do |f|
-						jc.plugins.upload(f.read, options[:name] || File.basename(options[:name]))
+						jc.plugins.upload(f.read, options[:name] || File.basename(options[:source]))
 					end
 				end
 			end

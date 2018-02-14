@@ -16,10 +16,9 @@ module Jenkins2
 		attr_reader :options, :errors
 
 		def initialize(options={})
-			@options = options
+			@options = options.dup
 			@command = []
 			@errors = []
-			@log_opts = {}
 			@parser = nil
 			add_options
 		end

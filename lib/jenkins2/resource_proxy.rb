@@ -9,7 +9,7 @@ module Jenkins2
 		attr_reader :connection, :path
 
 		def initialize(connection, path, params={}, &block)
-			@path = path.split('/').collect{|i| ::ERB::Util.url_encode i }.join('/')
+			@path = path
 			@id = nil
 			@connection, @params = connection, params
 			subject if block

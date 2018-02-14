@@ -5,9 +5,15 @@ require_relative 'test_helper'
 module Jenkins2
 	module UnitTest
 		class LogTest < Minitest::Test
+			def setup
+				@old_logger = Log.logger
+			end
+
 			def teardown
-				$stderr = STDERR
-				Log.init(log: $stderr, verbose: -1)
+				Log.init(
+					log: @old_logger.instance_variable_get(:@logdev).dev,
+					verbose: Logger::ERROR - @old_logger.level
+				)
 			end
 
 			def test_log_message_format_stderr

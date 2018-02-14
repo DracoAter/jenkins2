@@ -12,7 +12,7 @@ module Jenkins2
 			@logger = Logger.new log
 			@logger.level = Logger::ERROR - verbose.to_i
 			@logger.formatter = proc do |severity, datetime, _progname, msg|
-				if log.tty?
+				if [$stdout, $stderr].include?(log)
 					"#{msg}\n"
 				else
 					"[#{datetime.strftime '%FT%T%:z'}] #{severity} #{msg}\n"

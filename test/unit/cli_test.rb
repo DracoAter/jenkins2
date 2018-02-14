@@ -33,17 +33,25 @@ For command specific arguments run: jenkins2 --help <command>
     add-job-to-view                  Adds jobs to view.
     cancel-quiet-down                Cancel previously issued quiet-down command.
     connect-node                     Reconnect node(s).
+    create-credentials-by-xml        Create credential by reading stdin as an XML configuration.
+    create-credentials-domain-by-xml Create credential domain by reading stdin as an XML \
+configuration.
     create-node                      Creates a new node by reading stdin for an XML configuration.
-    create-ssh-credentials           Creates username with ssh private key credentials. Jenkins \
-must have ssh-credentials plugin installed.
     create-view                      Creates a new view by reading stdin as a XML configuration.
+    delete-credentials               Delete credentials.
+    delete-credentials-domain        Delete credentials domain.
     delete-node                      Deletes node(s).
     delete-view                      Delete view(s).
     disconnect-node                  Disconnects node(s).
+    get-credentials-as-xml           Get a credential as XML (secrets redacted).
+    get-credentials-domain-as-xml    Get credentials domain as XML.
     get-node                         Dumps the node definition XML to stdout.
     get-view                         Dumps the view definition XML to stdout.
     install-plugin                   Installs a plugin either from a file, an URL, standard \
 input or from update center.
+    list-credentials                 Lists credentials in a specific store.
+    list-credentials-context-resolvers
+    list-credentials-providers
     list-node                        Outputs the node list.
     list-online-node                 Outputs the online node list.
     list-plugins                     Lists all installed plugins.
@@ -58,6 +66,8 @@ to be completed.
     safe-restart                     Safely restart Jenkins.
     show-plugin                      Show plugin info.
     uninstall-plugin                 Uninstalls a plugin.
+    update-credentials-by-xml        Update credentials by XML.
+    update-credentials-domain-by-xml Update credentials domain by XML.
     update-node                      Updates the node definition XML from stdin. The opposite of \
 the get-node command.
     update-view                      Updates the view definition XML from stdin. The opposite of \
@@ -112,21 +122,24 @@ Mandatory arguments:
 			def test_parse_global_arguments_with_2_word_command
 				args = @args + %w[install-plugin -n test]
 				result = @subj.parse(args)
-				assert_equal PARSED_ARGS.merge(name: 'test'), @subj.options
+				assert_equal PARSED_ARGS, @subj.options
+				assert_equal PARSED_ARGS.merge(name: 'test'), result.options
 				assert_equal Jenkins2::CLI::InstallPlugin, result.class
 			end
 
 			def test_parse_global_arguments_with_2_word_command_separated_by_space
 				args = @args + %w[install plugin -n test]
 				result = @subj.parse(args)
-				assert_equal PARSED_ARGS.merge(name: 'test'), @subj.options
+				assert_equal PARSED_ARGS, @subj.options
+				assert_equal PARSED_ARGS.merge(name: 'test'), result.options
 				assert_equal Jenkins2::CLI::InstallPlugin, result.class
 			end
 
 			def test_parse_global_arguments_with_2_word_command_and_command_arguments
 				args = @args + %w[install-plugin -n thinBackup]
 				result = @subj.parse(args)
-				assert_equal PARSED_ARGS.merge(name: 'thinBackup'), @subj.options
+				assert_equal PARSED_ARGS, @subj.options
+				assert_equal PARSED_ARGS.merge(name: 'thinBackup'), result.options
 				assert_equal Jenkins2::CLI::InstallPlugin, result.class
 			end
 

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'rud'
+
 module Jenkins2
 	class API
 		module Credentials
@@ -17,13 +19,20 @@ module Jenkins2
 			module Store
 				class Proxy < ::Jenkins2::ResourceProxy
 					def domain(id, params={})
-						path = build_path 'domain', id
-						Domain::Proxy.new connection, path, params
+						Domain::Proxy.new(connection, build_path('domain', id), params)
+					end
+
+					def create_domain(config_xml)
+						connection.post(build_path('createDomain'), config_xml) do |req|
+							req['Content-Type'] = 'text/xml'
+						end.code == '200'
 					end
 				end
 
 				module Domain
 					class Proxy < ::Jenkins2::ResourceProxy
+						include ::Jenkins2::API::RUD
+
 						BOUNDARY = '----Jenkins2RubyMultipartClient' + rand(1_000_000).to_s
 
 						# Creates ssh username with private key credentials. Jenkins must have ssh-credentials
@@ -49,7 +58,7 @@ module Jenkins2
 										'BasicSSHUserPrivateKey'
 								)
 							}.to_json
-							create("json=#{::CGI.escape json_body}")
+							create_("json=#{::CGI.escape json_body}")
 						end
 
 						# Creates a secret text credential. Jenkins must have plain-credentials plugin
@@ -65,7 +74,7 @@ module Jenkins2
 									'$class' => 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl'
 								)
 							}.to_json
-							create("json=#{::CGI.escape json_body}")
+							create_("json=#{::CGI.escape json_body}")
 						end
 
 						# Creates a secret file credential. Jenkins must have plain-credentials plugin
@@ -90,7 +99,7 @@ module Jenkins2
 									)
 								}.to_json}"\
 								"\r\n\r\n--#{BOUNDARY}--\r\n"
-							create(body, "multipart/form-data, boundary=#{BOUNDARY}")
+							create_(body, "multipart/form-data, boundary=#{BOUNDARY}")
 						end
 
 						# Creates username and password credential. Accepts hash with the following parameters.
@@ -107,13 +116,19 @@ module Jenkins2
 										'UsernamePasswordCredentialsImpl'
 								)
 							}.to_json
-							create("json=#{::CGI.escape json_body}")
+							create_("json=#{::CGI.escape json_body}")
 						end
 
-						def create(body, content_type='application/x-www-form-urlencoded')
+						def create_(body, content_type='application/x-www-form-urlencoded')
 							connection.post(build_path('createCredentials'), body) do |req|
 								req['Content-Type'] = content_type
 							end.code == '302'
+						end
+
+						def create(config_xml)
+							connection.post(build_path('createCredentials'), config_xml) do |req|
+								req['Content-Type'] = 'text/xml'
+							end.code == '200'
 						end
 
 						# Returns credential as json. Raises Net::HTTPNotFound, if no such credential
@@ -126,10 +141,7 @@ module Jenkins2
 
 					module Credential
 						class Proxy < ::Jenkins2::ResourceProxy
-							# Deletes credential
-							def delete
-								connection.post(build_path('doDelete')).code == '302'
-							end
+							include ::Jenkins2::API::RUD
 						end
 					end
 				end
