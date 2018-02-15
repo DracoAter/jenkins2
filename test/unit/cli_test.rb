@@ -50,8 +50,6 @@ configuration.
     install-plugin                   Installs a plugin either from a file, an URL, standard \
 input or from update center.
     list-credentials                 Lists credentials in a specific store.
-    list-credentials-context-resolvers
-    list-credentials-providers
     list-node                        Outputs the node list.
     list-online-node                 Outputs the online node list.
     list-plugins                     Lists all installed plugins.

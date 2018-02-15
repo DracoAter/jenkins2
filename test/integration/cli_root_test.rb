@@ -33,7 +33,7 @@ module Jenkins2
 			end
 
 			def test_version
-				assert_equal '2.89.3', Jenkins2::CLI::Version.new(@@opts).call
+				assert_equal '2.89.4', Jenkins2::CLI::Version.new(@@opts).call
 			end
 		end
 	end
