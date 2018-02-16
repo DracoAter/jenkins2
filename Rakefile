@@ -6,12 +6,13 @@ require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
 
 CLEAN << 'doc'
-CLEAN << 'test/coverage'
-CLEAN << 'test-reports'
 
 task default: %i[test:unit]
 
 namespace :test do
+	CLEAN << 'test/coverage'
+	CLEAN << 'test/integration.log'
+
 	%w[unit integration].each do |name|
 		Rake::TestTask.new name do |t|
 			t.description = "Run #{name} tests and generate coverage reports."
@@ -35,6 +36,8 @@ namespace :test do
 end
 
 namespace :ci do
+	CLEAN << 'test-reports'
+
 	%w[all unit integration].each do |name|
 		desc "Run #{name} tests and generate report for CI"
 		task name do

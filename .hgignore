@@ -1,6 +1,7 @@
 rake.tasks~
 .gemspec.lock
 test/coverage
+test/integration.log
 test-reports/
 .kitchen/
 .kitchen.local.yml

@@ -7,18 +7,11 @@ require_relative 'test_helper'
 module Jenkins2
 	module IntegrationTest
 		class ApiPluginsTest < Minitest::Test
-			PLUGINS = %w[mailer label-verifier].freeze
-			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do
-				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
-			end
+			TEST_PLUGIN = 'mailer'
 
-			def test_plugins
-				assert_includes @@subj.plugins(depth: 1).plugins.collect(&:shortName), 'mailer'
-			end
-
-			def test_plugin_success
-				assert_equal 'Jenkins Mailer Plugin', @@subj.plugins.plugin('mailer').longName
+			def teardown
+				@@subj.plugins.plugin(TEST_PLUGIN).uninstall rescue nil
+				@@subj.plugins.plugin('emotional-jenkins-plugin').uninstall rescue nil
 			end
 
 			def test_plugin_fail_not_found
@@ -28,18 +21,18 @@ module Jenkins2
 				assert_equal 'Problem accessing /pluginManager/plugin/blueocean/api/json.', exc.message
 			end
 
-			def test_install
-				assert_equal true, @@subj.plugins.install('junit')
+			def test_install_list_get_uninstall
+				refute_includes @@subj.plugins(depth: 1).plugins.collect(&:shortName), TEST_PLUGIN
+				assert_equal true, @@subj.plugins.install(TEST_PLUGIN)
 				Jenkins2::Util.wait(max_wait_minutes: 1) do
-					@@subj.plugins.plugin('junit').active?
+					@@subj.plugins.plugin(TEST_PLUGIN).active?
 				end
-				assert_equal true, @@subj.plugins.plugin('junit').active?
-			end
-
-			def test_uninstall
-				assert_equal false, @@subj.plugins.plugin('label-verifier').deleted
-				assert_equal true, @@subj.plugins.plugin('label-verifier').uninstall
-				assert_equal true, @@subj.plugins.plugin('label-verifier').deleted
+				assert_includes @@subj.plugins(depth: 1).plugins.collect(&:shortName), TEST_PLUGIN
+				assert_equal 'Jenkins Mailer Plugin', @@subj.plugins.plugin(TEST_PLUGIN).longName
+				assert_equal true, @@subj.plugins.plugin(TEST_PLUGIN).active?
+				assert_equal false, @@subj.plugins.plugin(TEST_PLUGIN).deleted
+				assert_equal true, @@subj.plugins.plugin(TEST_PLUGIN).uninstall
+				assert_equal true, @@subj.plugins.plugin(TEST_PLUGIN).deleted
 			end
 
 			def test_upload

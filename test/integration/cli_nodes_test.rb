@@ -59,12 +59,6 @@ module Jenkins2
   <nodeProperties/>
 </slave>'
 
-			PLUGINS = %w[command-launcher].freeze
-			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do
-				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
-			end
-
 			def setup
 				@@subj.computer('cli xml config').create
 				@@subj.computer('cli localhost').create

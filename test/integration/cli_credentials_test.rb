@@ -31,12 +31,6 @@ plugin="plain-credentials@1.4">
   <description>this is desc</description>
 </com.cloudbees.plugins.credentials.domains.Domain>)
 
-			PLUGINS = %w[ssh-credentials plain-credentials].freeze
-			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do
-				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
-			end
-
 			def setup
 				@@subj.credentials.store('system').domain('_', depth: 1).create_username_password(
 					scope: 'GLOBAL', username: 'cli test',

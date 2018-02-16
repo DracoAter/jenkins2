@@ -5,19 +5,11 @@ require_relative 'test_helper'
 module Jenkins2
 	module IntegrationTest
 		class CliPluginsTest < Minitest::Test
-			PLUGINS = %w[ant create-fingerprint].freeze
-			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do
-				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
-			end
+			TEST_PLUGIN = 'label-verifier'
 
-			def test_list_plugins
-				assert_includes Jenkins2::CLI::ListPlugins.new(@@opts).call, 'ant'
-			end
-
-			def test_show_plugin_success
-				assert_equal 'ant (1.8) - Ant Plugin',
-					Jenkins2::CLI::ShowPlugin.new(@@opts).parse(['-n', 'ant']).call
+			def teardown
+				@@subj.plugins.plugin(TEST_PLUGIN).uninstall rescue nil
+				@@subj.plugins.plugin('chucknorris').uninstall rescue nil
 			end
 
 			def test_show_plugin_not_found
@@ -27,12 +19,19 @@ module Jenkins2
 				assert_equal 'Problem accessing /pluginManager/plugin/blueocean/api/json.', exc.message
 			end
 
-			def test_install_by_short_name
-				assert_equal true, Jenkins2::CLI::InstallPlugin.new(@@opts).parse(['-n', 'junit']).call
+			def test_install_by_short_name_list_show_unistall
+				refute_includes Jenkins2::CLI::ListPlugins.new(@@opts).call, TEST_PLUGIN
+				assert_equal true, Jenkins2::CLI::InstallPlugin.new(@@opts).parse(['-n', TEST_PLUGIN]).call
 				Jenkins2::Util.wait(max_wait_minutes: 1) do
-					@@subj.plugins.plugin('junit').active?
+					@@subj.plugins.plugin(TEST_PLUGIN).active?
 				end
-				assert_equal true, @@subj.plugins.plugin('junit').active?
+				assert_includes Jenkins2::CLI::ListPlugins.new(@@opts).call, TEST_PLUGIN
+				assert_equal 'label-verifier (1.2) - Jenkins Label Verifier plugin',
+					Jenkins2::CLI::ShowPlugin.new(@@opts).parse(['-n', TEST_PLUGIN]).call
+				assert_equal true, Jenkins2::CLI::UninstallPlugin.new(@@opts).parse(
+					['-n', TEST_PLUGIN]
+				).call
+				assert_equal true, @@subj.plugins.plugin(TEST_PLUGIN).deleted
 			end
 
 			def test_install_by_source
@@ -44,14 +43,6 @@ module Jenkins2
 				end
 				assert_equal true, @@subj.plugins.plugin('chucknorris').active?
 				assert_equal '0.9', @@subj.plugins.plugin('chucknorris').version
-			end
-
-			def test_uninstall_plugin
-				assert_equal false, @@subj.plugins.plugin('create-fingerprint').deleted
-				assert_equal true, Jenkins2::CLI::UninstallPlugin.new(@@opts).parse(
-					['-n', 'create-fingerprint']
-				).call
-				assert_equal true, @@subj.plugins.plugin('create-fingerprint').deleted
 			end
 		end
 	end

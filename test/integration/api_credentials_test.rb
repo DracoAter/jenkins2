@@ -5,12 +5,6 @@ require_relative 'test_helper'
 module Jenkins2
 	module IntegrationTest
 		class ApiCredentialsTest < Minitest::Test
-			PLUGINS = %w[ssh-credentials plain-credentials].freeze
-			@@subj.plugins.install PLUGINS
-			Jenkins2::Util.wait do
-				@@subj.plugins(depth: 1).plugins.select{|p| PLUGINS.include? p.shortName }.all?(&:active)
-			end
-
 			SECRET_TEXT = %(<org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl \
 plugin="plain-credentials@1.4">
   <scope>GLOBAL</scope>
