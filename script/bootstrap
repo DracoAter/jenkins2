@@ -12,11 +12,3 @@ fi
 echo "==== Install gem dependencies ===="
 # On ci server this will be run as normal user, thus installing gem dependencies in user space.
 $sudo rake dependencies:install
-
-if ! [ -x $(command -v lxc) ]; then
-	echo "==== Install lxd ===="
-	# This most probably will fail in ci environment, so please, be sure lxd is installed beforehand.
-	$sudo apt-get install lxd lxd-client
-	echo "! Make sure you configure lxdbr0 with IPv4 !"
-	lxd init
-fi

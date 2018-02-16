@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# script/integration_test: Run test suite for application. Optionally pass in a path to an
-#              individual test file to run a single test.
+# script/test: Run test suite for application. Optionally pass in a TEST or TESTOPTS variable
+#              to run a single suite or test.
 
 if [ "$RUBY_ENV" = "test" ]; then
 	# if executed and the environment is already set to `test`, then we want a
@@ -9,9 +9,9 @@ if [ "$RUBY_ENV" = "test" ]; then
 	# since we set the environment to `test` directly in `script/cibuild`.
 	script/bootstrap
 	#should be after bootstrap, because otherwise required gem is not installed
-	echo "==== Running integration tests ===="
+	echo "==== Running tests ===="
 	kitchen converge
-	rake ci:integration
+	rake ci:all
 	kitchen destroy
 else
 	# if the environment isn't set to `test`, set it to `test` and update the
@@ -21,7 +21,9 @@ else
 	# own from a `development` environment.
 	script/bootstrap
 	export RUBY_ENV='test'
-	echo "==== Running integration tests ===="
-	kitchen test
+	echo "==== Running tests ===="
+	kitchen converge
+	rake test:all
+	kitchen destroy
 fi
 
