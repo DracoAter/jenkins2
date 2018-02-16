@@ -20,8 +20,8 @@ echo "Download slave.jar"
 #wget -t3 --retry-on-http-error 503 -O /tmp/slave.jar http://localhost:8080/jnlpJars/slave.jar
 curl --retry 5 --retry-delay 0 http://localhost:8080/jnlpJars/slave.jar > /tmp/slave.jar
 
-echo "Disable setup wizard in Jenkins"
-cp /var/lib/jenkins/{jenkins.install.UpgradeWizard.state,jenkins.install.InstallUtil.lastExecVersion}
+#echo "Disable setup wizard in Jenkins"
+#cp /var/lib/jenkins/{jenkins.install.UpgradeWizard.state,jenkins.install.InstallUtil.lastExecVersion}
 
-echo "Restart Jenkins"
-service jenkins restart
+#echo "Restart Jenkins"
+#service jenkins restart
