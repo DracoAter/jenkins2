@@ -4,7 +4,7 @@
 
 sudo=""
 
-if [ "$RUBY_ENV" != 'test' ]; then
+if [ "$CI" != 'true' ]; then
 	echo "==== Elevating privileges ===="
 	sudo="sudo"
 fi

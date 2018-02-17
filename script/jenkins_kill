@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+# script/jenkins_kill: Kill Jenkins docker container, if it's started.
+
+if [ -n "$(docker ps -qf name=jenkins2)" ] ; then
+	echo "==== Killing Jenkins ===="
+	docker kill jenkins2
+fi

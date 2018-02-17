@@ -11,9 +11,9 @@ opts = @opts = {}
 # rubocop:enable Lint/UselessAssignment
 
 if ARGV.empty?
-	@opts[:server] = 'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.strip + ':8080'
-	@opts[:key] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.split("\n").
-		last.strip
+	@opts[:server] = 'http://localhost:8080/'
+	@opts[:key] = `docker exec jenkins2 cat -- /var/jenkins_home/secrets/initialAdminPassword`.
+		split("\n").last.strip
 	@opts[:user] = 'admin'
 else
 	@opts = JSON.parse(IO.read(ARGV.first), symbolize_names: true)

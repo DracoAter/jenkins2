@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+# script/jenkins_start: Start Jenkins in docker, if it not started.
+
+if [ -z "$(docker ps -qf name=jenkins2)" ]; then
+	echo "==== Starting Jenkins ===="
+	docker run --rm -p 8080:8080 --name jenkins2 --detach jenkins/jenkins:lts-alpine
+fi
+

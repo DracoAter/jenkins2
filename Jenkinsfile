@@ -1,6 +1,6 @@
 node {
 	timestamps {
-		withEnv(['RUBY_ENV=test']) {
+		withEnv(['CI=true']) {
 
 			stage 'Checkout'
 			checkout([$class: 'MercurialSCM', source: 'http://bitbucket.org/DracoAter/jenkins2'])

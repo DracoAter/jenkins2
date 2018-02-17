@@ -24,15 +24,6 @@ namespace :test do
 
 	desc 'Run all tests and generate coverage reports.'
 	task all: %i[unit integration]
-
-	task integration: :get_credentials
-	task :get_credentials do |_t|
-		ENV['JENKINS2_SERVER'] = 'http://' + `kitchen diagnose | grep -oP "(?<=hostname:\\s).*$"`.
-			strip + ':8080'
-		ENV['JENKINS2_KEY'] = `kitchen exec -c "cat /var/lib/jenkins/secrets/initialAdminPassword"`.
-			split("\n").last.strip
-		ENV['JENKINS2_USER'] = 'admin'
-	end
 end
 
 namespace :ci do
@@ -78,8 +69,8 @@ namespace :dependencies do
 		end
 		next if unsatisfied_dependencies.empty?
 		unsatisfied_dependencies.each do |dp|
-			# If environment is set to `test`, it is most probably ci server, so we go with user_install.
-			Gem::DependencyInstaller.new(user_install: ENV['RUBY_ENV'] == 'test').install(dp)
+			# If CI is set to `true`, it is most probably ci server, so we go with user_install.
+			Gem::DependencyInstaller.new(user_install: ENV['CI'] == 'true').install(dp)
 		end
 	end
 end

@@ -1,10 +1,17 @@
 # You can use a Docker image from Docker Hub or your own container registry
-image: ruby:2.3
+image: ruby:2.3-slim
 
 pipelines:
   default:
-  - step:
-      script:
-      - export RUBY_ENV='test'
-      - script/unit_test
-      - rake gem
+    - step:
+        script:
+          - script/cibuild
+        services:
+          - jenkins2
+          - docker
+
+definitions:
+  services:
+    jenkins2:
+      image: jenkins/jenkins:lts-alpine
+

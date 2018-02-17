@@ -3,27 +3,25 @@
 # script/test: Run test suite for application. Optionally pass in a TEST or TESTOPTS variable
 #              to run a single suite or test.
 
-if [ "$RUBY_ENV" = "test" ]; then
-	# if executed and the environment is already set to `test`, then we want a
-	# clean from scratch application. This almost always means a ci environment,
-	# since we set the environment to `test` directly in `script/cibuild`.
-	script/bootstrap
-	#should be after bootstrap, because otherwise required gem is not installed
-	echo "==== Running tests ===="
-	kitchen converge
-	rake ci:all
-	kitchen destroy
-else
-	# if the environment isn't set to `test`, set it to `test` and update the
-	# application to ensure all dependencies are met as well as any other things
-	# that need to be up to date, like db migrations. The environment not having
-	# already been set to `test` almost always means this is being called on it's
-	# own from a `development` environment.
-	script/bootstrap
-	export RUBY_ENV='test'
-	echo "==== Running tests ===="
-	kitchen converge
-	rake test:all
-	kitchen destroy
+if [ "$CI" != "true" ]; then
+	script/jenkins_start
 fi
 
+script/bootstrap
+
+echo "==== Download slave.jar ===="
+until docker exec jenkins2 \
+	curl --retry 5 http://localhost:8080/jnlpJars/slave.jar > /tmp/slave.jar; do
+	sleep 1
+done
+docker cp /tmp/slave.jar jenkins2:/tmp/slave.jar
+
+echo "==== Running tests ===="
+export JENKINS2_SERVER='http://localhost:8080/'
+export JENKINS2_KEY=$(docker exec jenkins2 cat -- /var/jenkins_home/secrets/initialAdminPassword)
+export JENKINS2_USER='admin'
+rake test:all $@
+
+if [ "$CI" != "true" ]; then
+	script/jenkins_kill
+fi
