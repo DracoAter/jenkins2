@@ -1,4 +1,4 @@
-image: ruby:2.3
+image: ruby:2.3-slim
 
 pipelines:
   default:
@@ -7,7 +7,7 @@ pipelines:
           - echo "==== Install Jenkins ===="
           - echo "deb http://pkg.jenkins.io/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list
           - apt-get update
-          - apt-get install curl jenkins -y --allow-unauthenticated
+          - apt-get install -t jessie-backports curl jenkins -y --allow-unauthenticated
           - service jenkins start
           - echo "==== Download slave.jar ===="
           - until curl --retry 5 http://localhost:8080/jnlpJars/slave.jar > /tmp/slave.jar; do ; sleep 1; done
