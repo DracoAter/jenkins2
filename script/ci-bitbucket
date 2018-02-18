@@ -3,6 +3,11 @@
 # script/ci-bitbucket: Script to be run in bitbucket-pipelines.
 
 # for ruby:2.3-slim docker image
+script/bootstrap
+
+echo "==== Run Unit tests ===="
+rake ci:unit
+
 echo "==== Install Jenkins ===="
 echo "deb http://pkg.jenkins.io/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list
 echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list
@@ -17,9 +22,8 @@ until curl --retry 5 http://localhost:8080/jnlpJars/slave.jar > /tmp/slave.jar; 
 	sleep 1
 done
 
-echo "==== Run tests  ===="
-script/bootstrap
+echo "==== Run integration tests ===="
 export JENKINS2_SERVER='http://localhost:8080/'
 export JENKINS2_USER='admin'
 export JENKINS2_KEY=$(cat -- /var/lib/jenkins/secrets/initialAdminPassword)
-rake ci:all
+rake ci:integration
