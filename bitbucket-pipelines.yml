@@ -17,4 +17,4 @@ pipelines:
           - export JENKINS2_SERVER='http://localhost:8080/'
           - export JENKINS2_USER='admin'
           - export JENKINS2_KEY=$(cat -- /var/lib/jenkins/secrets/initialAdminPassword)
-          - rake test:all
+          - rake ci:all
