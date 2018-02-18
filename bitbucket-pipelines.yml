@@ -6,6 +6,7 @@ pipelines:
         script:
           - echo "==== Install Jenkins ===="
           - echo "deb http://pkg.jenkins.io/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list
+          - echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list
           - apt-get update
           - apt-get install -t jessie-backports curl jenkins -y --allow-unauthenticated
           - service jenkins start
