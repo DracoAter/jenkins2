@@ -1,9 +1,20 @@
 #!/bin/sh -e
 
-# script/jenkins_start: Start Jenkins in docker, if it not started.
+# script/jenkins_start: Start Jenkins in docker, if it not started. This script is not executable,
+#                       because it must be sourced, as it assigns environmental variables.
 
 if [ -z "$(docker ps -qf name=jenkins2)" ]; then
 	echo "==== Starting Jenkins ===="
 	docker run --rm -p 8080:8080 --name jenkins2 --detach jenkins/jenkins:lts-alpine
 fi
 
+echo "==== Download slave.jar ===="
+until docker exec jenkins2 \
+	curl --retry 5 http://localhost:8080/jnlpJars/slave.jar > /tmp/slave.jar; do
+	sleep 1
+done
+docker cp /tmp/slave.jar jenkins2:/tmp/slave.jar
+
+export JENKINS2_SERVER='http://localhost:8080/'
+export JENKINS2_USER='admin'
+export JENKINS2_KEY=$(docker exec jenkins2 cat -- /var/jenkins_home/secrets/initialAdminPassword)

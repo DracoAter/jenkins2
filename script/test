@@ -3,25 +3,10 @@
 # script/test: Run test suite for application. Optionally pass in a TEST or TESTOPTS variable
 #              to run a single suite or test.
 
-if [ "$CI" != "true" ]; then
-	script/jenkins_start
-fi
-
 script/bootstrap
-
-echo "==== Download slave.jar ===="
-until docker exec jenkins2 \
-	curl --retry 5 http://localhost:8080/jnlpJars/slave.jar > /tmp/slave.jar; do
-	sleep 1
-done
-docker cp /tmp/slave.jar jenkins2:/tmp/slave.jar
+. script/jenkins_start
 
 echo "==== Running tests ===="
-export JENKINS2_SERVER='http://localhost:8080/'
-export JENKINS2_KEY=$(docker exec jenkins2 cat -- /var/jenkins_home/secrets/initialAdminPassword)
-export JENKINS2_USER='admin'
 rake test:all $@
 
-if [ "$CI" != "true" ]; then
-	script/jenkins_kill
-fi
+script/jenkins_kill

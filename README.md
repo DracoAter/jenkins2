@@ -114,7 +114,7 @@ This can be avoided by creating a yaml configuration file like this
 ```
 
 and putting global options there. Jenkins will not read the file unless you use `-c` or
-`--config-file` switches. If you use the switch, bnut omit the file path, the gem will look for
+`--config-file` switches. If you use the switch, but omit the file path, the gem will look for
 `.jenkins2.conf` in current directory.
 
 This way the above mentioned command is much shorter
@@ -135,38 +135,51 @@ Jenkins2 gem follows the [Semantic Versioning Policy](http://guides.rubygems.org
 ## Contributing
 
 Additional commands and bugfixes are welcome! Please fork and submit a pull request on an
-individual branch per change. The project follows GitHub Script
+individual branch per change. The project has a script folder which is inspired by GitHub Script
 ["Scripts To Rule Them All"] (https://github.com/github/scripts-to-rule-them-all) pattern.
 
 ### Bootstrap
 
 After cloning the project, run:
 
-    script/bootstrap
+```sh
+$ script/bootstrap
+```
 
 to download gem and other dependencies (currently tested only on ubuntu xenial).
 
 ### Tests
 
-The project is expected to be heavily tested :) with unit and integratin tests. To run unit tests,
-you will need to have some gems installed (see jenkins2.gemspec -> development\_dependencies or
-run bootstrap script). To run unit tests run
+The project is expected to be heavily tested :) with unit and integratin tests.
+Integration tests are run against a Jenkins server. Currently Jenkins server is set up in docker
+container. To run all the tests (unit and integration ) type:
 
-    script/unit_test
+```sh
+$ script/test
+```
 
-Integration tests are run against a Jenkins server. Currently they require an lxd to setup it.
-To run integration tests type
+This will start Jenkins in docker container, run the tests and then kill the container. If you
+want to just start the Jenkins in docker and then may be run tests several times against it, you
+can do the following:
 
-    script/integration_test
+```sh
+$ source script/jenkins_start # start jenkins
+$ rake test:all # run all tests
+```
+Then, when you have finished running tests, run `script/jenkins_kill` to stop Jenkins in docker.
 
-This will start Jenkins in lxd container, run the tests and then kill the container.
+If you want to run just unit tests, you can do it through rake task:
+
+```sh
+$ rake test:unit
+```
+provided you have already installed all the dependences (see [jenkins2.gemspec](jenkins2.gemspec)
+-> development\_dependencies or run [bootstrap script](script/bootstrap)).
 
 ### Continuous Integration
 
-If you would like to automate test runs the progect already has [Jenkinsfile](Jenkinsfile) for
-quick and easy integration with Jenkins Pipelines. If you are using another CI server, just make
-sure it runs
+The project uses Bitbucket Pipelines as CI environment. You can check out
+[bitbucket-pipelines.yml](bitbucket-pipelines.yml) for the exact script.
 
-    script/cibuild
-
-and then collects the data from the generated reports.
+Also there is a [Jenkinsfile](Jenkinsfile) for quick and easy integration with Jenkins Pipelines.
+Unfortunately it is outdated now, but it can be still used as an example to start from.

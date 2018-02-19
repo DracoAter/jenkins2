@@ -5,6 +5,7 @@
 # for ruby:2.3-slim docker image
 script/bootstrap
 
+# run unit tests before installing jenkins to fail fast.
 echo "==== Run Unit tests ===="
 rake ci:unit
 
@@ -26,4 +27,4 @@ echo "==== Run integration tests ===="
 export JENKINS2_SERVER='http://localhost:8080/'
 export JENKINS2_USER='admin'
 export JENKINS2_KEY=$(cat -- /var/lib/jenkins/secrets/initialAdminPassword)
-rake ci:integration
+rake ci:all #run unit tests again with integration ones so that they will count in the report
