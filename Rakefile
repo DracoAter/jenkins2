@@ -2,12 +2,26 @@
 
 require 'rake/testtask'
 require 'rake/clean'
+require 'rdoc/task'
 require 'rubygems/package_task'
 require 'rubygems/dependency_installer'
 
-CLEAN << 'doc'
+CLEAN << 'html'
+RDoc::Task.new do |t|
+	t.main = 'README.md'
+	t.rdoc_files.include('README.md', 'lib/**/*.rb')
+end
 
-task default: %i[test:unit]
+begin
+	require 'rubocop/rake_task'
+	RuboCop::RakeTask.new(:rubocop) do |t|
+		t.options = ['--display-cop-names']
+	end
+	task default: :rubocop
+	task 'test:all': :rubocop
+rescue LoadError
+	puts "Rubocop not found. It's rake tasks are disabled."
+end
 
 namespace :test do
 	CLEAN << 'test/coverage'
@@ -23,8 +37,9 @@ namespace :test do
 	end
 
 	desc 'Run all tests and generate coverage reports.'
-	task all: %i[unit integration]
+	task all: %i[test:unit test:integration]
 end
+task default: 'test:unit'
 
 namespace :ci do
 	CLEAN << 'test-reports'
@@ -40,20 +55,10 @@ namespace :ci do
 	end
 end
 
-begin
-	require 'rubocop/rake_task'
-	RuboCop::RakeTask.new(:rubocop) do |t|
-		t.options = ['--display-cop-names']
-	end
-	task 'test:unit' => :rubocop
-rescue LoadError
-	puts "Rubocop not found. It's rake tasks are disabled."
-end
-
-Gem::PackageTask.new(Gem::Specification.load('jenkins2.gemspec')){}
+Gem::PackageTask.new(Gem::Specification.load('jenkins2.gemspec')).define
 
 desc 'Install this gem locally'
-task :install, [:user_install] => :gem do |_t, args|
+task :install, [:user_install] => :gem do |_, args|
 	args.with_defaults(user_install: false)
 	Gem::Installer.new("pkg/jenkins2-#{Jenkins2::VERSION}.gem", user_install: args.user_install).
 		install
@@ -61,7 +66,7 @@ end
 
 namespace :dependencies do
 	desc 'Install development dependencies'
-	task :install do |_t|
+	task :install do
 		installer = Gem::Installer.new('')
 		unsatisfied_dependencies = Gem::Specification.load('jenkins2.gemspec').
 			development_dependencies.reject do |dp|

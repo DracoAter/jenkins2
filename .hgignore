@@ -3,6 +3,5 @@ rake.tasks~
 test/coverage
 test/integration.log
 test-reports/
-.kitchen/
-.kitchen.local.yml
 pkg/
+html/
