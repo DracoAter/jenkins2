@@ -8,6 +8,7 @@ require_relative 'api/credentials'
 require_relative 'api/computer'
 require_relative 'api/job'
 require_relative 'api/plugins'
+require_relative 'api/role_strategy'
 require_relative 'api/root'
 require_relative 'api/user'
 require_relative 'api/view'
@@ -18,6 +19,7 @@ module Jenkins2
 		include Computer
 		include Job
 		include Plugins
+		include RoleStrategy
 		include Root
 		include User
 		include View

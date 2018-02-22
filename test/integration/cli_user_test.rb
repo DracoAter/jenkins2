@@ -7,7 +7,7 @@ module Jenkins2
 		class CliUserTest < Minitest::Test
 			def test_who_am_i
 				assert_equal "id: admin\nfullName: admin\ndescription: ",
-					Jenkins2::CLI::WhoAmI.new(@@opts).run
+					Jenkins2::CLI::WhoAmI.new(@@opts).call
 			end
 		end
 	end
