@@ -27,16 +27,17 @@ module Jenkins2
 				end
 
 				# Create a role in role-strategy
-				# *Parameters*::
+				# ==== Parameters:
 				# +role+:: Role name.
 				# +type+:: Role type. Use RoleType enum values.
 				# +permissions+:: Array of permission ids. Default is - no permissions.
 				# +pattern+:: Slave or project pattern. Ignored for global roles.
-				# *Returns*::
+				# ==== Returns:
 				# True on success
 				def create(role:, type:, permissions: [], pattern: nil)
 					connection.post(build_path('addRole'), nil, roleName: role, type: type,
-						permissionIds: (permissions || []).join(','), pattern: pattern, overwrite: true).code == '200'
+						permissionIds: (permissions || []).join(','), pattern: pattern, overwrite: false).
+						code == '200'
 				end
 
 				# Delete role(s) in role-strategy
