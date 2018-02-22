@@ -6,13 +6,13 @@ module Jenkins2
 	module IntegrationTest
 		class CliRoleStrategyTest < Minitest::Test
 			def test_list_roles
-				assert_includes Jenkins2::CLI::ListRoles.new(@@opts).call, "admin: admin"
+				assert_includes Jenkins2::CLI::ListRoles.new(@@opts).call, 'admin: admin'
 			end
 
 			def test_create_delete_global_role
 				assert_equal true, Jenkins2::CLI::CreateRole.new(@@opts).parse(
 					['--role', 'cli_test', '--type', 'globalRoles', '--permissions',
-					'hudson.model.Hudson.Read,hudson.model.Item.Discover']
+						'hudson.model.Hudson.Read,hudson.model.Item.Discover']
 				).call
 				assert_equal [], @@subj.roles.list[:cli_test]
 				assert_equal true, Jenkins2::CLI::DeleteRoles.new(@@opts).parse(
@@ -24,7 +24,7 @@ module Jenkins2
 			def test_create_delete_project_role
 				assert_equal true, Jenkins2::CLI::CreateRole.new(@@opts).parse(
 					['--role', 'clitest', '--type', 'projectRoles', '--pattern', 'test.*', '--permissions',
-					'hudson.model.Hudson.Read,hudson.model.Item.Discover']
+						'hudson.model.Hudson.Read,hudson.model.Item.Discover']
 				).call
 				# TODO: Find how to list project roles
 				# assert_equal [], @@subj.roles.list[:test]

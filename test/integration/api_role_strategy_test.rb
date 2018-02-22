@@ -22,8 +22,7 @@ module Jenkins2
 			def test_create_delete_project
 				assert_equal true, @@subj.roles.create(role: 'test', pattern: 'test.*',
 					type: Jenkins2::API::RoleStrategy::RoleType::PROJECT,
-					permissions: %w[hudson.model.Hudson.Read hudson.model.Item.Discover],
-				)
+					permissions: %w[hudson.model.Hudson.Read hudson.model.Item.Discover])
 				# TODO: Find how to list project roles
 				# assert_equal [], @@subj.roles.list[:test]
 				assert_equal true, @@subj.roles.delete(role: 'test',
