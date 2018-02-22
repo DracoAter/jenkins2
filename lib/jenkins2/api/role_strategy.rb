@@ -36,7 +36,7 @@ module Jenkins2
 				# True on success
 				def create(role:, type:, permissions: [], pattern: nil)
 					connection.post(build_path('addRole'), nil, roleName: role, type: type,
-						permissionIds: (permissions||[]).join(','), pattern: pattern, overwrite: true).code == '200'
+						permissionIds: (permissions || []).join(','), pattern: pattern, overwrite: true).code == '200'
 				end
 
 				# Delete role(s) in role-strategy
@@ -61,7 +61,7 @@ module Jenkins2
 					connection.post(build_path('assignRole'), nil, roleName: role, type: type, sid: rsuser).
 						code == '200'
 				end
-				
+
 				# Unassign role from user in role-strategy
 				# ==== Parameters:
 				# +role+:: Role name.

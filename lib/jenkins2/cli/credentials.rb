@@ -153,7 +153,7 @@ module Jenkins2
 
 		class ListCredentials < CLI
 			def self.description
-				'Lists credentials in a specific store.'
+				'List credentials in a specific store.'
 			end
 
 			def add_options

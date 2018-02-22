@@ -18,7 +18,7 @@ list is supported.
 			def test_create_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    create-node                      Creates a new node by reading stdin for an XML configuration.
+    create-node                      Create a new node by reading stdin for an XML configuration.
 Mandatory arguments:
     -n, --name NAME                  Name of the node.
 ), Jenkins2::CLI::CreateNode.new.send(:summary)
@@ -27,7 +27,7 @@ Mandatory arguments:
 			def test_delete_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    delete-node                      Deletes node(s).
+    delete-node                      Delete node(s).
 Mandatory arguments:
     -n, --name X,Y,..                Names of nodes to delete.
 ), Jenkins2::CLI::DeleteNode.new.send(:summary)
@@ -36,7 +36,7 @@ Mandatory arguments:
 			def test_disconnect_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    disconnect-node                  Disconnects node(s).
+    disconnect-node                  Disconnect node(s).
 Mandatory arguments:
     -n, --name X,Y,..                Slave name, or "(master)" for master, comma-separated \
 list is supported.
@@ -48,7 +48,7 @@ Optional arguments:
 			def test_get_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    get-node                         Dumps the node definition XML to stdout.
+    get-node                         Dump the node definition XML to stdout.
 Mandatory arguments:
     -n, --name NAME                  Name of the node.
 ), Jenkins2::CLI::GetNode.new.send(:summary)
@@ -57,14 +57,14 @@ Mandatory arguments:
 			def test_list_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    list-node                        Outputs the node list.
+    list-node                        Output the node list.
 ), Jenkins2::CLI::ListNode.new.send(:summary)
 			end
 
 			def test_list_online_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    list-online-node                 Outputs the online node list.
+    list-online-node                 Output the online node list.
 ), Jenkins2::CLI::ListOnlineNode.new.send(:summary)
 			end
 
@@ -93,7 +93,7 @@ Mandatory arguments:
 			def test_update_node_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    update-node                      Updates the node definition XML from stdin. The opposite of \
+    update-node                      Update the node definition XML from stdin. The opposite of \
 the get-node command.
 Mandatory arguments:
     -n, --name NAME                  Name of the node.

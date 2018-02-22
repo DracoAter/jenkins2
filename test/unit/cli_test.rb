@@ -30,54 +30,60 @@ For command specific arguments run: jenkins2 --help <command>
 
 }
 			COMMANDS_SUMMARY = %{Commands:
-    add-job-to-view                  Adds jobs to view.
+    add-job-to-view                  Add jobs to view.
+    assign-role                      Assign role to user in role-strategy plugin.
     cancel-quiet-down                Cancel previously issued quiet-down command.
     connect-node                     Reconnect node(s).
     create-credentials-by-xml        Create credential by reading stdin as an XML configuration.
     create-credentials-domain-by-xml Create credential domain by reading stdin as an XML \
 configuration.
-    create-node                      Creates a new node by reading stdin for an XML configuration.
-    create-view                      Creates a new view by reading stdin as a XML configuration.
+    create-node                      Create a new node by reading stdin for an XML configuration.
+    create-role                      Create a role in role-strategy plugin.
+    create-view                      Create a new view by reading stdin as a XML configuration.
     delete-credentials               Delete credentials.
     delete-credentials-domain        Delete credentials domain.
-    delete-node                      Deletes node(s).
+    delete-node                      Delete node(s).
+    delete-roles                     Delete role(s) in role-strategy plugin.
     delete-view                      Delete view(s).
-    disconnect-node                  Disconnects node(s).
+    disconnect-node                  Disconnect node(s).
     get-credentials-as-xml           Get a credential as XML (secrets redacted).
     get-credentials-domain-as-xml    Get credentials domain as XML.
-    get-node                         Dumps the node definition XML to stdout.
-    get-view                         Dumps the view definition XML to stdout.
-    install-plugin                   Installs a plugin either from a file, an URL, standard \
+    get-node                         Dump the node definition XML to stdout.
+    get-view                         Dump the view definition XML to stdout.
+    install-plugin                   Install a plugin either from a file, an URL, standard \
 input or from update center.
-    list-credentials                 Lists credentials in a specific store.
-    list-node                        Outputs the node list.
-    list-online-node                 Outputs the online node list.
-    list-plugins                     Lists all installed plugins.
+    list-credentials                 List credentials in a specific store.
+    list-node                        Output the node list.
+    list-online-node                 Output the online node list.
+    list-plugins                     List all installed plugins.
+    list-roles                       List all global roles in role-strategy plugin.
     offline-node                     Stop using a node for performing builds temporarily, until \
 the next "online-node" command.
     online-node                      Resume using a node for performing builds, to cancel out \
 the earlier "offline-node" command.
     quiet-down                       Put Jenkins into the quiet mode, wait for existing builds \
 to be completed.
-    remove-job-from-view             Removes jobs from view.
+    remove-job-from-view             Remove jobs from view.
     restart                          Restart Jenkins.
     safe-restart                     Safely restart Jenkins.
     show-plugin                      Show plugin info.
-    uninstall-plugin                 Uninstalls a plugin.
+    unassign-all-roles               Unassign all roles from user in role-strategy plugin.
+    unassign-role                    Unassign role from user in role-strategy plugin.
+    uninstall-plugin                 Uninstall a plugin.
     update-credentials-by-xml        Update credentials by XML.
     update-credentials-domain-by-xml Update credentials domain by XML.
-    update-node                      Updates the node definition XML from stdin. The opposite of \
+    update-node                      Update the node definition XML from stdin. The opposite of \
 the get-node command.
-    update-view                      Updates the view definition XML from stdin. The opposite of \
+    update-view                      Update the view definition XML from stdin. The opposite of \
 the get-view command.
     version                          Jenkins version.
     wait-node-offline                Wait for a node to become offline.
     wait-node-online                 Wait for a node to become online.
-    who-am-i                         Reports your credentials.
+    who-am-i                         Report your credentials.
 }
 
 			COMMAND_SUMMARY = %{Command:
-    uninstall-plugin                 Uninstalls a plugin.
+    uninstall-plugin                 Uninstall a plugin.
 Mandatory arguments:
     -n, --name SHORTNAME             Plugin short name (like thinBackup).
 }

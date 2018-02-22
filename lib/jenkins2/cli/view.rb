@@ -4,7 +4,7 @@ module Jenkins2
 	class CLI
 		class CreateView < CLI
 			def self.description
-				'Creates a new view by reading stdin as a XML configuration.'
+				'Create a new view by reading stdin as a XML configuration.'
 			end
 
 			private
@@ -52,7 +52,7 @@ module Jenkins2
 
 		class GetView < CLI
 			def self.description
-				'Dumps the view definition XML to stdout.'
+				'Dump the view definition XML to stdout.'
 			end
 
 			private
@@ -75,7 +75,7 @@ module Jenkins2
 
 		class UpdateView < CLI
 			def self.description
-				'Updates the view definition XML from stdin. The opposite of the get-view command.'
+				'Update the view definition XML from stdin. The opposite of the get-view command.'
 			end
 
 			private
@@ -98,7 +98,7 @@ module Jenkins2
 
 		class AddJobToView < CLI
 			def self.description
-				'Adds jobs to view.'
+				'Add jobs to view.'
 			end
 
 			private
@@ -126,7 +126,7 @@ module Jenkins2
 
 		class RemoveJobFromView < CLI
 			def self.description
-				'Removes jobs from view.'
+				'Remove jobs from view.'
 			end
 
 			private

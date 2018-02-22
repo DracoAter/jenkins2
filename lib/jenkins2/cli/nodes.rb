@@ -24,7 +24,7 @@ module Jenkins2
 
 		class CreateNode < CLI
 			def self.description
-				'Creates a new node by reading stdin for an XML configuration.'
+				'Create a new node by reading stdin for an XML configuration.'
 			end
 
 			def add_options
@@ -42,7 +42,7 @@ module Jenkins2
 
 		class DeleteNode < CLI
 			def self.description
-				'Deletes node(s).'
+				'Delete node(s).'
 			end
 
 			def add_options
@@ -61,7 +61,7 @@ module Jenkins2
 
 		class DisconnectNode < CLI
 			def self.description
-				'Disconnects node(s).'
+				'Disconnect node(s).'
 			end
 
 			def add_options
@@ -86,7 +86,7 @@ module Jenkins2
 
 		class GetNode < CLI
 			def self.description
-				'Dumps the node definition XML to stdout.'
+				'Dump the node definition XML to stdout.'
 			end
 
 			def add_options
@@ -103,7 +103,7 @@ module Jenkins2
 
 		class ListNode < CLI
 			def self.description
-				'Outputs the node list.'
+				'Output the node list.'
 			end
 
 			def run
@@ -113,7 +113,7 @@ module Jenkins2
 
 		class ListOnlineNode < CLI
 			def self.description
-				'Outputs the online node list.'
+				'Output the online node list.'
 			end
 
 			def run
@@ -167,7 +167,7 @@ module Jenkins2
 
 		class UpdateNode < CLI
 			def self.description
-				'Updates the node definition XML from stdin. The opposite of the get-node command.'
+				'Update the node definition XML from stdin. The opposite of the get-node command.'
 			end
 
 			def add_options

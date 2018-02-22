@@ -6,7 +6,7 @@ module Jenkins2
 	class CLI
 		class InstallPlugin < CLI
 			def self.description
-				'Installs a plugin either from a file, an URL, standard input or from update center.'
+				'Install a plugin either from a file, an URL, standard input or from update center.'
 			end
 
 			private
@@ -39,7 +39,7 @@ module Jenkins2
 
 		class ListPlugins < CLI
 			def self.description
-				'Lists all installed plugins.'
+				'List all installed plugins.'
 			end
 
 			private
@@ -53,7 +53,7 @@ module Jenkins2
 
 		class UninstallPlugin < CLI
 			def self.description
-				'Uninstalls a plugin.'
+				'Uninstall a plugin.'
 			end
 
 			private

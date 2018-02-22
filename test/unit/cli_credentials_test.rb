@@ -70,7 +70,7 @@ Mandatory arguments:
 			def test_list_credentials_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    list-credentials                 Lists credentials in a specific store.
+    list-credentials                 List credentials in a specific store.
 Mandatory arguments:
         --store STORE                Store id. (e.g. "system")
 ), Jenkins2::CLI::ListCredentials.new.send(:summary)
