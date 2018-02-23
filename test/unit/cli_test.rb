@@ -34,25 +34,33 @@ For command specific arguments run: jenkins2 --help <command>
     assign-role                      Assign role to user in role-strategy plugin.
     cancel-quiet-down                Cancel previously issued quiet-down command.
     connect-node                     Reconnect node(s).
+    copy-job                         Copy a job.
     create-credentials-by-xml        Create credential by reading stdin as an XML configuration.
     create-credentials-domain-by-xml Create credential domain by reading stdin as an XML \
 configuration.
+    create-job                       Create a new job by reading stdin as an XML configuration.
     create-node                      Create a new node by reading stdin for an XML configuration.
     create-role                      Create a role in role-strategy plugin.
-    create-view                      Create a new view by reading stdin as a XML configuration.
+    create-view                      Create a new view by reading stdin as an XML configuration.
     delete-credentials               Delete credentials.
     delete-credentials-domain        Delete credentials domain.
+    delete-job                       Delete a job.
     delete-node                      Delete node(s).
     delete-roles                     Delete role(s) in role-strategy plugin.
     delete-view                      Delete view(s).
+    disable-job                      Disable a job, restrict all builds of the job from now on.
     disconnect-node                  Disconnect node(s).
+    enable-job                       Enable job, allow building the job. Cancels previously \
+issued \"disable-job\".
     get-credentials-as-xml           Get a credential as XML (secrets redacted).
     get-credentials-domain-as-xml    Get credentials domain as XML.
+    get-job                          Dump the job definition XML to stdout.
     get-node                         Dump the node definition XML to stdout.
     get-view                         Dump the view definition XML to stdout.
     install-plugin                   Install a plugin either from a file, an URL, standard \
 input or from update center.
     list-credentials                 List credentials in a specific store.
+    list-jobs                        List all jobs in a specific view or item group.
     list-node                        Output the node list.
     list-online-node                 Output the online node list.
     list-plugins                     List all installed plugins.
@@ -72,6 +80,8 @@ to be completed.
     uninstall-plugin                 Uninstall a plugin.
     update-credentials-by-xml        Update credentials by XML.
     update-credentials-domain-by-xml Update credentials domain by XML.
+    update-job                       Update the job definition XML from stdin. The opposite of \
+the \"get-job\" command.
     update-node                      Update the node definition XML from stdin. The opposite of \
 the get-node command.
     update-view                      Update the view definition XML from stdin. The opposite of \

@@ -18,7 +18,7 @@ Mandatory arguments:
 			def test_create_view_summary
 				assert_equal Jenkins2::UnitTest::CLITest::GLOBAL_SUMMARY +
 					%(Command:
-    create-view                      Create a new view by reading stdin as a XML configuration.
+    create-view                      Create a new view by reading stdin as an XML configuration.
 Mandatory arguments:
     -n, --name NAME                  Name of the view.
 ), Jenkins2::CLI::CreateView.new.send(:summary)

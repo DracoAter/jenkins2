@@ -4,7 +4,7 @@ module Jenkins2
 	class CLI
 		class CreateView < CLI
 			def self.description
-				'Create a new view by reading stdin as a XML configuration.'
+				'Create a new view by reading stdin as an XML configuration.'
 			end
 
 			private

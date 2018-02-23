@@ -5,6 +5,7 @@ require 'yaml'
 
 require_relative 'version'
 require_relative 'cli/credentials'
+require_relative 'cli/job'
 require_relative 'cli/nodes'
 require_relative 'cli/role_strategy'
 require_relative 'cli/root'
