@@ -4,6 +4,9 @@ AllCops:
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
+Layout/AlignArray:
+  Enabled: false
+
 Layout/AlignHash:
   EnforcedLastArgumentHashStyle: ignore_implicit
 

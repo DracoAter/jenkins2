@@ -18,3 +18,4 @@ docker cp /tmp/slave.jar jenkins2:/tmp/slave.jar
 export JENKINS2_SERVER='http://localhost:8080/'
 export JENKINS2_USER='admin'
 export JENKINS2_KEY=$(docker exec jenkins2 cat -- /var/jenkins_home/secrets/initialAdminPassword)
+env | grep JENKINS2

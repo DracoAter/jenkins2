@@ -67,6 +67,9 @@ module Jenkins2
   <buildWrappers/>
 </project>)
 
+			FOLDER_XML = %(<com.cloudbees.hudson.plugins.folder.Folder plugin="cloudbees-folder@6.3">
+  </com.cloudbees.hudson.plugins.folder.Folder>)
+
 			def setup
 				@@subj.job('xml config').create(CONFIG_XML)
 				@@subj.job('for deletion').create(NEW_CONFIG_XML)
@@ -146,6 +149,15 @@ module Jenkins2
 
 			def test_polling
 				assert_equal true, @@subj.job('xml config').polling
+			end
+
+			def test_create_job_inside_folder
+				assert_equal true, @@subj.job('test').create(FOLDER_XML)
+				assert_equal true, @@subj.job('test').job('test1').create(CONFIG_XML)
+				assert_equal 'test1', @@subj.job('test').job('test1').name
+				assert_equal 'test/test1', @@subj.job('test').job('test1').fullName
+			ensure
+				@@subj.job('test').delete
 			end
 		end
 	end

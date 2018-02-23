@@ -18,6 +18,9 @@ plugin="plain-credentials@1.4">
   <description>this is desc</description>
 </com.cloudbees.plugins.credentials.domains.Domain>)
 
+			FOLDER_XML = %(<com.cloudbees.hudson.plugins.folder.Folder plugin="cloudbees-folder@6.3">
+  </com.cloudbees.hudson.plugins.folder.Folder>)
+
 			def setup
 				@subj = @@subj.credentials.store('system').domain('_', depth: 1)
 				@subj.create(SECRET_TEXT)
@@ -113,6 +116,19 @@ plugin="plain-credentials@1.4">
 				assert_equal false, @subj.credentials.collect(&:id).include?('api uniq 1')
 				assert_equal true, @subj.create(SECRET_TEXT)
 				refute_nil @subj.credential('api uniq 1')
+			end
+
+			def test_create_inside_folder
+				@@subj.job('creds1').create(FOLDER_XML)
+				assert_equal false, @@subj.job('creds1').credentials.store('folder').domain('_').
+					credentials.collect(&:id).include?('api uniq 1')
+				assert_equal true, @@subj.job('creds1').credentials.store('folder').domain('_').
+					create(SECRET_TEXT)
+				assert_equal 'creds1/folder/_/api%20uniq%201',
+					@@subj.job('creds1').credentials.store('folder').domain('_').
+					credential('api uniq 1').fullName
+			ensure
+				@@subj.job('creds1').delete
 			end
 
 			def test_delete_credential
