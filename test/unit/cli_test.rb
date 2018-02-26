@@ -219,7 +219,7 @@ Mandatory arguments:
 			end
 
 			def test_gem_version
-				assert_equal '1.0.0', Jenkins2::CLI.new.parse(%w[-V]).call
+				assert_equal Jenkins2::VERSION, Jenkins2::CLI.new.parse(%w[-V]).call
 			end
 		end
 	end
