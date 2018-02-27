@@ -1,5 +1,7 @@
 # Jenkins2
 
+[![Gem Version](https://badge.fury.io/rb/jenkins2.svg)](https://badge.fury.io/rb/jenkins2)
+
 Jenkins2 gem is a command line interface and API client for Jenkins 2 CI Server. This gem is
 tested with latest Jenkins LTS. (See the [CHANGELOG](CHANGELOG.md) for exact versions.)
 
