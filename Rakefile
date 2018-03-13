@@ -25,6 +25,7 @@ end
 
 namespace :test do
 	CLEAN << 'test/coverage'
+	CLEAN << 'test/unit.log'
 	CLEAN << 'test/integration.log'
 
 	%w[unit integration].each do |name|

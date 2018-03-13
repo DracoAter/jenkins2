@@ -8,6 +8,69 @@ require_relative 'errors'
 module Jenkins2
 	module Util
 		extend self
+		# Attempt to run a block multiple times rescuing exceptions until 1 of those conditions are
+		# true:
+		# - +times+ is set and number of attempts done equals to +times+.
+		# - +max_wait+ is set and total time spent in sleep exceeded +max_wait+.
+		# - +success+ is set and result of running block equals to +success+.
+		# ==== Parameters:
+		# +times+:: Number of attempts to make to run the block including initial attempt.
+		# +intervals+:: Array of intervals in seconds. Last interval can be used several times until
+		#   we run out of attempts or exceed +max_wait+ time.
+		# +on+:: Excepton class or array of exception classes on which to retry. Default is -
+		#   StandardError.
+		# +max_wait:: Max amount of total time in seconds allowed to spend waiting. If both +times+
+		#   and +max_wait+ are not set, +max_wait+ will be set to 300 (5 minutes).
+		# +success+:: Acceptable result. Make attempts until block returns value equal to +success+.
+		# ==== Returns:
+		# Result of block call, or raises same Error, that block raised after +max_wait+ or +times+
+		# exceeded.
+		# ==== Examples:
+		#
+		def attempt(times: nil, intervals: [1, 2, 4, 8, 15, 30, 60], on: StandardError,
+			max_wait: nil, success: nil)
+			intervals = [intervals].flatten
+			intervals_enum = Enumerator.new do |y|
+				intervals.each{|i| y << i }
+				loop{ y << intervals.last }
+			end
+
+			started_at = Time.now
+			elapsed_time = proc{ Time.now - started_at }
+			max_wait = 300 if times.nil? and max_wait.nil?
+
+			Log.info{ 'Will make several attempts. Attempt #1.' }
+			intervals_enum.with_index 2 do |int, ind|
+				sleep_time = proc{ max_wait ? [max_wait - elapsed_time.call, int].min : int }
+				begin
+					result = yield
+					if success.nil? or success == result
+						Log.info{ 'Attempt successful.' }
+						return result
+					end
+					Log.warn{ "Received: #{result.inspect}, but we are expecting #{success.inspect}." }
+					next_try_in = sleep_time.call
+					Log.warn{ "Next attempt (##{ind}) in #{next_try_in} seconds." }
+					sleep next_try_in
+				rescue *[on].flatten => e
+					if times and ind > times
+						Log.error{ "Received error: #{e}." }
+						Log.error{ "Reached maximum number of attempts (#{ind}). Give up." }
+						raise e
+					elsif max_wait and elapsed_time.call >= max_wait
+						Log.error{ "Received error: #{e}." }
+						Log.error{ "Tired of waiting (#{elapsed_time.call} seconds). Give up." }
+						raise e
+					else
+						Log.warn{ "Received error: #{e}." }
+						next_try_in = sleep_time.call
+						Log.warn{ "Next attempt (##{ind}) in #{next_try_in} seconds." }
+						sleep next_try_in
+					end
+				end
+			end
+		end
+
 		# Waits for a block to return +truthful+ value. Useful, for example, when you set a node
 		# temporarily offline, and then wait for it to become idle.
 		# +max_wait_minutes+:: Maximum wait time in minutes.

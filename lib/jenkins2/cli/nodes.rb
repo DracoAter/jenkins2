@@ -200,7 +200,7 @@ module Jenkins2
 			end
 
 			def run
-				Jenkins2::Util.wait(max_wait_minutes: options[:wait]) do
+				Jenkins2::Util.attempt(max_wait: 60 * options[:wait], success: true) do
 					!jc.computer(options[:name]).online?
 				end
 			end
@@ -224,7 +224,7 @@ module Jenkins2
 			end
 
 			def run
-				Jenkins2::Util.wait(max_wait_minutes: options[:wait]) do
+				Jenkins2::Util.attempt(max_wait: 60 * options[:wait], success: true) do
 					jc.computer(options[:name]).online?
 				end
 			end

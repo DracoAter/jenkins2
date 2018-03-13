@@ -119,7 +119,7 @@ module Jenkins2
 			def test_launch_agent_and_disconnect
 				assert_equal true, @@subj.computer('localhost').update(LOCALHOST_CONFIG_XML)
 				assert_equal true, @@subj.computer('localhost').launch_agent
-				Jenkins2::Util.wait(max_wait_minutes: 2) do
+				Jenkins2::Util.attempt(max_wait: 120, success: true) do
 					@@subj.computer('localhost').online?
 				end
 				assert_equal true, @@subj.computer('localhost').online?

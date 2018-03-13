@@ -24,7 +24,7 @@ module Jenkins2
 			def test_install_list_get_uninstall
 				refute_includes @@subj.plugins(depth: 1).plugins.collect(&:shortName), TEST_PLUGIN
 				assert_equal true, @@subj.plugins.install(TEST_PLUGIN)
-				Jenkins2::Util.wait(max_wait_minutes: 1) do
+				Jenkins2::Util.attempt(max_wait: 60, success: true) do
 					@@subj.plugins.plugin(TEST_PLUGIN).active?
 				end
 				assert_includes @@subj.plugins(depth: 1).plugins.collect(&:shortName), TEST_PLUGIN
@@ -40,7 +40,7 @@ module Jenkins2
 					'emotional-jenkins-plugin.hpi', 'rb') do |f|
 					assert_equal true, @@subj.plugins.upload(f.read, 'emotional-jenkins-plugin.hpi')
 				end
-				Jenkins2::Util.wait do
+				Jenkins2::Util.attempt(success: true) do
 					@@subj.plugins.plugin('emotional-jenkins-plugin').active?
 				end
 				assert_equal true, @@subj.plugins.plugin('emotional-jenkins-plugin').active?

@@ -10,7 +10,7 @@ module Jenkins2
 				assert_raises Jenkins2::ServiceUnavailableError do
 					@@subj.version
 				end
-				Jenkins2::Util.wait(max_wait_minutes: 2) do
+				Jenkins2::Util.attempt(max_wait: 120) do
 					@@subj.version
 				end
 			end
@@ -20,7 +20,7 @@ module Jenkins2
 				assert_raises Jenkins2::ServiceUnavailableError do
 					@@subj.version
 				end
-				Jenkins2::Util.wait(max_wait_minutes: 2) do
+				Jenkins2::Util.attempt(max_wait: 120) do
 					@@subj.version
 				end
 			end

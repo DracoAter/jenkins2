@@ -6,7 +6,7 @@ module Jenkins2
 	module IntegrationTest
 		class ApiRootTest < Minitest::Test
 			def teardown
-				Jenkins2::Util.wait(max_wait_minutes: 2){ @@subj.version }
+				Jenkins2::Util.attempt(max_wait: 120){ @@subj.version }
 				@@subj.cancel_quiet_down
 			end
 

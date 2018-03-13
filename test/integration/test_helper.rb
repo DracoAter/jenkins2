@@ -25,7 +25,7 @@ module Minitest
 		@@subj.plugins.install PLUGINS
 
 		# Make sure plugins are installed.
-		Jenkins2::Util.wait(max_wait_minutes: 2) do
+		Jenkins2::Util.attempt(max_wait: 120, success: true) do
 			@@subj.plugins(depth: 1).plugins.select do |p|
 				PLUGINS.include?(p.shortName) and p.active
 			end.size == PLUGINS.size
@@ -55,6 +55,6 @@ module Minitest
 		@@subj.restart!
 
 		# Make sure Jenkins is ready and listening
-		Jenkins2::Util.wait(max_wait_minutes: 2){ @@subj.version }
+		Jenkins2::Util.attempt(max_wait: 120){ @@subj.version }
 	end
 end

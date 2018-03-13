@@ -22,7 +22,7 @@ module Jenkins2
 			def test_install_by_short_name_list_show_unistall
 				refute_includes Jenkins2::CLI::ListPlugins.new(@@opts).call, TEST_PLUGIN
 				assert_equal true, Jenkins2::CLI::InstallPlugin.new(@@opts).parse(['-n', TEST_PLUGIN]).call
-				Jenkins2::Util.wait(max_wait_minutes: 1) do
+				Jenkins2::Util.attempt(max_wait: 60, success: true) do
 					@@subj.plugins.plugin(TEST_PLUGIN).active?
 				end
 				assert_includes Jenkins2::CLI::ListPlugins.new(@@opts).call, TEST_PLUGIN
@@ -38,7 +38,7 @@ module Jenkins2
 				assert_equal true, Jenkins2::CLI::InstallPlugin.new(@@opts).parse(
 					['-s', 'http://mirrors.jenkins-ci.org/plugins/chucknorris/0.9/chucknorris.hpi']
 				).call
-				Jenkins2::Util.wait(max_wait_minutes: 1) do
+				Jenkins2::Util.attempt(max_wait: 60, success: true) do
 					@@subj.plugins.plugin('chucknorris').active?
 				end
 				assert_equal true, @@subj.plugins.plugin('chucknorris').active?

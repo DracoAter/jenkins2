@@ -126,7 +126,7 @@ module Jenkins2
 			def test_build_no_params
 				n_builds = @@subj.job('xml config').builds.size
 				assert_equal true, @@subj.job('xml config').build
-				Jenkins2::Util.wait(max_wait_minutes: 1) do
+				Jenkins2::Util.attempt(max_wait: 60, success: true) do
 					!@@subj.job('xml config').inQueue and
 					 @@subj.job('xml config').builds.none?(&:building)
 				end
@@ -137,7 +137,7 @@ module Jenkins2
 				n_builds = @@subj.job('parameterized').builds.size
 				assert_equal true, @@subj.job('parameterized').build(str: 'test', 'bool' => true,
 					cred: 'r3')
-				Jenkins2::Util.wait(max_wait_minutes: 1) do
+				Jenkins2::Util.attempt(max_wait: 60, success: true) do
 					!@@subj.job('parameterized').inQueue and
 						@@subj.job('parameterized').builds.none?(&:building)
 				end

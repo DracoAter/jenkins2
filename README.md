@@ -90,9 +90,9 @@ Or use it in your ruby code:
 ```ruby
 require 'jenkins2'
 
-jc = Jenkins2.connect(server: 'http://jenkins.example.com', user: 'admin', key:  'mysecretkey')
+jc = Jenkins2.connect(server: 'http://jenkins.example.com', user: 'admin', key: 'mysecretkey')
 jc.version
-jc.computer('mynode').toggle_offline( 'Some reason, why' )
+jc.computer('mynode').toggle_offline('Some reason, why')
 ```
 
 ## Configuration

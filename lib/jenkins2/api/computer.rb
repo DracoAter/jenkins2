@@ -26,7 +26,7 @@ module Jenkins2
 				# ==== Returns:
 				# True on success
 				def create
-					connection.post(::File.join(@path, 'doCreateItem'), nil,  name: @id,
+					connection.post(::File.join(@path, 'doCreateItem'), nil, name: @id,
 						type: 'hudson.slaves.DumbSlave', json: '{}').code == '302'
 				end
 
