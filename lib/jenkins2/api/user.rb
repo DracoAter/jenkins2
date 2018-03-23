@@ -20,15 +20,15 @@ module Jenkins2
 			class Proxy < ::Jenkins2::ResourceProxy
 				attr_accessor :id
 			end
+		end
 
-			module Me
-				class Proxy < ::Jenkins2::ResourceProxy
-				end
+		module Me
+			class Proxy < ::Jenkins2::ResourceProxy
 			end
+		end
 
-			module People
-				class Proxy < ::Jenkins2::ResourceProxy
-				end
+		module People
+			class Proxy < ::Jenkins2::ResourceProxy
 			end
 		end
 	end

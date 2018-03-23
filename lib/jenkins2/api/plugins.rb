@@ -33,21 +33,21 @@ module Jenkins2
 
 				def plugin(id, params={})
 					path = build_path 'plugin', id
-					Plugin::Proxy.new connection, path, params
+					::Jenkins2::API::Plugin::Proxy.new connection, path, params
 				end
 			end
+		end
 
-			module Plugin
-				class Proxy < ::Jenkins2::ResourceProxy
-					def uninstall
-						path = build_path 'doUninstall'
-						form_data = { 'Submit' => 'Yes', 'json' => '{}' }
-						connection.post(path, ::URI.encode_www_form(form_data)).code == '302'
-					end
+		module Plugin
+			class Proxy < ::Jenkins2::ResourceProxy
+				def uninstall
+					path = build_path 'doUninstall'
+					form_data = { 'Submit' => 'Yes', 'json' => '{}' }
+					connection.post(path, ::URI.encode_www_form(form_data)).code == '302'
+				end
 
-					def active?
-						raw.instance_of? ::Net::HTTPOK and subject.active
-					end
+				def active?
+					raw.instance_of? ::Net::HTTPOK and subject.active
 				end
 			end
 		end
