@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 	s.required_ruby_version = '~> 2.3'
 	s.add_development_dependency 'ci_reporter_minitest', '~> 1.0'
 	s.add_development_dependency 'minitest', '~> 5.5'
-	s.add_development_dependency 'rake', '~> 11.3'
+	s.add_development_dependency 'rake', '~> 12.3.3'
 	s.add_development_dependency 'rubocop', '~> 0.52'
 	s.add_development_dependency 'simplecov', '~> 0.10'
 
